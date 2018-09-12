@@ -1,0 +1,17 @@
+---
+id: edit
+links:  []
+entrypoint: service.p6
+cro: 1
+env:
+  - name: dir
+    value: .
+name: edit
+endpoints: 
+  - 
+    host-env: EDIT_HOST
+    id: http
+    port-env: EDIT_PORT
+    protocol: http
+    name: HTTP
+...

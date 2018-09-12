@@ -1,0 +1,34 @@
+{
+  "source-url": "Write me!",
+  "resources": [
+    
+  ],
+  "provides": {
+    "Routes.pm6": "lib/Routes.pm6"
+  },
+  "perl": "6.*",
+  "auth": "Write me!",
+  "build-depends": [
+    
+  ],
+  "description": "Write me!",
+  "meta-version": "0",
+  "tags": [
+    ""
+  ],
+  "support": {
+    "source": "Write me!"
+  },
+  "depends": [
+    "Cro::HTTP"
+  ],
+  "version": "0.0.1",
+  "test-depends": [
+    
+  ],
+  "authors": [
+    ""
+  ],
+  "name": "edit",
+  "license": "Write me!"
+}

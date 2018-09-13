@@ -14,20 +14,30 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Cro::HTTP::Router;
-use View;
-use Edit;
+use Page;
 
-sub routes() is export {
-    route {
-        get -> 'edit', $id {
-            content 'text/html', edit-page($id);
-        }
-        get -> 'view', $id {
-            content 'text/html', view-page($id);
-        }
-        get -> {
-            content 'text/html', view-page("Home");
-        }
-    }
+=head1 Storage
+=head2 get-page
+=begin pod
+Returns a Page. These may or may not exist.
+=end pod
+
+sub get-page (Str $id) is export {
+    my $dir = %*ENV<dir>;
+    my $path = "$dir/page/$id.md";
+    return Page.new(exists => False) unless $path.IO.e;
+    my $fh = open $path, :enc('UTF-8');
+    return Page.new(exists => True, text => $fh.slurp);
+}
+
+=head2 get-template
+=begin pod
+Returns a template. These must exist.
+=end pod
+
+sub get-template (Str $id) is export {
+    my $dir = %*ENV<dir>;
+    my $path = "$dir/templates/$id.sp6";
+    my $fh = open $path, :enc('UTF-8');
+    return $fh.slurp;
 }

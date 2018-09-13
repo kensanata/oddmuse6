@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<div id="header">
+<ul>
+{{#pages}}
+<li><a href="/view/{{id}}">{{id}}</a></li>
+{{/pages}}
+</ul>
+</div>
+
+<div id="content">
+<h1>{{id}}</h1>
+<p>
+This page is empty. But you can <a href="/edit/{{id}}">create it</a>,
+if you want to.
+</p>
+</div>
+
+<div id="footer">
+<hr/>
+<p>
+<a href="/edit/{{id}}">Edit</a>
+</p>
+</div>

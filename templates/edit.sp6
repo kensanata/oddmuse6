@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<div id="header">
+<ul>
+{{#pages}}
+<li><a href="/view/{{id}}">{{id}}</a></li>
+{{/pages}}
+</ul>
+</div>
+
+<div id="content">
+<h1>Edit {{id}}</h1>
+
+<pre>
+{{text}}
+</pre>
+
+</div>
+
+<div id="footer">
+<hr/>
+<p>
+<a href="/view/{{id}}">Cancel</a>
+</p>
+</div>

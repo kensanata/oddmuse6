@@ -14,20 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Cro::HTTP::Router;
-use View;
-use Edit;
-
-sub routes() is export {
-    route {
-        get -> 'edit', $id {
-            content 'text/html', edit-page($id);
-        }
-        get -> 'view', $id {
-            content 'text/html', view-page($id);
-        }
-        get -> {
-            content 'text/html', view-page("Home");
-        }
-    }
+class Page {
+    has Str $.text;
+    has Bool $.exists;
 }

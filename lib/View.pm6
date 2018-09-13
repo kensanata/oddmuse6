@@ -14,20 +14,37 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Cro::HTTP::Router;
-use View;
-use Edit;
+use Text::Markdown;
+use Template::Mustache;
+use Storage;
 
-sub routes() is export {
-    route {
-        get -> 'edit', $id {
-            content 'text/html', edit-page($id);
-        }
-        get -> 'view', $id {
-            content 'text/html', view-page($id);
-        }
-        get -> {
-            content 'text/html', view-page("Home");
-        }
+=head1 View
+
+=head2 view-page($id)
+
+=begin pod
+
+The page $id is read and used as the text item for the 'view.sp6'
+template, which is rendered to HTML.
+
+If the page $id does not exist, the special 'empty.sp6' template is
+used.
+
+=end pod
+
+sub view-page (Str $id) is export {
+    # FIXME: translation
+    my %params =
+    id => $id,
+    pages => [ { id => 'Home' },
+	       { id => 'About' } ];
+    my $template;
+    my $page = get-page $id;
+    if $page.exists {
+	$template = get-template 'view';
+	%params<text> = parse-markdown($page.text).to-html;
+    } else {
+	$template = get-template 'empty';
     }
+    return Template::Mustache.render($template, %params);
 }

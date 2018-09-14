@@ -2,10 +2,15 @@
 
 ## Installation
 
-This is Oddmuse based on Perl 5 and Cro instead of on Perl 5 and CGI
-or Mojolicious.
+This is Oddmuse based on Perl 6 and Cro. The current stable version of
+[Oddmuse](https://oddmuse.org/) is based on Perl 5 and `CGI.pm`,
+optionally using `Mojolicious` and `Mojolicious::Plugin::CGI`. I
+wanted to start a rewrite in order to get rid of the CGI module, and
+then I asked myself: why not go all the way‽ I might as well give Perl
+6 a try.
 
-To run it, you need to have Cro and some dependencies installed
+To run it, you need to have [Cro](https://cro.services/) and some
+dependencies installed
 
 ```
 zef install Text::Markdown

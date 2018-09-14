@@ -2,7 +2,7 @@
 
 ## Installation
 
-This is Oddmuse based on Perl 5 and Cro instead of on Perl 5 and CGI
+This is Oddmuse based on Perl 6 and Cro instead of on Perl 5 and CGI
 or Mojolicious.
 
 To run it, you need to have Cro and some dependencies installed

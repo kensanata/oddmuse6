@@ -26,6 +26,9 @@ sub routes() is export {
         get -> 'view', $id {
             content 'text/html', view-page($id);
         }
+	get -> 'css', *@path {
+	    static 'css', @path;
+	}
         get -> {
             content 'text/html', view-page("Home");
         }

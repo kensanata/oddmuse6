@@ -1,19 +1,30 @@
 <!DOCTYPE html>
-<div id="header">
-<ul>
-{{#pages}}
-<li><a href="/view/{{id}}">{{id}}</a></li>
-{{/pages}}
-</ul>
-</div>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{id}}</title>
+    <link rel="stylesheet" href="/css/default.css">
+  </head>
+  <body>
 
-<div id="content">
-{{{text}}}
-</div>
+    <div id="header">
+      <ul>
+	{{#pages}}
+	<li><a href="/view/{{id}}">{{id}}</a></li>
+	{{/pages}}
+      </ul>
+    </div>
 
-<div id="footer">
-<hr/>
-<p>
-<a href="/edit/{{id}}">Edit</a>
-</p>
-</div>
+    <div id="content">
+      {{{text}}}
+    </div>
+
+    <div id="footer">
+      <hr/>
+      <p>
+	<a href="/edit/{{id}}">Edit</a>
+      </p>
+    </div>
+
+  </body>
+</html>

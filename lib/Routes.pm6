@@ -17,6 +17,7 @@
 use Cro::HTTP::Router;
 use View;
 use Edit;
+use Save;
 
 sub routes() is export {
     route {
@@ -25,6 +26,12 @@ sub routes() is export {
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);
+        }
+        post -> 'save' {
+            request-body -> (:$id!, :$text!, :$summary) {
+		save-page($id, $text, $summary);
+		content 'text/html', view-page($id);
+            }
         }
 	get -> 'css', *@path {
 	    static 'css', @path;

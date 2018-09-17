@@ -112,6 +112,12 @@ th, td { padding: 0 8pt 8pt 0; }
 .half { width: 50%; }
 tr { vertical-align: top; }
 
+/* Edit Page */
+
+#text { height: 20em }
+#summary { height: 3em }
+#summarylabel { margin-bottom: 0 }
+
 /* handheld devices get less whitespace */
 
 @media only screen and (max-device-width: 600px) {

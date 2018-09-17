@@ -14,8 +14,11 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-class Page {
-    has Str $.name;
-    has Str $.text;
-    has Bool $.exists;
+use Page;
+use Storage;
+
+sub save-page (Str $id, Str $text, Str $summary) is export {
+    my $page = Page.new(name => $id, text => $text);
+    put-page $page;
+    # FIXME do more
 }

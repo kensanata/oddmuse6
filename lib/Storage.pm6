@@ -30,6 +30,17 @@ sub get-page (Str $id) is export {
     return Page.new(exists => True, text => $fh.slurp);
 }
 
+=head2 put-page
+=begin pod
+Save a page.
+=end pod
+
+sub put-page (Page $page) is export {
+    my $dir = %*ENV<dir>;
+    my $path = "$dir/page/$($page.name).md";
+    spurt $path, $page.text, :enc('UTF-8');
+}
+
 =head2 get-template
 =begin pod
 Returns a template. These must exist.

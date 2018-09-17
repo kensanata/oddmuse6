@@ -18,12 +18,12 @@
     <div id="content">
       <h1>Edit {{id}}</h1>
       <form method="post" action="/save">
-      <input type="hidden" name="id" value="{{id}}">
-      <textarea id="text" name="text">{{text}}</textarea>
-      <p id="summarylabel"><label for="summary">Summary</label>:</p>
-      <textarea id="summary" name="summary"></textarea>
-      <p><button>Save</button></p>
-      <form>
+	<input type="hidden" name="id" value="{{id}}">
+	<textarea id="text" name="text">{{text}}</textarea>
+	<p id="summarylabel"><label for="summary">Summary</label>:</p>
+	<textarea id="summary" name="summary"></textarea>
+	<p><button>Save</button></p>
+      </form>
     </div>
 
     <div id="footer">

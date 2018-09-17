@@ -38,13 +38,14 @@ sub view-page (Str $id) is export {
     id => $id,
     pages => [ { id => 'Home' },
 	       { id => 'About' } ];
+    my $storage = Storage.new;
     my $template;
-    my $page = get-page $id;
+    my $page = $storage.get-page($id);
     if $page.exists {
-	$template = get-template 'view';
+	$template = $storage.get-template('view');
 	%params<text> = parse-markdown($page.text).to-html;
     } else {
-	$template = get-template 'empty';
+	$template = $storage.get-template('empty');
     }
     return Template::Mustache.render($template, %params);
 }

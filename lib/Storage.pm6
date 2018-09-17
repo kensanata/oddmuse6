@@ -14,41 +14,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Page;
-
 =head1 Storage
-=head2 get-page
 =begin pod
-Returns a Page. These may or may not exist.
+This module delegates all storage issues to a role as specified by the
+environment variable C<storage>. By default, that would be
+<Storage::File>.
+
+The role must implement the following methods:
+
+=defn get-page
+Get a C<Page> given an id.
+=defn put-page
+Save a C<Page>.
+=defn get-template
+Get a the text for a template. The template should be HTML and must use
+Template::Mustache markup.
 =end pod
 
-sub get-page (Str $id) is export {
-    my $dir = %*ENV<dir>;
-    my $path = "$dir/page/$id.md";
-    return Page.new(exists => False) unless $path.IO.e;
-    my $fh = open $path, :enc('UTF-8');
-    return Page.new(exists => True, text => $fh.slurp);
-}
-
-=head2 put-page
-=begin pod
-Save a page.
-=end pod
-
-sub put-page (Page $page) is export {
-    my $dir = %*ENV<dir>;
-    my $path = "$dir/page/$($page.name).md";
-    spurt $path, $page.text, :enc('UTF-8');
-}
-
-=head2 get-template
-=begin pod
-Returns a template. These must exist.
-=end pod
-
-sub get-template (Str $id) is export {
-    my $dir = %*ENV<dir>;
-    my $path = "$dir/templates/$id.sp6";
-    my $fh = open $path, :enc('UTF-8');
-    return $fh.slurp;
+class Storage {
+    my $class = %*ENV<storage>;
+    require ::($class);
+    has $!delegate handles <get-page put-page get-template> = ::($class).new;
 }

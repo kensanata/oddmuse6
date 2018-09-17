@@ -6,6 +6,8 @@ cro: 1
 env:
   - name: dir
     value: .
+  - name: storage
+    value: Storage::File
 name: edit
 endpoints: 
   - 

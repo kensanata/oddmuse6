@@ -34,6 +34,21 @@ docker build -t edit .
 docker run --rm -p 10000:10000 edit
 ```
 
+## Test
+
+The `Makefile` has a `test` target.
+
+## Deployment
+
+If you look at the `.cro.yml` file you'll find a section with
+environment variables with which to configure the wiki.
+
+`storage` is the class handling your storage requirements. The default
+is `Storage::File` which stores everything in plain text files.
+
+`dir` is the location of your wiki, your data directory, if you are
+using `Storage::File`.
+
 ## Translation
 
 You should translate the Markdown files in the `pages` directory, and

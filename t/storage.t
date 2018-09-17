@@ -14,12 +14,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Page;
+use Test;
 use Storage;
 
-sub save-page (Str $id, Str $text, Str $summary) is export {
-    my $page = Page.new(name => $id, text => $text);
-    my $storage = Storage.new;
-    $storage.put-page($page);
-    # FIXME do more
-}
+my $storage = Storage.new;
+
+like($storage.^name, /Storage/, 'Storage class initialized');
+
+like($storage.get-page('Home').text, /Welcome/, 'get-page delegated');
+
+done-testing;

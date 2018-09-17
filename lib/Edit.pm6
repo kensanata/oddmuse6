@@ -22,8 +22,9 @@ sub edit-page (Str $id) is export {
     id => $id,
     pages => [ { id => 'Home' },
 	       { id => 'About' } ];
-    my $template = get-template 'edit';
-    my $page = get-page $id;
+    my $storage = Storage.new;
+    my $template = $storage.get-template('edit');
+    my $page = $storage.get-page($id);
     if $page.exists {
 	%params<text> = $page.text;
     }

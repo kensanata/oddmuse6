@@ -40,6 +40,9 @@ sub routes() is export {
 	get -> 'css', *@path {
 	    static 'css', @path;
 	}
+	get -> 'favicon.ico' {
+	    static 'images', 'logo.png';
+	}
         get -> {
             content 'text/html', view-page("Home");
         }

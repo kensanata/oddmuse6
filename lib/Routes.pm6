@@ -19,6 +19,7 @@ use View;
 use Edit;
 use Save;
 use Changes;
+use Filter;
 
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
@@ -26,11 +27,14 @@ sub routes() is export {
         get -> 'edit', $id {
             content 'text/html', edit-page($id);
         }
-        get -> 'changes' {
-            content 'text/html', view-changes();
+	get -> 'changes', :$n where /^\d+$/ {
+            content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
+        }
+	get -> 'changes' {
+            content 'text/html', view-changes(Filter.new(tail => 30));
         }
         get -> 'view', $id where / $changes / {
-            content 'text/html', view-changes();
+            content 'text/html', view-changes(Filter.new(tail => 30));
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);

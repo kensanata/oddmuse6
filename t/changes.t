@@ -14,29 +14,35 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Storage
-=begin pod
-This module delegates all storage issues to a role as specified by the
-environment variable C<storage>. By default, that would be
-<Storage::File>.
+use Cro::HTTP::Test;
+use Routes;
 
-The role must implement the following methods:
+'rc.log'.IO.spurt(qq :to 'EOF');
+2018-09-18T15:36:38.313606+02:000About1285testing
+2018-09-18T15:36:38.562611+02:001AboutAlextypo
+EOF
 
-=defn get-page
-Get a C<Page> given an id.
-=defn put-page
-Save a C<Page>.
-=defn get-template
-Get a the text for a template. The template should be HTML and must use
-Template::Mustache markup.
-=defn put-change
-Save a C<Change>.
-=defn get-changes
-Get a list of C<Change> objects.
-=end pod
+test-service routes(), {
 
-class Storage {
-    my $class = %*ENV<storage> || 'Storage::File';
-    require ::($class);
-    has $!delegate handles <get-page put-page get-template put-change get-changes> = ::($class).new;
+    test get('/view/Changes'),
+        status => 200,
+        content-type => 'text/html',
+        body => / '<h1>' Changes '</h1>' .* testing .* typo /;
+
+    test get('/changes'),
+        status => 200,
+        content-type => 'text/html',
+        body => / '<h1>' Changes '</h1>' .* testing .* typo /;
+
+    my $page = get('/changes?n=1');
+
+    test $page,
+        status => 200,
+        content-type => 'text/html',
+        body => / '<h1>' Changes '</h1>' .* typo /;
+
+    test $page, body => !/ testing /;
+
 }
+
+done-testing;

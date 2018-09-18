@@ -16,6 +16,7 @@
 
 use Template::Mustache;
 use Storage;
+use Filter;
 
 =head1 Changes
 
@@ -28,8 +29,7 @@ template.
 
 =end pod
 
-# FIXME: add filter support
-sub view-changes () is export {
+sub view-changes (Filter $filter!) is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     my %params =
@@ -37,7 +37,7 @@ sub view-changes () is export {
 	pages => [ map { id => $_ }, @pages ];
     my $storage = Storage.new;
 
-    my @changes = $storage.get-changes();
+    my @changes = $storage.get-changes($filter);
     
     # Sadly, the Template::Mustache does not support objects,
     # according to the documentation. Thus, turn the object into a

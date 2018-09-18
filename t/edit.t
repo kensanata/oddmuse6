@@ -30,8 +30,7 @@ test-service routes(), {
     test get('/edit/About'),
         status => 200,
         content-type => 'text/html',
-        body => / 'Editing About' /,
-	body => / 'form method="post"' /;
+        body => / 'Edit About' .* 'form method="post"' /;
 
     test-given '/save', {
       test post(json => { :id('About'), :text('Hallo'), :summary('testing'),

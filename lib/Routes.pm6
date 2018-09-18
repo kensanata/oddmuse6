@@ -28,8 +28,12 @@ sub routes() is export {
             content 'text/html', view-page($id);
         }
         post -> 'save' {
-            request-body -> (:$id!, :$text!, :$summary) {
-		save-page($id, $text, $summary);
+            request-body -> (:$id!, :$text!,
+			     :$summary, :$minor,
+			     :$author) {
+		save-page(:$id, :$text, :$summary,
+			  minor => $minor ?? True !! False,
+			  :$author);
 		content 'text/html', view-page($id);
             }
         }

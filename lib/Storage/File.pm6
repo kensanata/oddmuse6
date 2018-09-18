@@ -15,6 +15,7 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Page;
+use Change;
 
 =head1 Storage::File
 ==begin pod
@@ -22,6 +23,8 @@ This module implements the C<Storage> layer using plain text files.
 ==end pod
 
 class Storage::File {
+
+    my $FS = "\x1e"; # ASCII UNIT SEPARATOR
 
     =head2 get-page
     =begin pod
@@ -57,5 +60,19 @@ class Storage::File {
 	my $path = "$dir/templates/$id.sp6";
 	my $fh = open $path, :enc('UTF-8');
 	return $fh.slurp;
+    }
+
+    =head4 put-change
+    =begin pod
+    The log of all changes is C<rc.log> in the data directory.
+    =end pod
+
+    method put-change (Change $change) is export {
+	my $dir = %*ENV<dir>;
+	my $path = "$dir/rc.log";
+	my $fh = open $path, :a, :enc('UTF-8');
+	$fh.say(($change.ts, $change.minor ?? 1 !! 0,
+		 $change.name, $change.author,
+		 $change.summary).join($FS));
     }
 }

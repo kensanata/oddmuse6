@@ -1,37 +1,47 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>{{id}}</title>
-    <link rel="stylesheet" href="/css/default.css">
-  </head>
-  <body>
+	<head>
+		<meta charset="utf-8">
+		<title>{{id}}</title>
+		<link rel="stylesheet" href="/css/default.css">
+	</head>
+	<body>
 
-    <div id="header">
-      <ul>
-	{{#pages}}
-	<li><a href="/view/{{id}}">{{id}}</a></li>
-	{{/pages}}
-      </ul>
-    </div>
+		<div id="header">
+			<ul>
+				{{#pages}}
+				<li><a href="/view/{{id}}">{{id}}</a></li>
+				{{/pages}}
+			</ul>
+		</div>
 
-    <div id="content">
-      <h1>Edit {{id}}</h1>
-      <form method="post" action="/save">
-	<input type="hidden" name="id" value="{{id}}">
-	<textarea id="text" name="text">{{text}}</textarea>
-	<p id="summarylabel"><label for="summary">Summary</label>:</p>
-	<textarea id="summary" name="summary"></textarea>
-	<p><button>Save</button></p>
-      </form>
-    </div>
+		<div id="content">
+			<h1>Edit {{id}}</h1>
+			<form method="post" action="/save">
+				<input type="hidden" name="id" value="{{id}}">
+				<textarea id="text" name="text">{{text}}</textarea>
+				<p id="summarylabel"><label for="summary">Summary</label>:</p>
+				<textarea id="summary" name="summary"></textarea>
+				<p id="authorlabel">
+					<label for="author">Your name</label>:
+					<input id="author" name="author" type="text">
+				</p>
+				<p id="minorlabel">
+					<label for="minor">
+						<input id="minor" name="minor" type="checkbox">
+						This is a minor change
+					</label>
+				</p>
+				<p><button>Save</button></p>
+			</form>
+		</div>
 
-    <div id="footer">
-      <hr/>
-      <p>
-	<a href="/view/{{id}}">Cancel</a>
-      </p>
-    </div>
+		<div id="footer">
+			<hr/>
+			<p>
+				<a href="/view/{{id}}">Cancel</a>
+			</p>
+		</div>
 
-  </body>
+	</body>
 </html>

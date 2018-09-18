@@ -15,11 +15,35 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Page;
+use Change;
 use Storage;
 
-sub save-page (Str $id, Str $text, Str $summary) is export {
+sub save-page (Str :$id, Str :$text,
+	       Str :$summary, Bool :$minor,
+	       Str :$author) is export {
+
+    # Use djb2 to generate octal numbers for pseudoanonymity based on
+    # the IP number. X-Forwarded-For is the header available behind an
+    # Apache Proxy (where REMOTE_ADDR will always be the IP number of
+    # the host where Apache runs).
+    my $code;
+    if (!$author) {
+	my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
+	# FIXME: double check djb2 implementation
+	# Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
+	$code = [5381, |$ip.comb».ord].reduce(* * 33 +^ *) mod 8**4;
+    }
+
     my $page = Page.new(name => $id, text => $text);
+    my $change = Change.new(ts => DateTime.now,
+			    :$minor,
+			    name => $id,
+			    author => $author || $code.Str,
+			    :$summary);
     my $storage = Storage.new;
+
     $storage.put-page($page);
+    $storage.put-change($change);
+
     # FIXME do more
 }

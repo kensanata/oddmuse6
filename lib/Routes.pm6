@@ -21,7 +21,7 @@ use Save;
 use Changes;
 
 sub routes() is export {
-    my $changes = %*ENV<changes> || '';
+    my $changes = %*ENV<changes> || 'Changes';
     route {
         get -> 'edit', $id {
             content 'text/html', edit-page($id);

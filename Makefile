@@ -1,4 +1,7 @@
 test:
-	dir=. storage=Storage::File prove6 -l t
+	prove6 -l t
 
-# dir=. prove6 -l -v t/edit.t
+# Verbose:
+# prove6 -l -v t/edit.t
+# Set all the environment variables:
+# dir=. storage=Storage::File menu="Home, Changes, About" changes="Changes" prove6 -l t

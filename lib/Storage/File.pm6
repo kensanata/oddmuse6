@@ -32,7 +32,7 @@ class Storage::File {
     =end pod
 
     method get-page (Str $id) is export {
-	my $dir = %*ENV<dir>;
+	my $dir = %*ENV<dir> || '.';
 	my $path = "$dir/page/$id.md";
 	return Page.new(exists => False) unless $path.IO.e;
 	my $fh = open $path, :enc('UTF-8');
@@ -45,7 +45,7 @@ class Storage::File {
     =end pod
 
     method put-page (Page $page) is export {
-	my $dir = %*ENV<dir>;
+	my $dir = %*ENV<dir> || '.';
 	my $path = "$dir/page/$($page.name).md";
 	spurt $path, $page.text, :enc('UTF-8');
     }
@@ -56,7 +56,7 @@ class Storage::File {
     =end pod
 
     method get-template (Str $id) is export {
-	my $dir = %*ENV<dir>;
+	my $dir = %*ENV<dir> || '.';
 	my $path = "$dir/templates/$id.sp6";
 	my $fh = open $path, :enc('UTF-8');
 	return $fh.slurp;
@@ -68,7 +68,7 @@ class Storage::File {
     =end pod
 
     method put-change (Change $change) is export {
-	my $dir = %*ENV<dir>;
+	my $dir = %*ENV<dir> || '.';
 	my $path = "$dir/rc.log";
 	my $fh = open $path, :a, :enc('UTF-8');
 	$fh.say(($change.ts, $change.minor ?? 1 !! 0,
@@ -83,7 +83,7 @@ class Storage::File {
 
     # FIXME add filter support
     method get-changes () is export {
-	my $dir = %*ENV<dir>;
+	my $dir = %*ENV<dir> || '.';
 	my $path = "$dir/rc.log";
 	my $fh = open $path, :enc('UTF-8');
 	my @lines = $fh.lines.tail(30);

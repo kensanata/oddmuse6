@@ -18,11 +18,19 @@ use Cro::HTTP::Router;
 use View;
 use Edit;
 use Save;
+use Changes;
 
 sub routes() is export {
+    my $changes = %*ENV<changes> || '';
     route {
         get -> 'edit', $id {
             content 'text/html', edit-page($id);
+        }
+        get -> 'changes' {
+            content 'text/html', view-changes();
+        }
+        get -> 'view', $id where / $changes / {
+            content 'text/html', view-changes();
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);

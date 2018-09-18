@@ -14,39 +14,47 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Text::Markdown;
 use Template::Mustache;
 use Storage;
 
-=head1 View
+=head1 Changes
 
-=head2 view-page($id)
+=head2 view-changes()
 
 =begin pod
 
-The page $id is read and used as the text item for the C<view>
-template, which is rendered to HTML.
-
-If the page $id does not exist, the special C<empty> template is used.
-
-Pages and templates are retrieved via C<Storage>.
+This loads all the changes and renders them using the C<changes>
+template.
 
 =end pod
 
-sub view-page (Str $id) is export {
+# FIXME: add filter support
+sub view-changes () is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     my %params =
-	id => $id,
+	id => %*ENV<changes> || "Changes",
 	pages => [ map { id => $_ }, @pages ];
     my $storage = Storage.new;
-    my $template;
-    my $page = $storage.get-page($id);
-    if $page.exists {
-	$template = $storage.get-template('view');
-	%params<text> = parse-markdown($page.text).to-html;
-    } else {
-	$template = $storage.get-template('empty');
-    }
+
+    my @changes = $storage.get-changes();
+    
+    # Sadly, the Template::Mustache does not support objects,
+    # according to the documentation. Thus, turn the object into a
+    # hash fit for the template.
+    my @hashes = map {
+	my %change =
+	    date => $_.ts.yyyy-mm-dd,
+	    time => $_.ts.hh-mm-ss,
+	    minor => $_.minor,
+	    name => $_.name,
+	    author => $_.author,
+	    # { c => "1", c=> "2", c=> "3", c=> "4", }
+	    code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
+	    summary => $_.summary||'';
+    }, @changes;
+    
+    %params<changes> = @hashes;
+    my $template = $storage.get-template('changes');
     return Template::Mustache.render($template, %params);
 }

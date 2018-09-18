@@ -19,5 +19,6 @@ class Change {
     has Bool $.minor;
     has Str $.name;
     has Str $.author;
+    has Str $.code;
     has Str $.summary;
 }

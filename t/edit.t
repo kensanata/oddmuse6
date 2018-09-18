@@ -51,8 +51,9 @@ like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 0, "major change";
 is @data[2], "About", "page name";
-like @data[3], / \d\d\d\d /, "code";
-like @data[4], /testing/, "summary";
+# author is empty
+like @data[4], / \d\d\d\d /, "code";
+like @data[5], /testing/, "summary";
 
 # make sure checkbox is handled correctly
 test-service routes(), {
@@ -71,6 +72,7 @@ like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 1, "minor change";
 is @data[2], "About", "page name";
 like @data[3], /Alex/, "author";
-like @data[4], /typo/, "summary";
+# code is empty
+like @data[5], /typo/, "summary";
 
 done-testing;

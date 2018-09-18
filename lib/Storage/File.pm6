@@ -24,7 +24,7 @@ This module implements the C<Storage> layer using plain text files.
 
 class Storage::File {
 
-    my $FS = "\x1e"; # ASCII UNIT SEPARATOR
+    my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
     =head2 get-page
     =begin pod
@@ -72,7 +72,35 @@ class Storage::File {
 	my $path = "$dir/rc.log";
 	my $fh = open $path, :a, :enc('UTF-8');
 	$fh.say(($change.ts, $change.minor ?? 1 !! 0,
-		 $change.name, $change.author,
-		 $change.summary).join($FS));
+		 $change.name, $change.author, $change.code,
+		 $change.summary).join($SEP));
+    }
+
+    =head4 get-changes
+    =begin pod
+    The log of all changes is C<rc.log> in the data directory.
+    =end pod
+
+    # FIXME add filter support
+    method get-changes () is export {
+	my $dir = %*ENV<dir>;
+	my $path = "$dir/rc.log";
+	my $fh = open $path, :enc('UTF-8');
+	my @lines = $fh.lines.tail(30);
+	my @changes = map { line-to-change $_ }, @lines;
+	return @changes;
+    }
+
+    sub line-to-change (Str $line) {
+	my ($ts, $minor, $name, $author, $code, $summary) = $line.split(/$SEP/);
+	my $change = Change.new(
+	    ts		=> DateTime.new($ts),
+	    minor	=> Bool.new($minor),
+	    name	=> $name,
+	    author	=> $author,
+	    code	=> $code,
+	    summary	=> $summary,
+	);
+	return $change;
     }
 }

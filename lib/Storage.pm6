@@ -34,5 +34,5 @@ Template::Mustache markup.
 class Storage {
     my $class = %*ENV<storage> || 'Storage::File';
     require ::($class);
-    has $!delegate handles <get-page put-page get-template put-change> = ::($class).new;
+    has $!delegate handles <get-page put-page get-template put-change get-changes> = ::($class).new;
 }

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Changes</title>
+    <link rel="stylesheet" href="/css/default.css">
+  </head>
+  <body>
+
+    <div id="header">
+      <ul>
+				{{#pages}}
+				<li><a href="/view/{{id}}">{{id}}</a></li>
+				{{/pages}}
+      </ul>
+    </div>
+
+    <div id="content">
+			<div id="changes">
+				<h1>{{id}}</h1>
+				<ul>
+				{{#changes}}
+				<li>
+					{{date}} {{time}} <a href="/view/{{name}}">{{name}}</a> …
+					{{author}}
+					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
+					{{#summary}}
+					– {{summary}}
+					{{/summary}}
+					{{#minor}}(minor){{/minor}}
+				</li>
+				{{/changes}}
+				</ul>
+			</div>
+    </div>
+
+    <div id="footer">
+      <hr/>
+      <p>
+				<a href="/">Home</a>
+      </p>
+    </div>
+
+  </body>
+</html>

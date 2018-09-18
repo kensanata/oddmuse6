@@ -33,11 +33,11 @@ used.
 =end pod
 
 sub view-page (Str $id) is export {
-    # FIXME: translation
+    my $menu = %*ENV<menu> || "Home, Changes";
+    my @pages = $menu.split(/ ',' \s* /);
     my %params =
-    id => $id,
-    pages => [ { id => 'Home' },
-	       { id => 'About' } ];
+	id => $id,
+	pages => [ map { id => $_ }, @pages ];
     my $storage = Storage.new;
     my $template;
     my $page = $storage.get-page($id);

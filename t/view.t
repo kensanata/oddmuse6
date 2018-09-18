@@ -26,6 +26,8 @@ test-service routes(), {
         status => 200,
         content-type => 'text/html',
         body => / '<h1>' Home '</h1>' /,
+	body => / '<a href="/view/Home">Home</a>' /,
+	body => / '<a href="/view/About">About</a>' /,
 	body => / 'Welcome!' /;
 
     test get('/view/Home'),

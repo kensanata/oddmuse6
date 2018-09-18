@@ -8,6 +8,10 @@ env:
     value: .
   - name: storage
     value: Storage::File
+  - name: menu
+    value: Home, Changes, About
+  - name: changes
+    value: Changes
 name: edit
 endpoints: 
   - 

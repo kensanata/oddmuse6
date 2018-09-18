@@ -49,6 +49,12 @@ is `Storage::File` which stores everything in plain text files.
 `dir` is the location of your wiki, your data directory, if you are
 using `Storage::File`.
 
+`menu` is a comma separated list of pages for the main menu. The
+default is `Home, Changes, About`.
+
+`changes` is the page where the list of recent changes should be
+appended. The default is `Changes` (which is also in the main menu).
+
 ## Translation
 
 You should translate the Markdown files in the `pages` directory, and

@@ -20,7 +20,9 @@
     "source": "Write me!"
   },
   "depends": [
-    "Cro::HTTP"
+    "Cro::HTTP",
+    "Text::Markdown",
+    "Template::Mustache"
   ],
   "version": "0.0.1",
   "test-depends": [

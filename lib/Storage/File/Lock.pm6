@@ -35,7 +35,7 @@ sub with-locked-file(Str $path, Int $max-delay, &code) is export {
 			if $_ >= $max-delay {
 				$lock.IO.rmdir;
 			}
-			if !$lock.IO.d {
+			if !$lock.IO.e {
 				$lock.IO.mkdir;
 				&code();
 				$lock.IO.rmdir;

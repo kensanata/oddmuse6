@@ -1,36 +1,32 @@
 {
-  "source-url": "Write me!",
-  "resources": [
-    
+  "name": "Oddmuse6",
+  "version": "0.0.1",
+  "description": "",
+  "tags": [
+    "web", "wiki"
   ],
+  "license": "AGPL-3.0-or-later"
+  "source-url": "https://alexschroeder.ch/cgit/oddmuse6/",
+  "auth": "kensanata",
+  "authors": [
+    "Alex Schroeder <alex@gnu.org>"
+  ],
+  "support": {
+    "source": "kensanata on Freenode IRC"
+  },
+  "resources": [],
   "provides": {
     "Routes.pm6": "lib/Routes.pm6"
   },
   "perl": "6.*",
-  "auth": "Write me!",
-  "build-depends": [
-    
-  ],
-  "description": "Write me!",
   "meta-version": "0",
-  "tags": [
-    ""
-  ],
-  "support": {
-    "source": "Write me!"
-  },
   "depends": [
     "Cro::HTTP",
     "Text::Markdown",
     "Template::Mustache"
   ],
-  "version": "0.0.1",
+  "build-depends": [],
   "test-depends": [
     "Cro::HTTP::Test"
   ],
-  "authors": [
-    ""
-  ],
-  "name": "edit",
-  "license": "Write me!"
 }

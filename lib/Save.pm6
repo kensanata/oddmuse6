@@ -18,9 +18,9 @@ use Page;
 use Change;
 use Storage;
 
-sub save-page (Str :$id, Str :$text,
-	       Str :$summary, Bool :$minor,
-	       Str :$author) is export {
+sub save-page (Str :$id!, Str :$text!,
+			   Str :$summary = '', Bool :$minor = False,
+			   Str :$author = '') is export {
 
     # Use djb2 to generate octal numbers for pseudoanonymity based on
     # the IP number. X-Forwarded-For is the header available behind an
@@ -44,6 +44,7 @@ sub save-page (Str :$id, Str :$text,
 			    :$summary);
     my $storage = Storage.new;
 
+    $storage.keep-page($id);
     $storage.put-page($page);
     $storage.put-change($change);
 

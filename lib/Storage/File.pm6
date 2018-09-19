@@ -41,6 +41,35 @@ class Storage::File {
 		return Page.new(exists => True, text => $fh.slurp);
     }
 
+    =head3 keep-page
+    =begin pod
+    Backup pages are saved in the C<keep> subdirectory with the
+    <md.~n~> extension, where C<n> is an integer. These are the
+    numbered backups supported by Emacs and C<cp --backup=numbered>,
+    and maybe others.
+    =end pod
+
+    method keep-page (Str $id!) is export {
+		my $from-dir = make-directory('page');
+		my $to-dir   = make-directory('keep');
+
+		# lock the source file!
+		my $path = "$from-dir/$id.md";
+		return unless $path.IO.e;
+
+		with-locked-file $path, 3, {
+
+			# find the highest n + 1
+			my @keep-pages = $to-dir.IO.dir(test => /^ $id '.md.~' \d+ '~' $/);
+			my $n = 1;
+			for @keep-pages {
+				$n = $0 +1 if $_ ~~ / "~" (\d+) "~" $/ and $0 >= $n;
+			}
+
+			copy "$from-dir/$id.md", "$to-dir/$id.md.~$n~";
+		};
+	}
+
     =head3 put-page
     =begin pod
     Pages are saved in the C<page> subdirectory with the <md> extension.
@@ -54,66 +83,66 @@ class Storage::File {
 		};
 	}
 
-		=head4 get-template
-		=begin pod
-		Pages are files in the C<templates> subdirectory with the <sp6> extension.
-		=end pod
+	=head4 get-template
+	=begin pod
+	Pages are files in the C<templates> subdirectory with the <sp6> extension.
+	=end pod
 
-		method get-template (Str $id!) is export {
-			my $dir = make-directory('templates');
-			my $path = "$dir/$id.sp6";
-			my $fh = open $path, :enc('UTF-8');
-			return $fh.slurp;
-		}
-
-		=head4 put-change
-		=begin pod
-		The log of all changes is C<rc.log> in the data directory.
-		=end pod
-
-		method put-change (Change $change!) is export {
-			my $dir = make-directory('');
-			my $path = "$dir/rc.log";
-			with-locked-file $path, 3, {
-				my $fh = open $path, :a, :enc('UTF-8');
-				$fh.say(($change.ts, $change.minor ?? 1 !! 0,
-						 $change.name, $change.author, $change.code,
-						 $change.summary).join($SEP));
-			};
-		}
-
-		=head4 get-changes
-		=begin pod
-		The log of all changes is C<rc.log> in the data directory.
-		=end pod
-
-		method get-changes (Filter $filter!) is export {
-			my $dir = make-directory('');
-			my $path = "$dir/rc.log";
-			my $fh = open $path, :enc('UTF-8');
-			my @lines = $fh.lines;
-			@lines = @lines.tail($filter.tail) if $filter.tail;
-			my @changes = map { line-to-change $_ }, @lines;
-			return @changes;
-		}
-
-		sub line-to-change (Str $line!) {
-			my ($ts, $minor, $name, $author, $code, $summary) = $line.split(/$SEP/);
-			my $change = Change.new(
-				ts		=> DateTime.new($ts),
-				minor	=> Bool.new($minor),
-				name	=> $name,
-				author	=> $author,
-				code	=> $code,
-				summary	=> $summary,
-			);
-			return $change;
-		}
-
-		sub make-directory(Str $subdir!) {
-			my $root = %*ENV<dir> || '.';
-			my $dir = "$root/$subdir";
-			mkdir($dir) unless $dir.IO.d;
-			return $dir;
-		}
+	method get-template (Str $id!) is export {
+		my $dir = make-directory('templates');
+		my $path = "$dir/$id.sp6";
+		my $fh = open $path, :enc('UTF-8');
+		return $fh.slurp;
 	}
+
+	=head4 put-change
+	=begin pod
+	The log of all changes is C<rc.log> in the data directory.
+	=end pod
+
+	method put-change (Change $change!) is export {
+		my $dir = make-directory('');
+		my $path = "$dir/rc.log";
+		with-locked-file $path, 3, {
+			my $fh = open $path, :a, :enc('UTF-8');
+			$fh.say(($change.ts, $change.minor ?? 1 !! 0,
+					 $change.name, $change.author, $change.code,
+					 $change.summary).join($SEP));
+		};
+	}
+
+	=head4 get-changes
+	=begin pod
+	The log of all changes is C<rc.log> in the data directory.
+	=end pod
+
+	method get-changes (Filter $filter!) is export {
+		my $dir = make-directory('');
+		my $path = "$dir/rc.log";
+		my $fh = open $path, :enc('UTF-8');
+		my @lines = $fh.lines;
+		@lines = @lines.tail($filter.tail) if $filter.tail;
+		my @changes = map { line-to-change $_ }, @lines;
+		return @changes;
+	}
+
+	sub line-to-change (Str $line!) {
+		my ($ts, $minor, $name, $author, $code, $summary) = $line.split(/$SEP/);
+		my $change = Change.new(
+			ts		=> DateTime.new($ts),
+			minor	=> Bool.new($minor),
+			name	=> $name,
+			author	=> $author,
+			code	=> $code,
+			summary	=> $summary,
+		);
+		return $change;
+	}
+
+	sub make-directory(Str $subdir!) {
+		my $root = %*ENV<dir> || '.';
+		my $dir = "$root/$subdir";
+		mkdir($dir) unless $dir.IO.d;
+		return $dir;
+	}
+}

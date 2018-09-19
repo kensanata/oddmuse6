@@ -24,6 +24,8 @@ The role must implement the following methods:
 
 =defn get-page
 Get a C<Page> given an id.
+=defn keep-page
+Save a backup of the page C<id>.
 =defn put-page
 Save a C<Page>.
 =defn get-template
@@ -38,5 +40,7 @@ Get a list of C<Change> objects.
 class Storage {
     my $class = %*ENV<storage> || 'Storage::File';
     require ::($class);
-    has $!delegate handles <get-page put-page get-template put-change get-changes> = ::($class).new;
+    has $!delegate handles <
+		get-page keep-page put-page get-template put-change get-changes
+	> = ::($class).new;
 }

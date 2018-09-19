@@ -5,7 +5,7 @@
   "tags": [
     "web", "wiki"
   ],
-  "license": "AGPL-3.0-or-later"
+  "license": "AGPL-3.0-or-later",
   "source-url": "https://alexschroeder.ch/cgit/oddmuse6/",
   "auth": "kensanata",
   "authors": [
@@ -28,5 +28,5 @@
   "build-depends": [],
   "test-depends": [
     "Cro::HTTP::Test"
-  ],
+  ]
 }

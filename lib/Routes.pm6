@@ -20,41 +20,42 @@ use Edit;
 use Save;
 use Changes;
 use Filter;
+use History;
 
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
     route {
-        get -> 'edit', $id {
-            content 'text/html', edit-page($id);
-        }
-	get -> 'changes', :$n where /^\d+$/ {
-            content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
-        }
-	get -> 'changes' {
-            content 'text/html', view-changes(Filter.new(tail => 30));
-        }
         get -> 'view', $id where / $changes / {
             content 'text/html', view-changes(Filter.new(tail => 30));
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);
         }
+		get -> 'changes', :$n where /^\d+$/ {
+            content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
+        }
+		get -> 'changes' {
+            content 'text/html', view-changes(Filter.new(tail => 30));
+        }
+        get -> 'edit', $id {
+            content 'text/html', edit-page($id);
+        }
         post -> 'save' {
             request-body -> (:$id!, :$text!,
-			     :$summary, :$minor,
-			     :$author) {
-		save-page(:$id, :$text, :$summary,
-			  minor => $minor ?? True !! False,
-			  :$author);
-		content 'text/html', view-page($id);
+							 :$summary, :$minor,
+							 :$author) {
+				save-page(:$id, :$text, :$summary,
+						  minor => $minor ?? True !! False,
+						  :$author);
+				content 'text/html', view-page($id);
             }
         }
-	get -> 'css', *@path {
-	    static 'css', @path;
-	}
-	get -> 'favicon.ico' {
-	    static 'images', 'logo.png';
-	}
+		get -> 'css', *@path {
+			static 'css', @path;
+		}
+		get -> 'favicon.ico' {
+			static 'images', 'logo.png';
+		}
         get -> {
             content 'text/html', view-page("Home");
         }

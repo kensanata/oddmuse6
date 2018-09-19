@@ -51,7 +51,9 @@ div.new {
     background-color: #cfffcf;
 }
 
-/* Recent Changes */
+/* Changes */
+
+li { padding-bottom: 5pt; }
 
 #filter { display: inline; list-style: none; padding: 0; }
 #filter li { display: inline; }

@@ -27,6 +27,7 @@
   ],
   "build-depends": [],
   "test-depends": [
-    "Cro::HTTP::Test"
+    "Cro::HTTP::Test",
+    "File::Temp"
   ]
 }

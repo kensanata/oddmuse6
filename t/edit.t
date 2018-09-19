@@ -18,13 +18,12 @@ use Cro::HTTP::Test;
 use Test;
 use Routes;
 
-if ('page/About.md'.IO.e) {
-  'page/About.md'.IO.unlink;
-}
-
-if ('rc.log'.IO.e) {
-  'rc.log'.IO.unlink;
-}
+my $root = %*ENV<dir> || '.';
+unlink "$root/rc.log";
+unlink "$root/page/About.md";
+my $dir = "$root/keep".IO;
+my @keep = $dir.dir(test => /^ 'About.md.~' \d+ '~' $/);
+unlink @keep;
 
 test-service routes(), {
     test get('/edit/About'),
@@ -50,9 +49,10 @@ like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 0, "major change";
 is @data[2], "About", "page name";
+is @data[3], "0", "revision";
 # author is empty
-like @data[4], / \d\d\d\d /, "code";
-like @data[5], /testing/, "summary";
+like @data[5], / \d\d\d\d /, "code";
+like @data[6], /testing/, "summary";
 
 # make sure checkbox is handled correctly
 test-service routes(), {
@@ -70,8 +70,9 @@ like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 1, "minor change";
 is @data[2], "About", "page name";
-like @data[3], /Alex/, "author";
+is @data[3], "1", "revision";
+like @data[4], /Alex/, "author";
 # code is empty
-like @data[5], /typo/, "summary";
+like @data[6], /typo/, "summary";
 
 done-testing;

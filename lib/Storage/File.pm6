@@ -41,35 +41,6 @@ class Storage::File {
 		return Page.new(exists => True, text => $fh.slurp);
     }
 
-    =head3 keep-page
-    =begin pod
-    Backup pages are saved in the C<keep> subdirectory with the
-    <md.~n~> extension, where C<n> is an integer. These are the
-    numbered backups supported by Emacs and C<cp --backup=numbered>,
-    and maybe others.
-    =end pod
-
-    method keep-page (Str $id!) is export {
-		my $from-dir = make-directory('page');
-		my $to-dir   = make-directory('keep');
-
-		# lock the source file!
-		my $path = "$from-dir/$id.md";
-		return unless $path.IO.e;
-
-		with-locked-file $path, 3, {
-
-			# find the highest n + 1
-			my @keep-pages = $to-dir.IO.dir(test => /^ $id '.md.~' \d+ '~' $/);
-			my $n = 1;
-			for @keep-pages {
-				$n = $0 +1 if $_ ~~ / "~" (\d+) "~" $/ and $0 >= $n;
-			}
-
-			copy "$from-dir/$id.md", "$to-dir/$id.md.~$n~";
-		};
-	}
-
     =head3 put-page
     =begin pod
     Pages are saved in the C<page> subdirectory with the <md> extension.
@@ -77,10 +48,60 @@ class Storage::File {
 
     method put-page (Page $page!) is export {
 		my $dir = make-directory('page');
-		my $path = "$dir/$($page.name).md";
+		my $path = "$dir/{$page.name}.md";
 		with-locked-file $path, 3, {
 			spurt $path, $page.text, :enc('UTF-8');
 		};
+	}
+    =head3 get-keep-page
+    =begin pod
+    Backup pages are saved in the C<keep> subdirectory with the
+    <md.~n~> extension, where C<n> is an integer. These are the
+    numbered backups supported by Emacs and C<cp --backup=numbered>,
+    and maybe others.
+    =end pod
+
+    method get-keep-page (Str $id!, Int $n!) is export {
+		my $dir   = make-directory('keep');
+		my $path = "$dir/$id.md.~$n~";
+		if $path.IO.e {
+			my $fh = open $path, :enc('UTF-8');
+			return Page.new(
+				exists		=> True,
+				revision	=> $n,
+				text		=> $fh.slurp);
+		}
+		return $.get-page($id);
+	}
+
+    =head3 put-keep-page
+    =begin pod
+    Backup pages are saved in the C<keep> subdirectory with the
+    <md.~n~> extension, where C<n> is an integer. These are the
+    numbered backups supported by Emacs and C<cp --backup=numbered>,
+    and maybe others.
+    =end pod
+
+    method put-keep-page (Str $id!) is export {
+		my $from-dir = make-directory('page');
+		my $to-dir   = make-directory('keep');
+
+		# lock the source file!
+		my $path = "$from-dir/$id.md";
+		return 0 unless $path.IO.e;
+
+		my $n = 1;
+		with-locked-file $path, 3, {
+
+			# find the highest n + 1
+			my @keep-pages = $to-dir.IO.dir(test => /^ $id '.md.~' \d+ '~' $/);
+			for @keep-pages {
+				$n = $0 +1 if $_ ~~ / "~" (\d+) "~" $/ and $0 >= $n;
+			}
+
+			copy "$from-dir/$id.md", "$to-dir/$id.md.~$n~";
+		};
+		return $n;
 	}
 
 	=head4 get-template
@@ -106,8 +127,8 @@ class Storage::File {
 		with-locked-file $path, 3, {
 			my $fh = open $path, :a, :enc('UTF-8');
 			$fh.say(($change.ts, $change.minor ?? 1 !! 0,
-					 $change.name, $change.author, $change.code,
-					 $change.summary).join($SEP));
+					 $change.name, $change.revision, $change.author,
+					 $change.code, $change.summary).join($SEP));
 		};
 	}
 
@@ -119,6 +140,7 @@ class Storage::File {
 	method get-changes (Filter $filter!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
+		return () unless $path.IO.e;
 		my $fh = open $path, :enc('UTF-8');
 		my @lines = $fh.lines;
 		my @changes = map { line-to-change $_ }, @lines;
@@ -130,14 +152,15 @@ class Storage::File {
 	}
 
 	sub line-to-change (Str $line!) {
-		my ($ts, $minor, $name, $author, $code, $summary) = $line.split(/$SEP/);
+		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Change.new(
-			ts		=> DateTime.new($ts),
-			minor	=> Bool.new($minor),
-			name	=> $name,
-			author	=> $author,
-			code	=> $code,
-			summary	=> $summary,
+			ts			=> DateTime.new($ts),
+			minor		=> Bool.new($minor),
+			name		=> $name,
+			revision	=> $revision.Int,
+			author		=> $author,
+			code		=> $code,
+			summary		=> $summary,
 		);
 		return $change;
 	}

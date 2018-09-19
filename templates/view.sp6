@@ -14,9 +14,10 @@
 				{{/pages}}
       </ul>
     </div>
+		{{#revision}}<strong>Showing revision {{revision}}.</strong>{{/revision}}
 
     <div id="content">
-      {{{text}}}
+      {{{html}}}
     </div>
 
     <div id="footer">

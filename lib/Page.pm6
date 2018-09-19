@@ -18,4 +18,5 @@ class Page {
     has Str $.name;
     has Str $.text;
     has Bool $.exists;
+	has Int $.revision;
 }

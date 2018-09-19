@@ -36,24 +36,29 @@ sub view-changes (Filter $filter!) is export {
 	id => %*ENV<changes> || "Changes",
 	pages => [ map { id => $_ }, @pages ];
 
-	# Get the changes from storage.
+	# Get the changes from storage. Note that the revision is the
+	# revision that was changed: the first revision has number 1. To
+	# look at the change, however, you'd want to look at the result,
+	# the revision after that! Thus, for the last change, there is no
+	# keep file! That's why we introduce the new key show-revision,
+	# below.
     my $storage = Storage.new;
     my @changes = $storage.get-changes($filter);
 
-    # Sadly, the Template::Mustache does not support objects,
-    # according to the documentation. Thus, turn the object into a
-    # hash fit for the template.
+    # Turn the object into a hash fit for the template.
     my @hashes = map {
-	my %change =
-	    date => $_.ts.yyyy-mm-dd,
-	    time => $_.ts.hh-mm-ss,
-	    minor => $_.minor,
-	    name => $_.name,
-	    author => $_.author,
-	    # { c => "1", c=> "2", c=> "3", c=> "4", }
-	    code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
-	    summary => $_.summary||'';
-    }, @changes;
+		my %change =
+			date => $_.ts.yyyy-mm-dd,
+			time => $_.ts.hh-mm-ss,
+			minor => $_.minor,
+			name => $_.name,
+			revision => $_.revision,
+			to => $_.revision + 1,
+			author => $_.author,
+			# { c => "1", c=> "2", c=> "3", c=> "4", }
+			code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
+			summary => $_.summary||'';
+	}, @changes;
 
     %params<changes> = @hashes;
 

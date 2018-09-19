@@ -30,6 +30,9 @@ sub routes() is export {
         get -> 'view', $id {
             content 'text/html', view-page($id);
         }
+        get -> 'view', $id, $n where /^\d+$/ {
+            content 'text/html', view-page($id, $n.Int);
+        }
 		get -> 'changes', :$n where /^\d+$/ {
             content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
         }

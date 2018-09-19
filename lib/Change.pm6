@@ -18,6 +18,7 @@ class Change {
     has DateTime $.ts;
     has Bool $.minor;
     has Str $.name;
+	has Int $.revision;
     has Str $.author;
     has Str $.code;
     has Str $.summary;

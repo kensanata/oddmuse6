@@ -28,25 +28,26 @@ sub save-page (Str :$id!, Str :$text!,
     # the host where Apache runs).
     my $code= "";
     if (!$author) {
-	my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
-	# FIXME: double check djb2 implementation
-	# Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
-	my $hash = [5381, |$ip.comb».ord].reduce(* * 33 +^ *) mod 8**4;
-	$code = $hash.Str;
+		my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
+		# FIXME: double check djb2 implementation
+		# Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
+		my $hash = [5381, |$ip.comb».ord].reduce(* * 33 +^ *) mod 8**4;
+		$code = $hash.Str;
     }
 
-    my $page = Page.new(name => $id, text => $text);
-    my $change = Change.new(ts => DateTime.now,
-			    :$minor,
-			    name => $id,
-			    author => $author,
-			    code => $code,
-			    :$summary);
     my $storage = Storage.new;
 
-    $storage.keep-page($id);
+    my $page = Page.new(name => $id, text => $text);
+    my $revision = $storage.put-keep-page($id);
     $storage.put-page($page);
-    $storage.put-change($change);
 
-    # FIXME do more
+    my $change = Change.new(ts => DateTime.now,
+							:$minor,
+							name => $id,
+							:$revision,
+							author => $author,
+							code => $code,
+							:$summary);
+
+    $storage.put-change($change);
 }

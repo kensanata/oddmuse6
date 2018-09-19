@@ -24,10 +24,17 @@ The role must implement the following methods:
 
 =defn get-page
 Get a C<Page> given an id.
-=defn keep-page
-Save a backup of the page C<id>.
 =defn put-page
 Save a C<Page>.
+=defn get-keep-page
+Save a C<Page> given an id and a revision number.
+saved (an integer).
+=defn put-keep-page
+Save a backup of the page C<id>. Return the latest revision thus
+saved (an integer).
+=defn put-keep-page
+Save a backup of the page C<id>. Return the latest revision thus
+saved (an integer).
 =defn get-template
 Get a the text for a template. The template should be HTML and must use
 Template::Mustache markup.
@@ -41,6 +48,7 @@ class Storage {
     my $class = %*ENV<storage> || 'Storage::File';
     require ::($class);
     has $!delegate handles <
-		get-page keep-page put-page get-template put-change get-changes
-	> = ::($class).new;
+		get-page put-page get-keep-page put-keep-page get-template
+		put-change get-changes
+		> = ::($class).new;
 }

@@ -33,20 +33,33 @@ Pages and templates are retrieved via C<Storage>.
 
 =end pod
 
-sub view-page (Str $id) is export {
+multi view-page (Str $id) is export {
+	view-page($id, 0);
+}
+
+multi view-page (Str $id, Int $n) is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     my %params =
-	id => $id,
-	pages => [ map { id => $_ }, @pages ];
+		id => $id,
+		pages => [ map { id => $_ }, @pages ];
+
     my $storage = Storage.new;
-    my $template;
-    my $page = $storage.get-page($id);
-    if $page.exists {
+    my $page;
+	if $n {
+		$page = $storage.get-keep-page($id, $n);
+	} else {
+		$page = $storage.get-page($id);
+	}
+
+	my $template;
+	if $page.exists {
 	$template = $storage.get-template('view');
-	%params<text> = parse-markdown($page.text).to-html;
+	    %params<html> = parse-markdown($page.text).to-html;
+		%params<revision> = $page.revision;
     } else {
 	$template = $storage.get-template('empty');
-    }
+	}
+
     return Template::Mustache.render($template, %params);
 }

@@ -26,7 +26,7 @@
   ],
   "version": "0.0.1",
   "test-depends": [
-    
+    "Cro::HTTP::Test"
   ],
   "authors": [
     ""

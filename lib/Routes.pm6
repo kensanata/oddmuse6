@@ -33,6 +33,9 @@ sub routes() is export {
 		get -> 'changes', :$n where /^\d+$/ {
             content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
         }
+		get -> 'changes', 'all' {
+            content 'text/html', view-changes(Filter.new(tail => 30, minor => True));
+        }
 		get -> 'changes' {
             content 'text/html', view-changes(Filter.new(tail => 30));
         }

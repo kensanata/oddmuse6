@@ -18,30 +18,32 @@ use Cro::HTTP::Test;
 use Routes;
 
 'rc.log'.IO.spurt(qq :to 'EOF');
-2018-09-18T15:36:38.313606+02:000About1285testing
-2018-09-18T15:36:38.562611+02:001AboutAlextypo
+2018-09-18T15:36:38.000000+02:000About1285one
+2018-09-18T15:36:38.000000+02:001AboutAlextwo
+2018-09-18T15:36:39.000000+02:000AboutAlexthree
 EOF
 
 test-service routes(), {
 
-    test get('/view/Changes'),
-        status => 200,
-        content-type => 'text/html',
-        body => / '<h1>' Changes '</h1>' .* testing .* typo /;
+	for '/view/Changes', '/changes' {
+		my $page = get($_);
 
-    test get('/changes'),
-        status => 200,
-        content-type => 'text/html',
-        body => / '<h1>' Changes '</h1>' .* testing .* typo /;
+		test $page,
+			status => 200,
+			content-type => 'text/html',
+			body => / '<h1>' Changes '</h1>' .* one .* three /;
 
-    my $page = get('/changes?n=1');
+		test $page, body => !/ two /;
+	}
+
+	my $page = get('/changes?n=1');
 
     test $page,
-        status => 200,
-        content-type => 'text/html',
-        body => / '<h1>' Changes '</h1>' .* typo /;
+		status => 200,
+		content-type => 'text/html',
+		body => / '<h1>' Changes '</h1>' .* one /;
 
-    test $page, body => !/ testing /;
+    test $page, body => !/ two | three /;
 
 }
 

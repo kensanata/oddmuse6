@@ -23,6 +23,9 @@ code block. Inside the code block, the file handle is "locked".
 When some other code attempts to do something with the same file, the
 code will wait for up to the max time before overwriting the locked
 file. It will check the lock once a second.
+
+We can't use IO::Handle.lock because this defaults to fcntl which
+means they are I<per process>.
 =end pod
 
 sub with-locked-file(Str $path, Int $max-delay, &code) is export {
@@ -37,22 +40,6 @@ sub with-locked-file(Str $path, Int $max-delay, &code) is export {
 				&code();
 				$lock.IO.rmdir;
 				done;
-			}
-		}
-    }
-}
-
-# FIXME this doesn't work?
-sub with-locked-file-handle(IO::Handle $fh, Int $max-delay, &code) is export {
-    react {
-		whenever Supply.interval(1) {
-			if $fh.lock(non-blocking => True) {
-				&code();
-				$fh.unlock;
-				done;
-			}
-			if $_ > $max-delay {
-				$fh.unlock;
 			}
 		}
     }

@@ -53,6 +53,11 @@ div.new {
 
 /* Recent Changes */
 
+#filter { display: inline; list-style: none; padding: 0; }
+#filter li { display: inline; }
+#filter li:after { content: ", "; }
+#filter li:last-child:after { content: ""; }
+
 .c1 { background: red; color: red; }
 .c2 { background: orange; color: orange; }
 .c3 { background: yellow; color: yellow; }

@@ -35,10 +35,11 @@ sub view-changes (Filter $filter!) is export {
     my %params =
 	id => %*ENV<changes> || "Changes",
 	pages => [ map { id => $_ }, @pages ];
-    my $storage = Storage.new;
 
+	# Get the changes from storage.
+    my $storage = Storage.new;
     my @changes = $storage.get-changes($filter);
-    
+
     # Sadly, the Template::Mustache does not support objects,
     # according to the documentation. Thus, turn the object into a
     # hash fit for the template.
@@ -53,8 +54,18 @@ sub view-changes (Filter $filter!) is export {
 	    code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
 	    summary => $_.summary||'';
     }, @changes;
-    
+
     %params<changes> = @hashes;
+
+	# The same is true for the filter description...
+	my %filter =
+	    tail	=> $filter.tail,
+	    name	=> $filter.name,
+		author	=> $filter.author,
+		minor	=> $filter.minor;
+
+	%params<filter> = %filter;
+
     my $template = $storage.get-template('changes');
     return Template::Mustache.render($template, %params);
 }

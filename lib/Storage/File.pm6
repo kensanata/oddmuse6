@@ -121,8 +121,11 @@ class Storage::File {
 		my $path = "$dir/rc.log";
 		my $fh = open $path, :enc('UTF-8');
 		my @lines = $fh.lines;
-		@lines = @lines.tail($filter.tail) if $filter.tail;
 		my @changes = map { line-to-change $_ }, @lines;
+		@changes = grep {$_.name eq $filter.name}, @changes if $filter.name;
+		@changes = grep {$_.author eq $filter.author}, @changes if $filter.author;
+		@changes = grep {!$_.minor}, @changes unless $filter.minor;
+		@lines = @lines.tail($filter.tail) if $filter.tail;
 		return @changes;
 	}
 

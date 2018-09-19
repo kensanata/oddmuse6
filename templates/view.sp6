@@ -9,9 +9,9 @@
 
     <div id="header">
       <ul>
-	{{#pages}}
-	<li><a href="/view/{{id}}">{{id}}</a></li>
-	{{/pages}}
+				{{#pages}}
+				<li><a href="/view/{{id}}">{{id}}</a></li>
+				{{/pages}}
       </ul>
     </div>
 
@@ -22,7 +22,8 @@
     <div id="footer">
       <hr/>
       <p>
-	<a href="/edit/{{id}}">Edit</a>
+				<a href="/edit/{{id}}">Edit</a>
+				<a href="/history/{{id}}">History</a>
       </p>
     </div>
 

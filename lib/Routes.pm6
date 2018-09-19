@@ -20,7 +20,6 @@ use Edit;
 use Save;
 use Changes;
 use Filter;
-use History;
 
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
@@ -36,6 +35,9 @@ sub routes() is export {
         }
 		get -> 'changes' {
             content 'text/html', view-changes(Filter.new(tail => 30));
+        }
+        get -> 'history', $id {
+            content 'text/html', view-changes(Filter.new(name => $id));
         }
         get -> 'edit', $id {
             content 'text/html', edit-page($id);

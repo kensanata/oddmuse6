@@ -1,5 +1,20 @@
 # Oddmuse 6
 
+<!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
+**Table of Contents**
+
+- [Installation](#installation)
+- [Docker](#docker)
+- [Test](#test)
+- [Configuration](#configuration)
+    - [Images and CSS](#images-and-css)
+    - [Templates](#templates)
+    - [Wiki](#wiki)
+    - [Hosting Multiple Wikis](#hosting-multiple-wikis)
+- [Translation](#translation)
+
+<!-- markdown-toc end -->
+
 ## Installation
 
 This is Oddmuse based on Perl 6 and Cro. The current stable version of
@@ -9,17 +24,13 @@ wanted to start a rewrite in order to get rid of the CGI module, and
 then I asked myself: why not go all the way‽ I might as well give Perl
 6 a try.
 
-To run it, you need to have [Cro](https://cro.services/) and some
-dependencies installed
+To run it, you need to install the dependencies:
 
 ```
-zef install Text::Markdown
-zef install Template::Mustache
-zef install --/test cro
-zef install --depsonly .
+zef install --depsonly ./oddmuse
 ```
 
-Once you do, just start the service defined in `service.p6`:
+Then start the service:
 
 ```
 cro run
@@ -27,7 +38,10 @@ cro run
 
 This should start the wiki on port 20000.
 
-You can also build and run a docker image while in the app root using:
+## Docker
+
+I'm not sure how you would go about building the docker image. Any
+help is appreciated.
 
 ```
 docker build -t edit .
@@ -40,12 +54,32 @@ The `Makefile` has a `test` target. Use the `jobs` environment
 variable to control how many jobs run in parallel. The default is 4.
 
 ```
-prove6 -l -j=1 t
+jobs=1 make test
+```
+
+Running tests create test data directories (`test-nnnn`). To clean
+these up:
+
+```
+make clean
+```
+
+To run just one suite of tests:
+
+```
+cd oddmuse
+make t/keep
+```
+
+This also shows you the data directory it uses:
+
+```
+Using ../test-1288
 ```
 
 ## Configuration
 
-If you look at the `.cro.yml` file you'll find a section with
+If you look at the `oddmuse/.cro.yml` file you'll find a section with
 environment variables with which to configure the wiki.
 
 * `storage` is the class handling your storage requirements. The
@@ -53,7 +87,7 @@ environment variables with which to configure the wiki.
   files.
 
 * `wiki` is the location of your wiki, your data directory, if you are
-  using `Storage::File`. The default is `wiki`.
+  using `Storage::File`. The default is `../wiki`.
 
 * `menu` is a comma separated list of pages for the main menu. The
   default is `Home, Changes, About`. That also means that none of the
@@ -64,8 +98,8 @@ environment variables with which to configure the wiki.
   `Changes` to the main menu and it'll work. This also means that you
   cannot edit the `Changes` page: it's content is inaccessible.
 
-These variables point to directories of the same name. More on these
-below.
+These variables point to directories of the same name in the parent
+directory. More on these below.
 
 - `images`
 - `css`
@@ -99,6 +133,29 @@ This is where the dynamic content of your wiki is. If you use the
 * `page` is where the current pages are saved
 * `keep` is where older revisions of pages are kept
 * `rc.log` is the log file
+
+### Hosting Multiple Wikis
+
+Create two empty wiki data directories:
+
+```
+mkdir wiki1 wiki2
+```
+
+Start the first wiki:
+
+```
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 wiki=wiki1 perl6 -Ioddmuse/lib oddmuse/service.p6
+```
+
+Start the second wiki:
+
+```
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 wiki=wiki2 perl6 -Ioddmuse/lib oddmuse/service.p6
+```
+
+Now you can visit both `http://localhost:9000/` and
+`http://localhost:9001/` and you'll find two independent wikis.
 
 ## Translation
 

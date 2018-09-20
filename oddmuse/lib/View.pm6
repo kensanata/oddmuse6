@@ -54,11 +54,11 @@ multi view-page (Str $id, Int $n) is export {
 
 	my $template;
 	if $page.exists {
-	$template = $storage.get-template('view');
+		$template = $storage.get-template('view');
 	    %params<html> = parse-markdown($page.text).to-html;
 		%params<revision> = $page.revision;
     } else {
-	$template = $storage.get-template('empty');
+		$template = $storage.get-template('empty');
 	}
 
     return Template::Mustache.render($template, %params);

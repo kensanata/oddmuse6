@@ -14,33 +14,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Test;
-use File::Temp;
-use Storage::File::Lock;
+# When running tests from this directory, get the static stuff from
+# the parent directory.
+export templates	?= ../templates
+export css		?= ../css
+export images		?= ../images
 
-my ($path, $fh) = tempfile;
+# How many jobs to run in parallel when testing
+jobs ?= 4
 
-with-locked-file $path, 3, {
-  $fh.say("Test");
-};
+test:
+	prove6 -l -j=$(jobs) t
 
-is($path.IO.slurp, "Test\n", "write file");
-
-# open it again
-$fh = open $path, :w;
-
-my $ts = DateTime.now.Instant;
-
-ok("$path.lock".IO.mkdir, "lock created");
-
-with-locked-file $path, 3, {
-  $fh.say("Done");
-};
-
-is($path.IO.slurp, "Done\n", "overwrite locked file");
-
-my $duration = DateTime.now.Instant - $ts;
-
-is($duration.round, 3, "duration is correct");
-
-done-testing;
+# use make t/view without the .t suffix
+t/%:
+	perl6 -Ilib $@.t

@@ -14,14 +14,32 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# When running tests from this directory, get the static stuff from
-# here.
-templates ?= .
-css ?= .
-images ?= .
+use Cro::HTTP::Test;
+use Routes;
 
-test:
-	cd oddmuse && make test
+# testing the default Home page
+%*ENV<wiki> = '../wiki';
+%*ENV<menu> = 'Home, About';
 
-clean:
-	rm -rf test-*
+test-service routes(), {
+    test get('/'),
+        status => 200,
+        content-type => 'text/html',
+        body => / '<a href="/view/Home">Home</a>'
+	          .* '<a href="/view/About">About</a>'
+	          .* '<h1>Home</h1>'
+     		  .* 'Welcome!' /;
+
+    test get('/view/Home'),
+        status => 200,
+        content-type => 'text/html',
+        body => / '<h1>Home</h1>'
+	          .* 'Welcome!' /;
+
+    test get('/view/About'),
+        status => 200,
+        content-type => 'text/html',
+        body => / 'This page is empty' /;
+}
+
+done-testing;

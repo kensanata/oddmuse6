@@ -14,20 +14,33 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Storage::File::Test
-=begin pod
-C<get-random-wiki-directory> creates a directory with a random name
-and returns it. It also sets the C<wiki> environment variable such
-that any subsequent code will use it.
-=end pod
+use Test;
+use File::Temp;
+use Storage::File::Lock;
 
-sub get-random-wiki-directory is export {
-	my $dir;
-	repeat {
-		my $n = (1..^10000).rand.floor;
-		$dir = sprintf("test-%4d", $n);
-	} while ($dir.IO.e);
-	say "Using $dir";
-	%*ENV<wiki> = $dir;
-	return mkdir $dir;
-}
+my ($path, $fh) = tempfile;
+
+with-locked-file $path, 3, {
+  $fh.say("Test");
+};
+
+is($path.IO.slurp, "Test\n", "write file");
+
+# open it again
+$fh = open $path, :w;
+
+my $ts = DateTime.now.Instant;
+
+ok("$path.lock".IO.mkdir, "lock created");
+
+with-locked-file $path, 3, {
+  $fh.say("Done");
+};
+
+is($path.IO.slurp, "Done\n", "overwrite locked file");
+
+my $duration = DateTime.now.Instant - $ts;
+
+is($duration.round(0.1), 0.6, "duration is correct");
+
+done-testing;

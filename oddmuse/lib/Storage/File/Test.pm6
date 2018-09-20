@@ -14,28 +14,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Cro::HTTP::Test;
-use Routes;
+=head1 Storage::File::Test
+=begin pod
+C<get-random-wiki-directory> creates a directory with a random name
+and returns it. It also sets the C<wiki> environment variable such
+that any subsequent code will use it.
+=end pod
 
-test-service routes(), {
-    test get('/'),
-        status => 200,
-        content-type => 'text/html',
-        body => / '<h1>' Home '</h1>' /,
-	body => / '<a href="/view/Home">Home</a>' /,
-	body => / '<a href="/view/About">About</a>' /,
-	body => / 'Welcome!' /;
-
-    test get('/view/Home'),
-        status => 200,
-        content-type => 'text/html',
-        body => / '<h1>' Home '</h1>' /,
-	body => / 'Welcome!' /;
-
-    test get('/view/About'),
-        status => 200,
-        content-type => 'text/html',
-        body => / 'This page is empty' /;
+sub get-random-wiki-directory is export {
+	my $dir;
+	repeat {
+		my $n = (1..^10000).rand.floor;
+		$dir = sprintf("../test-%04d", $n);
+	} while ($dir.IO.e);
+	say "Using $dir";
+	%*ENV<wiki> = $dir;
+	return mkdir $dir;
 }
-
-done-testing;

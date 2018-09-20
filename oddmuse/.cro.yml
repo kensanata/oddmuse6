@@ -1,29 +1,29 @@
 ---
 id: oddmuse6
+name: Oddmuse 6
 links:  []
 entrypoint: service.p6
 cro: 1
 env:
   - name: images
-    value: images
+    value: ../images
   - name: css
-    value: css
+    value: ../css
   - name: templates
-    value: templates
+    value: ../templates
   - name: wiki
-    value: wiki
+    value: ../wiki
   - name: storage
     value: Storage::File
   - name: menu
     value: Home, Changes, About
   - name: changes
     value: Changes
-name: edit
 endpoints: 
   - 
-    host-env: EDIT_HOST
     id: http
-    port-env: EDIT_PORT
-    protocol: http
     name: HTTP
+    protocol: http
+    host-env: ODDMUSE_HOST
+    port-env: ODDMUSE_PORT
 ...

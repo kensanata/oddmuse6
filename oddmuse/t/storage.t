@@ -21,6 +21,9 @@ my $storage = Storage.new;
 
 like($storage.^name, /Storage/, 'Storage class initialized');
 
+# testing the default Home page
+%*ENV<wiki> = '../wiki';
+
 like($storage.get-page('Home').text, /Welcome/, 'get-page delegated');
 
 done-testing;

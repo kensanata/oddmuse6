@@ -59,10 +59,16 @@ sub routes() is export {
             }
         }
 		get -> 'css', *@path {
-			static 'css', @path;
+			my $dir = %*ENV<css> || 'css';
+			static $dir, @path;
+		}
+		get -> 'images', *@path {
+			my $dir = %*ENV<images> || 'images';
+			static $dir, @path;
 		}
 		get -> 'favicon.ico' {
-			static 'images', 'logo.png';
+			my $dir = %*ENV<images> || 'images';
+			static $dir, 'logo.png';
 		}
         get -> {
             content 'text/html', view-page("Home");

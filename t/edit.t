@@ -14,16 +14,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use Storage::File::Test;
 use Cro::HTTP::Test;
 use Test;
 use Routes;
 
-my $root = %*ENV<dir> || '.';
-unlink "$root/rc.log";
-unlink "$root/page/About.md";
-my $dir = "$root/keep".IO;
-my @keep = $dir.dir(test => /^ 'About.md.~' \d+ '~' $/);
-unlink @keep;
+my $root = get-random-wiki-directory;
 
 test-service routes(), {
     test get('/edit/About'),
@@ -40,11 +36,11 @@ test-service routes(), {
     }
 }
 
-ok 'page/About.md'.IO.e, 'page name correct';
-is 'page/About.md'.IO.slurp, 'Hallo', 'page content saved';
+ok "$root/page/About.md".IO.e, 'page name correct';
+is "$root/page/About.md".IO.slurp, 'Hallo', 'page content saved';
 
-ok 'rc.log'.IO.e, 'changes correct';
-my @data = 'rc.log'.IO.slurp.split(/\x1e/);
+ok "$root/rc.log".IO.e, 'changes correct';
+my @data = "$root/rc.log".IO.slurp.split(/\x1e/);
 like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 0, "major change";
@@ -65,7 +61,7 @@ test-service routes(), {
     }
 }
 
-@data = 'rc.log'.IO.slurp.split(/\n/)[1].split(/\x1e/);
+@data = "$root/rc.log".IO.slurp.split(/\n/)[1].split(/\x1e/);
 like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 1, "minor change";

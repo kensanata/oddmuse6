@@ -17,10 +17,6 @@
 use Cro::HTTP::Test;
 use Routes;
 
-if ('page/About.md'.IO.e) {
-  'page/About.md'.IO.unlink;
-}
-
 test-service routes(), {
     test get('/'),
         status => 200,

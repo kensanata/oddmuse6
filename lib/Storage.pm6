@@ -15,40 +15,64 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 =head1 Storage
+
 =begin pod
-This module delegates all storage issues to a role as specified by the
-environment variable C<storage>. By default, that would be
-<Storage::File>.
+
+This module delegates most storage issues to a role as specified by
+the environment variable C<storage>. By default, that would be
+C<Storage::File>.
 
 The role must implement the following methods:
 
 =defn get-page
 Get a C<Page> given an id.
+
 =defn put-page
 Save a C<Page>.
+
 =defn get-keep-page
 Save a C<Page> given an id and a revision number.
 saved (an integer).
+
 =defn put-keep-page
 Save a backup of the page C<id>. Return the latest revision thus
 saved (an integer).
+
 =defn put-keep-page
 Save a backup of the page C<id>. Return the latest revision thus
 saved (an integer).
-=defn get-template
-Get a the text for a template. The template should be HTML and must use
-Template::Mustache markup.
+
 =defn put-change
 Save a C<Change>.
+
 =defn get-changes
 Get a list of C<Change> objects.
+
+The following methods are implemented by C<Storage> itself:
+
+=defn get-template
+Get a the text for a template. The template should be HTML and must use
+C<Template::Mustache> markup.
+
 =end pod
 
 class Storage {
     my $class = %*ENV<storage> || 'Storage::File';
     require ::($class);
     has $!delegate handles <
-		get-page put-page get-keep-page put-keep-page get-template
+		get-page put-page get-keep-page put-keep-page
 		put-change get-changes
 		> = ::($class).new;
+
+	=head4 get-template
+	=begin pod
+	Pages are files in the C<templates> subdirectory with the <sp6> extension.
+	=end pod
+
+	method get-template (Str $id!) is export {
+		my $dir = %*ENV<templates> || 'templates';
+		my $path = "$dir/$id.sp6";
+		my $fh = open $path, :enc('UTF-8');
+		return $fh.slurp;
+	}
 }

@@ -14,10 +14,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use Storage::File::Test;
 use Cro::HTTP::Test;
 use Routes;
 
-'rc.log'.IO.spurt(qq :to 'EOF');
+my $root = get-random-wiki-directory;
+
+"$root/rc.log".IO.spurt(qq :to 'EOF');
 2018-09-18T15:36:38.000000+02:000About11285one
 2018-09-18T15:36:38.000000+02:001About2Alextwo
 2018-09-18T15:36:39.000000+02:000About3Alexthree

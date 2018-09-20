@@ -104,18 +104,6 @@ class Storage::File {
 		return $n;
 	}
 
-	=head4 get-template
-	=begin pod
-	Pages are files in the C<templates> subdirectory with the <sp6> extension.
-	=end pod
-
-	method get-template (Str $id!) is export {
-		my $dir = make-directory('templates');
-		my $path = "$dir/$id.sp6";
-		my $fh = open $path, :enc('UTF-8');
-		return $fh.slurp;
-	}
-
 	=head4 put-change
 	=begin pod
 	The log of all changes is C<rc.log> in the data directory.
@@ -166,7 +154,7 @@ class Storage::File {
 	}
 
 	sub make-directory(Str $subdir!) {
-		my $root = %*ENV<dir> || '.';
+		my $root = %*ENV<wiki> || 'wiki';
 		my $dir = "$root/$subdir";
 		mkdir($dir) unless $dir.IO.d;
 		return $dir;

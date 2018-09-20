@@ -4,6 +4,6 @@ node_modules/
 
 # Backup files
 *~
-/rc.log
-/test.p6
-/page/test.md
+
+# Test directories
+/test-*

@@ -1,11 +1,17 @@
 ---
-id: edit
+id: oddmuse6
 links:  []
 entrypoint: service.p6
 cro: 1
 env:
-  - name: dir
-    value: .
+  - name: images
+    value: images
+  - name: css
+    value: css
+  - name: templates
+    value: templates
+  - name: wiki
+    value: wiki
   - name: storage
     value: Storage::File
   - name: menu

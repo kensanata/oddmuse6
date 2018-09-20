@@ -208,21 +208,24 @@ Now you can visit both `http://localhost:9000/` and
 
 ## Using it as a module
 
-Here's what you can do if you want to use it as a module as you write
-your own [Cro](https://cro.services/) application, basically.
+Here's what you can do if you installed `Oddmuse::Routes` as a module
+and now you want to write your own [Cro](https://cro.services/)
+application.
 
-Start with a stub and accept all the defaults. The following creates a
-service called "test" in a directory called `test`. If you accept all
-the defaults, you'll get a service doing HTTP 1.1. Good enough for us!
+Start with a stub and accept all the defaults:
 
 ```
 cro stub http test test
 ```
 
+This creates a service called "test" in a directory called `test`. If
+you accept all the defaults, you'll get a service doing HTTP 1.1. Good
+enough for us!
+
 Now edit `test/services.p6` and replace `use Routes` with `use
 Oddmuse::Routes`.
 
-You can delete the `test/lib`Routes.pm6` which `cro stub` generated
+You can delete the `test/lib/Routes.pm6` which `cro stub` generated
 for you.
 
 Run it:

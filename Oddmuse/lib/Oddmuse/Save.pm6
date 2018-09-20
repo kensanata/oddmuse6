@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Page;
-use Change;
-use Storage;
+use Oddmuse::Page;
+use Oddmuse::Change;
+use Oddmuse::Storage;
 
 sub save-page (Str :$id!, Str :$text!,
 			   Str :$summary = '', Bool :$minor = False,
@@ -35,19 +35,20 @@ sub save-page (Str :$id!, Str :$text!,
 		$code = $hash.Str;
     }
 
-    my $storage = Storage.new;
+    my $storage = Oddmuse::Storage.new;
 
-    my $page = Page.new(name => $id, text => $text);
+    my $page = Oddmuse::Page.new(name => $id, text => $text);
     my $revision = $storage.put-keep-page($id);
     $storage.put-page($page);
 
-    my $change = Change.new(ts => DateTime.now,
-							:$minor,
-							name => $id,
-							:$revision,
-							author => $author,
-							code => $code,
-							:$summary);
+    my $change = Oddmuse::Change.new(
+        ts => DateTime.now,
+		:$minor,
+		name => $id,
+		:$revision,
+		author => $author,
+		code => $code,
+		:$summary);
 
     $storage.put-change($change);
 }

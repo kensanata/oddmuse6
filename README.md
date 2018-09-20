@@ -36,7 +36,8 @@ Then start the service:
 cro run
 ```
 
-This should start the wiki on port 20000.
+This should start the wiki on http://localhost:20000/ and its data is
+saved in the `wiki` directory.
 
 ## Docker
 
@@ -87,7 +88,8 @@ environment variables with which to configure the wiki.
   files.
 
 * `wiki` is the location of your wiki, your data directory, if you are
-  using `Storage::File`. The default is `../wiki`.
+  using `Storage::File`. The default is `../wiki`. That's the top
+  directory where this `README.md` is.
 
 * `menu` is a comma separated list of pages for the main menu. The
   default is `Home, Changes, About`. That also means that none of the
@@ -98,8 +100,8 @@ environment variables with which to configure the wiki.
   `Changes` to the main menu and it'll work. This also means that you
   cannot edit the `Changes` page: it's content is inaccessible.
 
-These variables point to directories of the same name in the parent
-directory. More on these below.
+These variables point to directories used to server resources. More on
+that below.
 
 - `images`
 - `css`

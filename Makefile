@@ -14,14 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# When running tests from this directory, get the static stuff from
-# here.
-templates ?= .
-css ?= .
-images ?= .
-
-test:
-	cd oddmuse && make test
+test: clean
+	cd Oddmuse && make test
 
 clean:
 	rm -rf test-*

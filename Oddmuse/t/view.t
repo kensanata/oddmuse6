@@ -14,12 +14,14 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use Oddmuse::Storage::File::Test;
+use Oddmuse::Routes;
 use Cro::HTTP::Test;
-use Routes;
 
-# testing the default Home page
-%*ENV<wiki> = '../wiki';
+# Testing, whether the default Home page gets copied to the new test directory
+# and whether the menu gets shown by the template.
 %*ENV<menu> = 'Home, About';
+get-random-wiki-directory;
 
 test-service routes(), {
     test get('/'),

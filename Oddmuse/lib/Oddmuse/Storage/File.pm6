@@ -14,17 +14,17 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Page;
-use Change;
-use Filter;
-use Storage::File::Lock;
+use Oddmuse::Page;
+use Oddmuse::Change;
+use Oddmuse::Filter;
+use Oddmuse::Storage::File::Lock;
 
-=head1 Storage::File
+=head1 Oddmuse::Storage::File
 ==begin pod
 This module implements the C<Storage> layer using plain text files.
 ==end pod
 
-class Storage::File {
+class Oddmuse::Storage::File {
 
     my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
@@ -36,9 +36,9 @@ class Storage::File {
     method get-page (Str $id!) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/$id.md";
-		return Page.new(exists => False) unless $path.IO.e;
+		return Oddmuse::Page.new(exists => False) unless $path.IO.e;
 		my $fh = open $path, :enc('UTF-8');
-		return Page.new(exists => True, text => $fh.slurp);
+		return Oddmuse::Page.new(exists => True, text => $fh.slurp);
     }
 
     =head3 put-page
@@ -46,7 +46,7 @@ class Storage::File {
     Pages are saved in the C<page> subdirectory with the <md> extension.
     =end pod
 
-    method put-page (Page $page!) is export {
+    method put-page (Oddmuse::Page $page!) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/{$page.name}.md";
 		with-locked-file $path, 2, {
@@ -66,7 +66,7 @@ class Storage::File {
 		my $path = "$dir/$id.md.~$n~";
 		if $path.IO.e {
 			my $fh = open $path, :enc('UTF-8');
-			return Page.new(
+			return Oddmuse::Page.new(
 				exists		=> True,
 				revision	=> $n,
 				text		=> $fh.slurp);
@@ -109,7 +109,7 @@ class Storage::File {
 	The log of all changes is C<rc.log> in the data directory.
 	=end pod
 
-	method put-change (Change $change!) is export {
+	method put-change (Oddmuse::Change $change!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		with-locked-file $path, 2, {
@@ -125,7 +125,7 @@ class Storage::File {
 	The log of all changes is C<rc.log> in the data directory.
 	=end pod
 
-	method get-changes (Filter $filter!) is export {
+	method get-changes (Oddmuse::Filter $filter!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		return () unless $path.IO.e;
@@ -141,7 +141,7 @@ class Storage::File {
 
 	sub line-to-change (Str $line!) {
 		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
-		my $change = Change.new(
+		my $change = Oddmuse::Change.new(
 			ts			=> DateTime.new($ts),
 			minor		=> Bool.new($minor),
 			name		=> $name,
@@ -156,7 +156,17 @@ class Storage::File {
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
-		mkdir($dir) unless $dir.IO.d;
+        if (!$dir.IO.e) {
+		    mkdir($dir);
+            if $subdir eq 'page' {
+                my $welcome = %?RESOURCES<wiki> || 'resources/wiki';
+                if $welcome.IO.e {
+                    for dir "$welcome/page" {
+                        copy $_, "$dir/" ~$_.basename;
+                    }
+                }
+            }
+        }
 		return $dir;
 	}
 }

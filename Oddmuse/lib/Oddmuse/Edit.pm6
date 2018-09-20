@@ -14,9 +14,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-class Filter {
-    has Int $.tail;
-    has Str $.name;
-    has Str $.author;
-    has Bool $.minor;
+use Template::Mustache;
+use Oddmuse::Storage;
+
+sub edit-page (Str $id) is export {
+    my %params =
+    id => $id,
+    pages => [ { id => 'Home' },
+	       { id => 'About' } ];
+    my $storage = Oddmuse::Storage.new;
+    my $template = $storage.get-template('edit');
+    my $page = $storage.get-page($id);
+    if $page.exists {
+	%params<text> = $page.text;
+    }
+    return Template::Mustache.render($template, %params);
 }

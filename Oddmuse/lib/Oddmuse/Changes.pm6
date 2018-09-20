@@ -15,8 +15,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Template::Mustache;
-use Storage;
-use Filter;
+use Oddmuse::Storage;
+use Oddmuse::Filter;
 
 =head1 Changes
 
@@ -29,7 +29,7 @@ template.
 
 =end pod
 
-sub view-changes (Filter $filter!) is export {
+sub view-changes (Oddmuse::Filter $filter!) is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     my %params =
@@ -42,7 +42,7 @@ sub view-changes (Filter $filter!) is export {
 	# the revision after that! Thus, for the last change, there is no
 	# keep file! That's why we introduce the new key show-revision,
 	# below.
-    my $storage = Storage.new;
+    my $storage = Oddmuse::Storage.new;
     my @changes = $storage.get-changes($filter);
 
     # Turn the object into a hash fit for the template.

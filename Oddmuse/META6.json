@@ -14,7 +14,12 @@
   "support": {
     "source": "https://oddmuse.org/wiki/Oddmuse_6"
   },
-  "resources": [],
+  "resources": [
+    "templates",
+    "images",
+    "css",
+    "wiki"
+  ],
   "provides": {
     "Routes.pm6": "lib/Routes.pm6"
   },

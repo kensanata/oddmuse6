@@ -16,7 +16,7 @@
 
 use Text::Markdown;
 use Template::Mustache;
-use Storage;
+use Oddmuse::Storage;
 
 =head1 View
 
@@ -44,7 +44,7 @@ multi view-page (Str $id, Int $n) is export {
 		id => $id,
 		pages => [ map { id => $_ }, @pages ];
 
-    my $storage = Storage.new;
+    my $storage = Oddmuse::Storage.new;
     my $page;
 	if $n {
 		$page = $storage.get-keep-page($id, $n);

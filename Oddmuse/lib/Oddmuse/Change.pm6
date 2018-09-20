@@ -14,30 +14,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Test;
-use Save;
-use Storage::File::Test;
-
-my $root = get-random-wiki-directory;
-my $dir = "$root/keep".IO;
-
-save-page(id => 'test', text => 'Original');
-
-my @keep = $dir.dir(test => /^ 'test.md.~' \d+ '~' $/);
-is(@keep.elems, 0, "no keep file written for first save");
-
-save-page(id => 'test', text => 'Copy');
-
-@keep = $dir.dir(test => /^ 'test.md.~' \d+ '~' $/);
-is(@keep.elems, 1, "first keep file written for second save");
-
-save-page(id => 'test', text => 'Another copy');
-
-@keep = $dir.dir(test => /^ 'test.md.~' \d+ '~' $/);
-is(@keep.elems, 2, "second keep file written for third save");
-
-is("$dir/test.md.~1~".IO.slurp, "Original", "original saved");
-
-is("$dir/test.md.~2~".IO.slurp, "Copy", "copy saved");
-
-done-testing;
+class Oddmuse::Change {
+    has DateTime $.ts;
+    has Bool $.minor;
+    has Str $.name;
+	has Int $.revision;
+    has Str $.author;
+    has Str $.code;
+    has Str $.summary;
+}

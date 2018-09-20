@@ -15,17 +15,17 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Cro::HTTP::Router;
-use View;
-use Edit;
-use Save;
-use Changes;
-use Filter;
+use Oddmuse::View;
+use Oddmuse::Edit;
+use Oddmuse::Save;
+use Oddmuse::Changes;
+use Oddmuse::Filter;
 
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
     route {
         get -> 'view', $id where / $changes / {
-            content 'text/html', view-changes(Filter.new(tail => 30));
+            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30));
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);
@@ -34,16 +34,16 @@ sub routes() is export {
             content 'text/html', view-page($id, $n.Int);
         }
 		get -> 'changes', :$n where /^\d+$/ {
-            content 'text/html', view-changes(Filter.new(tail => $n.Int || 30));
+            content 'text/html', view-changes(Oddmuse::Filter.new(tail => $n.Int || 30));
         }
 		get -> 'changes', 'all' {
-            content 'text/html', view-changes(Filter.new(tail => 30, minor => True));
+            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30, minor => True));
         }
 		get -> 'changes' {
-            content 'text/html', view-changes(Filter.new(tail => 30));
+            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30));
         }
         get -> 'history', $id {
-            content 'text/html', view-changes(Filter.new(name => $id));
+            content 'text/html', view-changes(Oddmuse::Filter.new(name => $id));
         }
         get -> 'edit', $id {
             content 'text/html', edit-page($id);
@@ -59,15 +59,15 @@ sub routes() is export {
             }
         }
 		get -> 'css', *@path {
-			my $dir = %*ENV<css> || 'css';
+			my $dir = %*ENV<css> || %?RESOURCES<css> || 'css';
 			static $dir, @path;
 		}
 		get -> 'images', *@path {
-			my $dir = %*ENV<images> || 'images';
+			my $dir = %*ENV<images> || %?RESOURCES<images> || 'images';
 			static $dir, @path;
 		}
 		get -> 'favicon.ico' {
-			my $dir = %*ENV<images> || 'images';
+			my $dir = %*ENV<images> || %?RESOURCES<images> || 'images';
 			static $dir, 'logo.png';
 		}
         get -> {

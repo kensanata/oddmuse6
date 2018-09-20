@@ -14,12 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-class Change {
-    has DateTime $.ts;
-    has Bool $.minor;
+class Oddmuse::Filter {
+    has Int $.tail;
     has Str $.name;
-	has Int $.revision;
     has Str $.author;
-    has Str $.code;
-    has Str $.summary;
+    has Bool $.minor;
 }

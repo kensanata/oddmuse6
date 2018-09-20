@@ -4,17 +4,19 @@ name: Oddmuse 6
 links:  []
 entrypoint: service.p6
 cro: 1
+ignore:
+  - resources/
 env:
   - name: images
-    value: ../images
+    value: resources/images
   - name: css
-    value: ../css
+    value: resources/css
   - name: templates
-    value: ../templates
+    value: resources/templates
   - name: wiki
     value: ../wiki
   - name: storage
-    value: Storage::File
+    value: Oddmuse::Storage::File
   - name: menu
     value: Home, Changes, About
   - name: changes

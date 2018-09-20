@@ -14,12 +14,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-# When running tests from this directory, get the static stuff from
-# the parent directory.
-export templates	?= ../templates
-export css		?= ../css
-export images		?= ../images
-
 # How many jobs to run in parallel when testing
 jobs ?= 4
 

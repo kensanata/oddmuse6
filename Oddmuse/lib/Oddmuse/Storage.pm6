@@ -20,7 +20,7 @@
 
 This module delegates most storage issues to a role as specified by
 the environment variable C<storage>. By default, that would be
-C<Storage::File>.
+C<Oddmuse::Storage::File>.
 
 The role must implement the following methods:
 
@@ -56,8 +56,8 @@ C<Template::Mustache> markup.
 
 =end pod
 
-class Storage {
-    my $class = %*ENV<storage> || 'Storage::File';
+class Oddmuse::Storage {
+    my $class = %*ENV<storage> || 'Oddmuse::Storage::File';
     require ::($class);
     has $!delegate handles <
 		get-page put-page get-keep-page put-keep-page
@@ -70,7 +70,7 @@ class Storage {
 	=end pod
 
 	method get-template (Str $id!) is export {
-		my $dir = %*ENV<templates> || 'templates';
+		my $dir =  %*ENV<templates> || %?RESOURCES<templates> || 'templates';
 		my $path = "$dir/$id.sp6";
 		my $fh = open $path, :enc('UTF-8');
 		return $fh.slurp;

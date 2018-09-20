@@ -14,40 +14,16 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Storage::File::Test;
-use Cro::HTTP::Test;
-use Routes;
+use Oddmuse::Storage;
+use Test;
 
-my $root = get-random-wiki-directory;
+# testing the default Home page
+%*ENV<wiki> = 'resources/wiki';
 
-"$root/rc.log".IO.spurt(qq :to 'EOF');
-2018-09-18T15:36:38.000000+02:000About11285one
-2018-09-18T15:36:38.000000+02:001About2Alextwo
-2018-09-18T15:36:39.000000+02:000About3Alexthree
-EOF
+my $storage = Oddmuse::Storage.new;
 
-test-service routes(), {
+is($storage.^name, 'Oddmuse::Storage', 'Oddmuse::Storage class initialized');
 
-	for '/view/Changes', '/changes' {
-		my $page = get($_);
-
-		test $page,
-			status => 200,
-			content-type => 'text/html',
-			body => / '<h1>' Changes '</h1>' .* one .* three /;
-
-		test $page, body => !/ two /;
-	}
-
-	my $page = get('/changes?n=1');
-
-    test $page,
-		status => 200,
-		content-type => 'text/html',
-		body => / '<h1>' Changes '</h1>' .* one /;
-
-    test $page, body => !/ two | three /;
-
-}
+like($storage.get-page('Home').text, /Welcome/, 'get-page delegated');
 
 done-testing;

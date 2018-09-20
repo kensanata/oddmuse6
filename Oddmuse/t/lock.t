@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Test;
+use Oddmuse::Storage::File::Lock;
 use File::Temp;
-use Storage::File::Lock;
+use Test;
 
 my ($path, $fh) = tempfile;
 
@@ -41,6 +41,6 @@ is($path.IO.slurp, "Done\n", "overwrite locked file");
 
 my $duration = DateTime.now.Instant - $ts;
 
-is($duration.round(0.1), 0.6, "duration is correct");
+is($duration.round(0.2), 0.6, "duration is correct");
 
 done-testing;

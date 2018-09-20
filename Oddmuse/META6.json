@@ -24,7 +24,18 @@
     "wiki/page/Home.md"
   ],
   "provides": {
-    "Oddmuse::Routes.pm6": "lib/Oddmuse/Routes.pm6"
+    "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
+    "Oddmuse::Change":              "lib/Oddmuse/Change.pm6",
+    "Oddmuse::Changes":             "lib/Oddmuse/Changes.pm6",
+    "Oddmuse::Edit":                "lib/Oddmuse/Edit.pm6",
+    "Oddmuse::Filter":              "lib/Oddmuse/Filter.pm6",
+    "Oddmuse::Page":                "lib/Oddmuse/Page.pm6",
+    "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
+    "Oddmuse::Save":                "lib/Oddmuse/Save.pm6",
+    "Oddmuse::Storage":             "lib/Oddmuse/Storage.pm6",
+    "Oddmuse::Storage::File":       "lib/Oddmuse/Storage/File.pm6",
+    "Oddmuse::Storage::File::Lock": "lib/Oddmuse/Storage/File/Lock.pm6",
+    "Oddmuse::View":                "lib/Oddmuse/View.pm6"
   },
   "perl": "6.*",
   "meta-version": "0",

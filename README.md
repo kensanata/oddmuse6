@@ -10,8 +10,9 @@
     - [Images and CSS](#images-and-css)
     - [Templates](#templates)
     - [Wiki](#wiki)
-    - [Hosting Multiple Wikis](#hosting-multiple-wikis)
-- [Translation](#translation)
+    - [Changing the CSS](#changing-the-css)
+- [Hosting Multiple Wikis](#hosting-multiple-wikis)
+- [Using it as a module](#using-it-as-a-module)
 
 <!-- markdown-toc end -->
 
@@ -182,7 +183,7 @@ Taking it from here should be easy: the `templates` directory and the
 If you want these changes to take effect and you still want to `cro
 run`, you need to make changes to the `.cro.yml` file.
 
-### Hosting Multiple Wikis
+## Hosting Multiple Wikis
 
 Create two empty wiki data directories:
 
@@ -205,8 +206,51 @@ ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 wiki=wiki2 perl6 -Ioddmuse/lib oddmuse/
 Now you can visit both `http://localhost:9000/` and
 `http://localhost:9001/` and you'll find two independent wikis.
 
-## Translation
+## Using it as a module
 
-You should translate the Markdown files in the `data/pages` directory,
-and you should translate the HTML files in the `data/templates`
-directory. 
+Here's what you can do if you want to use it as a module as you write
+your own [Cro](https://cro.services/) application, basically.
+
+Start with a stub and accept all the defaults. The following creates a
+service called "test" in a directory called `test`. If you accept all
+the defaults, you'll get a service doing HTTP 1.1. Good enough for us!
+
+```
+cro stub http test test
+```
+
+Now edit `test/services.p6` and replace `use Routes` with `use
+Oddmuse::Routes`.
+
+You can delete the `test/lib`Routes.pm6` which `cro stub` generated
+for you.
+
+Run it:
+
+```
+cro run
+```
+
+Check it out by visiting `http://localhost:20000`. Your wiki directory
+is `test/wiki`.
+
+Replace the empty environment section in `test/.cro.yml` with the
+following:
+
+```
+env:
+  - name: menu
+    value: Home, Changes, About
+```
+
+And now you have a link to the *About* page. Follow the link and click
+the *create it* link. Write the following into the text area and click
+the *Save* button:
+
+```
+# About
+
+This is my page.
+```
+
+Your first edit! 🎉

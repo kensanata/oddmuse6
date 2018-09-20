@@ -31,7 +31,7 @@ means they are I<per process>.
 sub with-locked-file(Str $path, Int $max-delay, &code) is export {
     react {
 		my $lock = "$path.lock";
-		whenever Supply.interval(1) {
+		whenever Supply.interval(0.2) {
 			if $_ >= $max-delay {
 				$lock.IO.rmdir;
 			}

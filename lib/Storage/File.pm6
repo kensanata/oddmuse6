@@ -49,7 +49,7 @@ class Storage::File {
     method put-page (Page $page!) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/{$page.name}.md";
-		with-locked-file $path, 3, {
+		with-locked-file $path, 2, {
 			spurt $path, $page.text, :enc('UTF-8');
 		};
 	}
@@ -91,7 +91,7 @@ class Storage::File {
 		return 0 unless $path.IO.e;
 
 		my $n = 1;
-		with-locked-file $path, 3, {
+		with-locked-file $path, 2, {
 
 			# find the highest n + 1
 			my @keep-pages = $to-dir.IO.dir(test => /^ $id '.md.~' \d+ '~' $/);
@@ -112,7 +112,7 @@ class Storage::File {
 	method put-change (Change $change!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
-		with-locked-file $path, 3, {
+		with-locked-file $path, 2, {
 			my $fh = open $path, :a, :enc('UTF-8');
 			$fh.say(($change.ts, $change.minor ?? 1 !! 0,
 					 $change.name, $change.revision, $change.author,

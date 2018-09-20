@@ -154,8 +154,8 @@ class Storage::File {
 	}
 
 	sub make-directory(Str $subdir!) {
-		my $root = %*ENV<wiki> || 'wiki';
-		my $dir = "$root/$subdir";
+		my $dir = %*ENV<wiki> || 'wiki';
+		$dir ~= "/$subdir" if $subdir;
 		mkdir($dir) unless $dir.IO.d;
 		return $dir;
 	}

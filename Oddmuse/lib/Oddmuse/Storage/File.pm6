@@ -159,12 +159,9 @@ class Oddmuse::Storage::File {
         if (!$dir.IO.e) {
 		    mkdir($dir);
             if $subdir eq 'page' {
-                my $welcome = %?RESOURCES<wiki> || 'resources/wiki';
-                if $welcome.IO.e {
-                    for dir "$welcome/page" {
-                        copy $_, "$dir/" ~$_.basename;
-                    }
-                }
+                my $welcome = %?RESOURCES<wiki/page/Home.md>
+                	|| 'resources/wiki/page/Home.md';
+                copy $welcome, "$dir/Home.md" if $welcome.IO.e;
             }
         }
 		return $dir;

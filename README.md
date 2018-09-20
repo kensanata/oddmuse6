@@ -108,6 +108,24 @@ that below.
 - `templates`
 - `wiki`
 
+For images, css files and templates, this is how lookup works:
+
+1. If an environment variable with the correct name exists, it's value
+   is used as the directory. Since the `Oddmuse/.cro.yml` file does
+   that, you can simply run `cro run` and it should find all the
+   files.
+
+2. If no environment variable exists, the current working dir is
+   checked for directories with the right names. If they exist, they
+   are used.
+
+3. If none of the above, the copies in the `resources` folder of the
+   module itself are used.
+
+As for the wiki directory: it is created if it doesn't exist. At that
+point the `Home.md` page from the module's `resources` folder is
+copied so that your wiki comes with at least one page.
+
 ### Images and CSS
 
 Your website needs two directories for the static files:
@@ -135,6 +153,34 @@ This is where the dynamic content of your wiki is. If you use the
 * `page` is where the current pages are saved
 * `keep` is where older revisions of pages are kept
 * `rc.log` is the log file
+
+### Changing the CSS
+
+Here's a simple change to make:
+
+```
+mkdir css
+cp Oddmuse/resources/css/default.css css/
+cat - << EOF >> css/default.css
+body {
+  background: black;
+  color: green;
+}
+EOF
+ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 -I Oddmuse/lib Oddmuse/service.p6
+```
+
+This works because now we're not using `cro` to launch the process and
+thus `Oddmuse/.cro.yml` isn't being used and thus the environment
+defined in that file isn't being used. That's why we had to provide
+our own host and port, and that's why the modified `default.css` from
+the local `css` directory is being used.
+
+Taking it from here should be easy: the `templates` directory and the
+`images` directory work just the same.
+
+If you want these changes to take effect and you still want to `cro
+run`, you need to make changes to the `.cro.yml` file.
 
 ### Hosting Multiple Wikis
 

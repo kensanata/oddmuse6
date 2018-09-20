@@ -70,8 +70,11 @@ class Oddmuse::Storage {
 	=end pod
 
 	method get-template (Str $id!) is export {
-		my $dir =  %*ENV<templates> || %?RESOURCES<templates> || 'templates';
+		my $dir =  %*ENV<templates> || 'templates';
 		my $path = "$dir/$id.sp6";
+        if !$path.IO.e {
+            $path = %?RESOURCES{"templates/$id.sp6"};
+        }
 		my $fh = open $path, :enc('UTF-8');
 		return $fh.slurp;
 	}

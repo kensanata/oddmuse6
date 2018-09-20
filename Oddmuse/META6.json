@@ -15,13 +15,16 @@
     "source": "https://oddmuse.org/wiki/Oddmuse_6"
   },
   "resources": [
-    "templates",
-    "images",
-    "css",
-    "wiki"
+    "templates/changes.sp6",
+    "templates/edit.sp6",
+    "templates/empty.sp6",
+    "templates/view.sp6",
+    "images/logo.png",
+    "css/default.css",
+    "wiki/page/Home.md"
   ],
   "provides": {
-    "Routes.pm6": "lib/Routes.pm6"
+    "Oddmuse::Routes.pm6": "lib/Oddmuse/Routes.pm6"
   },
   "perl": "6.*",
   "meta-version": "0",

@@ -24,7 +24,8 @@
 					{{#name}}<li>{{name}}</li>{{/name}}
 					{{#author}}<li>written by {{author}}</li>{{/author}}
 					{{#minor}}<li>including minor changes</li>{{/minor}}
-					{{#tail}}<li>the last {{tail}} entries</li>{{/tail}}
+					{{#n}}<li>the last {{n}} entries</li>{{/n}}
+					{{#all}}<li>list all changes (not just the last one)</li>{{/all}}
 				</ul>
 				{{/filter}}
 

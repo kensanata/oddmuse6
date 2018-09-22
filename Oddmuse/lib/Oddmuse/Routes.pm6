@@ -25,7 +25,7 @@ sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
     route {
         get -> 'view', $id where / $changes / {
-            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30));
+            content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
         }
         get -> 'view', $id {
             content 'text/html', view-page($id);
@@ -33,17 +33,11 @@ sub routes() is export {
         get -> 'view', $id, $n where /^\d+$/ {
             content 'text/html', view-page($id, $n.Int);
         }
-		get -> 'changes', :$n where /^\d+$/ {
-            content 'text/html', view-changes(Oddmuse::Filter.new(tail => $n.Int || 30));
-        }
-		get -> 'changes', 'all' {
-            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30, minor => True));
-        }
-		get -> 'changes' {
-            content 'text/html', view-changes(Oddmuse::Filter.new(tail => 30));
+		get -> 'changes', :%params {
+            content 'text/html', view-changes($%params);
         }
         get -> 'history', $id {
-            content 'text/html', view-changes(Oddmuse::Filter.new(name => $id));
+            content 'text/html', view-changes(Oddmuse::Filter.new(name => $id, all => True));
         }
         get -> 'edit', $id {
             content 'text/html', edit-page($id);

@@ -29,7 +29,11 @@ template.
 
 =end pod
 
-sub view-changes (Oddmuse::Filter $filter!) is export {
+multi view-changes (%params!) is export {
+    view-changes(Oddmuse::Filter.new.from-hash(%params));
+}
+
+multi view-changes (Oddmuse::Filter $filter!) is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     my %params =
@@ -64,10 +68,11 @@ sub view-changes (Oddmuse::Filter $filter!) is export {
 
 	# The same is true for the filter description...
 	my %filter =
-	    tail	=> $filter.tail,
+	    n		=> $filter.n,
 	    name	=> $filter.name,
 		author	=> $filter.author,
-		minor	=> $filter.minor;
+		minor	=> $filter.minor,
+		all	    => $filter.all;
 
 	%params<filter> = %filter;
 

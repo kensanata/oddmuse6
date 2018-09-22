@@ -15,8 +15,34 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 class Oddmuse::Filter {
-    has Int $.tail;
-    has Str $.name;
-    has Str $.author;
-    has Bool $.minor;
+    has Int $.n is rw;      # limit to the last n items
+    has Str $.name is rw;   # limit to a specific page name
+    has Str $.author is rw; # limit to a specific author
+    has Bool $.minor is rw; # include minor changes
+    has Bool $.all is rw;   # just the last one
+
+    method from-hash(%params!) {
+        if %params<n> and %params<n> ~~ /^\d+$/ {
+            $!n = Int(%params<n>);
+        } else {
+            $!n = 30;
+        }
+        $!minor = Bool(%params<minor>);
+        $!all = Bool(%params<all>);
+        $!name = %params<name> || '';
+        $!author = %params<author> || '';
+        return self;
+    }
 }
+
+# If you add more filter attributes, be sure to change the following:
+#
+# 1. in Changes.pm6, in view-changes, make sure you convert the value
+#    from %params into a Filter attribute
+#
+# 2. in the same file, at the end, make sure you add it back to the
+#    %filter hash
+#
+# 3. in changes.sp6, add it to the #filter section
+#
+# 4. in the same file, add it to the form

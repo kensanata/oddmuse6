@@ -135,7 +135,8 @@ class Oddmuse::Storage::File {
 		@changes = grep {$_.name eq $filter.name}, @changes if $filter.name;
 		@changes = grep {$_.author eq $filter.author}, @changes if $filter.author;
 		@changes = grep {!$_.minor}, @changes unless $filter.minor;
-		@lines = @lines.tail($filter.tail) if $filter.tail;
+        @changes = latest-changes(@changes) unless $filter.all;
+		@changes = @changes.tail($filter.n) if $filter.n;
 		return @changes;
 	}
 
@@ -152,6 +153,17 @@ class Oddmuse::Storage::File {
 		);
 		return $change;
 	}
+
+    sub latest-changes (@changes) {
+        my @results;
+        my %seen;
+        for @changes.reverse ->  $change {
+            next if %seen{$change.name};
+            %seen{$change.name} = True;
+            @results.push($change);
+        }
+        return @results.reverse;
+    }
 
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';

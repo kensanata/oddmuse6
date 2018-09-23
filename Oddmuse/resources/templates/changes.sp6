@@ -22,14 +22,14 @@
 				{{#filter}}
 				<form id="filter" action="/changes">
 					<strong>Filter</strong><br>
+					<input type="checkbox" id="minor" name="minor" {{#minor}}checked{{/minor}}>
+					<label for="minor">include minor changes</label><br>
+					<input type="checkbox" id="all" name="all" {{#all}}checked{{/all}}>
+					<label for="all">list all changes (not just the last one)</label><br>
 					<label for="name" class="wide">by page name </label>
 					<input type="text" class="wide" id="name" name="name" value="{{name}}"><br>
 					<label for="author" class="wide">by author name </label>
 					<input type="text" class="wide" id="author" name="author" value="{{author}}"><br>
-					<input type="checkbox" id="minor" name="minor" {{#minor}}checked{{/minor}}>
-					<label for="minor">including minor changes</label><br>
-					<input type="checkbox" id="all" name="all" {{#all}}checked{{/all}}>
-					<label for="all">listing all changes (not just the last one)</label><br>
 					<label>limit to <input type="number" class="narrow" name="n" value="{{n}}"> items</label><br>
 					<input type="submit" value="OK">
 				</form>
@@ -43,7 +43,7 @@
 					(<a href="/history/{{name}}">history</a>)
 					{{/filter.name}}
 					<a href="/view/{{name}}/{{to}}">{{name}}</a> …
-					{{author}}
+					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
 					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
 					{{#summary}}
 					– {{summary}}

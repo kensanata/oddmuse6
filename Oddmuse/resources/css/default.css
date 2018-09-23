@@ -55,11 +55,6 @@ div.new {
 
 li { padding-bottom: 5pt; }
 
-#filter { display: inline; list-style: none; padding: 0; }
-#filter li { display: inline; }
-#filter li:after { content: ", "; }
-#filter li:last-child:after { content: ""; }
-
 .c1 { background: red; color: red; }
 .c2 { background: orange; color: orange; }
 .c3 { background: yellow; color: yellow; }
@@ -69,6 +64,18 @@ li { padding-bottom: 5pt; }
 .c7 { background: violet; color: violet; }
 .c8 { background: white; color: white; }
 .ip-code { border: 1px solid #666; }
+
+/* Filter */
+
+#filter label.wide { display:inline-block; width: 15ex; border: none;}
+#filter input.wide {
+    display:inline-block;
+    width: 20ex;
+    border-top-style: hidden;
+    border-right-style: hidden;
+    border-left-style: hidden;
+}
+#filter input.narrow { display:inline-block; width: 5ex; }
 
 /* Warning Message */
 

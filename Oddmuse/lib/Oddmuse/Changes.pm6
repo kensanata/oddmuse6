@@ -27,6 +27,44 @@ use Oddmuse::Filter;
 This loads all the changes and renders them using the C<changes>
 template.
 
+This happens via an array called C<changes>. Each element is a hash
+with the following keys:
+
+=item C<date> in the format C<YYYY-mm-dd>.
+
+=item C<first> is set when this is the first change in the list of
+changes. The template can uses this for the first day heading.
+
+=item C<last> is set when this is the last change in the list of
+changes. The template can uses this for HTML cleanup.
+
+=item C<day> is set when this change is on a different date compared
+to previous changes. The template can uses this for subsequent day
+heading.
+
+=item C<time> in the format C<hh-mm-ss>.
+
+=item C<minor> to indicate whether this is a minor change.
+
+=item C<name> is the name of the page affected.
+
+=item C<revision> is the revision that was changed, which is
+equivalent to the number of edits made to a page.
+
+=item C<to> is the revision that the change resulted in, which is just
+the revision + 1. That's the revision that will be shown when looking
+at the change.
+
+=item C<author> is the name of the author, if specified.
+
+=item C<code> is a code used to identify changes when no author was
+provided. In this case the IP number of the user making the change is
+used to compute four numbers in the range from 1 to 8, and these
+numbers are then turned into a color using the default CSS. This
+generates little color codes that look a bit like flags.
+
+=item C<summary> is the summary provided for the change, if any.
+
 =end pod
 
 multi view-changes (%params!) is export {

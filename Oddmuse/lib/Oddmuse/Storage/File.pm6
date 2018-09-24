@@ -79,7 +79,8 @@ class Oddmuse::Storage::File {
     Backup pages are saved in the C<keep> subdirectory with the
     <md.~n~> extension, where C<n> is an integer. These are the
     numbered backups supported by Emacs and C<cp --backup=numbered>,
-    and maybe others.
+    and maybe others. Return this number. This number is the revision.
+    It starts at 1.
     =end pod
 
     method put-keep-page (Str $id!) is export {

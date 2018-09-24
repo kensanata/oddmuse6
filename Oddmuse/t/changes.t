@@ -32,7 +32,7 @@ EOF
 test-service routes(), {
 
     test-given '/view/Changes', {
-        diag '/view/Changes is a synonym for /changes';
+        # diag '/view/Changes is a synonym for /changes';
         test get(),
   	        status => 200,
 	        content-type => 'text/html',
@@ -41,7 +41,7 @@ test-service routes(), {
     }
 
     test-given '/changes', {
-        diag 'default lists the last major change of every page';
+        # diag 'default lists the last major change of every page';
         test get(),
   	            status => 200,
 	            content-type => 'text/html',
@@ -52,27 +52,27 @@ test-service routes(), {
                      fifth /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
 
-        diag 'n=1 lists just the one last major change';
+        # diag 'n=1 lists just the one last major change';
         test get('?n=1'),
             status => 200,
             content-type => 'text/html',
             body => / '<h1>Changes</h1>' .* fifth /;
         test get('?n=1'), body => { $_ !~~ /« ( first | second | third | fourth ) »/ };
 
-        diag 'all=1 lists all the major changes';
+        # diag 'all=1 lists all the major changes';
         test get('?all=1'),
             status => 200,
             content-type => 'text/html',
             body => / '<h1>Changes</h1>' .* first .* third .* fifth /;
         test get('?all=1'), body => { $_ !~~ /« ( second | fourth ) »/ };
 
-        diag 'all=1 & minor=1 lists all the changes';
+        # diag 'all=1 & minor=1 lists all the changes';
         test get('?all=1&minor=1'),
             status => 200,
             content-type => 'text/html',
             body => / '<h1>Changes</h1>' .* first .* second .* third .* fourth .* fifth /;
 
-        diag 'all=1 & minor=1 & author=Alex lists all the changes by Alex';
+        # diag 'all=1 & minor=1 & author=Alex lists all the changes by Alex';
         test get('?all=1&minor=1&author=Alex'),
             status => 200,
             content-type => 'text/html',

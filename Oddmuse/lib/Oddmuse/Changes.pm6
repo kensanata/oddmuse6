@@ -65,6 +65,19 @@ generates little color codes that look a bit like flags.
 
 =item C<summary> is the summary provided for the change, if any.
 
+The template also gets a hash for the filter.
+
+=item C<n> is the number of latest items to be shown
+
+=item C<name> is the name of the page.
+
+=item C<author> is the name of the author.
+
+=item C<minor> is set when minor changes are included.
+
+=item C<all> is set when all changes are included, not just the last
+change per page.
+
 =end pod
 
 multi view-changes (%params!) is export {

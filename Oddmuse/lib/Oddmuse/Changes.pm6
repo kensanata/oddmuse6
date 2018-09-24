@@ -50,6 +50,7 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
     my @changes = $storage.get-changes($filter);
 
     # Turn the object into a hash fit for the template.
+    my $day = '';
     my @hashes = map {
 		my %change =
 			date => $_.ts.yyyy-mm-dd,
@@ -62,6 +63,14 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
 			# { c => "1", c=> "2", c=> "3", c=> "4", }
 			code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
 			summary => $_.summary||'';
+        if not $day {
+            %change<first> = True;
+            $day = %change<date>;
+        } elsif $day ne %change<date> {
+            %change<day> = True;
+            $day = %change<date>;
+        }
+        %change;
 	}, @changes;
 
     %params<changes> = @hashes;

@@ -26,7 +26,7 @@ my $root = get-random-wiki-directory;
 2018-09-18T15:36:38.000000+02:001About2Alexsecond
 2018-09-18T15:36:39.000000+02:000About3Alexthird
 2018-09-18T15:36:40.000000+02:001About4Alexfourth
-2018-09-18T15:36:41.000000+02:000Help1Alexfifth
+2018-09-19T15:36:41.000000+02:000Help1Alexfifth
 EOF
 
 test-service routes(), {
@@ -36,7 +36,7 @@ test-service routes(), {
         test get(),
   	        status => 200,
 	        content-type => 'text/html',
-	        body => / '<h1>' Changes '</h1>' .* third .* fifth /;
+	        body => / '<h1>Changes</h1>' .* third .* fifth /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
     }
 
@@ -45,34 +45,38 @@ test-service routes(), {
         test get(),
   	            status => 200,
 	            content-type => 'text/html',
-	            body => / '<h1>' Changes '</h1>' .* third .* fifth /;
+	            body => / '<h1>Changes</h1>' .*
+                     '<h2>2018-09-18</h2>' .*
+                     third .*
+                     '<h2>2018-09-19</h2>' .*
+                     fifth /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
 
         diag 'n=1 lists just the one last major change';
         test get('?n=1'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>' Changes '</h1>' .* fifth /;
+            body => / '<h1>Changes</h1>' .* fifth /;
         test get('?n=1'), body => { $_ !~~ /« ( first | second | third | fourth ) »/ };
 
         diag 'all=1 lists all the major changes';
         test get('?all=1'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>' Changes '</h1>' .* first .* third .* fifth /;
+            body => / '<h1>Changes</h1>' .* first .* third .* fifth /;
         test get('?all=1'), body => { $_ !~~ /« ( second | fourth ) »/ };
 
         diag 'all=1 & minor=1 lists all the changes';
         test get('?all=1&minor=1'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>' Changes '</h1>' .* first .* second .* third .* fourth .* fifth /;
+            body => / '<h1>Changes</h1>' .* first .* second .* third .* fourth .* fifth /;
 
         diag 'all=1 & minor=1 & author=Alex lists all the changes by Alex';
         test get('?all=1&minor=1&author=Alex'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>' Changes '</h1>' .* second .* third .* fourth .* fifth /;
+            body => / '<h1>Changes</h1>' .* second .* third .* fourth .* fifth /;
         test get('?all=1&minor=1&author=Alex'), body => { $_ !~~ /« first »/ };
     }
 }

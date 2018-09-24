@@ -35,10 +35,11 @@
 				</form>
 				{{/filter}}
 
-				<ul id="items">
 				{{#changes}}
+				{{#first}}<h2>{{date}}</h2><ul id="items">{{/first}}
+				{{#day}}</ul><h2>{{date}}</h2><ul id="items">{{/day}}
 				<li>
-					{{date}} {{time}}
+					{{time}}
 					{{^filter.name}}
 					(<a href="/history/{{name}}">history</a>)
 					{{/filter.name}}
@@ -50,8 +51,8 @@
 					{{/summary}}
 					{{#minor}}(minor){{/minor}}
 				</li>
+				{{#last}}</ul>{{/last}}
 				{{/changes}}
-				</ul>
 				{{^changes}}
 				<strong>There are no changes.</strong>
 				{{/changes}}

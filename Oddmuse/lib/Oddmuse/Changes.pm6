@@ -85,11 +85,8 @@ multi view-changes (%params!) is export {
 }
 
 multi view-changes (Oddmuse::Filter $filter!) is export {
-    my $menu = %*ENV<menu> || "Home, Changes";
-    my @pages = $menu.split(/ ',' \s* /);
-    my %params =
-	id => %*ENV<changes> || "Changes",
-	pages => [ map { id => $_ }, @pages ];
+
+    my %context = id => %*ENV<changes> || "Changes";
 
 	# Get the changes from storage. Note that the revision is the
 	# revision that was changed: the first revision has number 1. To
@@ -124,7 +121,7 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
         %change;
 	}, @changes;
 
-    %params<changes> = @hashes;
+    %context<changes> = @hashes;
 
 	# The same is true for the filter description...
 	my %filter =
@@ -134,8 +131,14 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
 		minor	=> $filter.minor,
 		all	    => $filter.all;
 
-	%params<filter> = %filter;
+	%context<filter> = %filter;
+
+    # Get the data for the main menu, too.
+    my $menu = %*ENV<menu> || "Home, Changes";
+    my @pages = $menu.split(/ ',' \s* /);
+    %context<pages> = [ map { id => $_ }, @pages ];
+    my %partials = menu => $storage.get-template('menu');
 
     my $template = $storage.get-template('changes');
-    return Template::Mustache.render($template, %params);
+    return Template::Mustache.render($template, %context, :from([%partials]));
 }

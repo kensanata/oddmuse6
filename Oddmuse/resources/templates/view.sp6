@@ -7,13 +7,8 @@
   </head>
   <body>
 
-    <div id="header">
-      <ul>
-				{{#pages}}
-				<li><a href="/view/{{id}}">{{id}}</a></li>
-				{{/pages}}
-      </ul>
-    </div>
+		{{> menu}}
+
 		{{#revision}}<strong>Showing revision {{revision}}.</strong>{{/revision}}
 
     <div id="content">

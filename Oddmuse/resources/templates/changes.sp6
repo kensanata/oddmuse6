@@ -6,16 +6,8 @@
     <link rel="stylesheet" href="/css/default.css">
   </head>
   <body>
-
-    <div id="header">
-      <ul>
-				{{#pages}}
-				<li><a href="/view/{{id}}">{{id}}</a></li>
-				{{/pages}}
-      </ul>
-    </div>
-
-    <div id="content">
+		{{> menu}}
+		<div id="content">
 			<div id="changes">
 				<h1>{{id}}</h1>
 

@@ -38,12 +38,10 @@ multi view-page (Str $id) is export {
 }
 
 multi view-page (Str $id, Int $n) is export {
-    my $menu = %*ENV<menu> || "Home, Changes";
-    my @pages = $menu.split(/ ',' \s* /);
-    my %params =
-		id => $id,
-		pages => [ map { id => $_ }, @pages ];
 
+    my %context = id => $id;
+
+    # Get page data.
     my $storage = Oddmuse::Storage.new;
     my $page;
 	if $n {
@@ -52,14 +50,21 @@ multi view-page (Str $id, Int $n) is export {
 		$page = $storage.get-page($id);
 	}
 
+    # Get template and render page data.
 	my $template;
 	if $page.exists {
 		$template = $storage.get-template('view');
-	    %params<html> = parse-markdown($page.text).to-html;
-		%params<revision> = $page.revision;
+	    %context<html> = parse-markdown($page.text).to-html;
+		%context<revision> = $page.revision;
     } else {
 		$template = $storage.get-template('empty');
 	}
 
-    return Template::Mustache.render($template, %params);
+    # Get the data for the main menu, too.
+    my $menu = %*ENV<menu> || "Home, Changes";
+    my @pages = $menu.split(/ ',' \s* /);
+    %context<pages> = [ map { id => $_ }, @pages ];
+    my %partials = menu => $storage.get-template('menu');
+
+    return Template::Mustache.render($template, %context, :from([%partials]));
 }

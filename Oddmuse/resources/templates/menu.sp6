@@ -1,0 +1,7 @@
+<div id="header">
+  <ul>
+		{{#pages}}
+		<li><a href="/view/{{id}}">{{id}}</a></li>
+		{{/pages}}
+  </ul>
+</div>

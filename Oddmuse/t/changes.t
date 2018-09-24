@@ -36,7 +36,7 @@ test-service routes(), {
         test get(),
   	        status => 200,
 	        content-type => 'text/html',
-	        body => / '<h1>Changes</h1>' .* third .* fifth /;
+	        body => / '<h1>Changes</h1>' .* fifth .* third /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
     }
 
@@ -46,10 +46,11 @@ test-service routes(), {
   	            status => 200,
 	            content-type => 'text/html',
 	            body => / '<h1>Changes</h1>' .*
-                     '<h2>2018-09-18</h2>' .*
-                     third .*
                      '<h2>2018-09-19</h2>' .*
-                     fifth /;
+                     fifth .*
+                     '<h2>2018-09-18</h2>' .*
+                     third
+                     /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
 
         # diag 'n=1 lists just the one last major change';
@@ -63,20 +64,20 @@ test-service routes(), {
         test get('?all=1'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>Changes</h1>' .* first .* third .* fifth /;
+            body => / '<h1>Changes</h1>' .* fifth .* third .* first /;
         test get('?all=1'), body => { $_ !~~ /« ( second | fourth ) »/ };
 
         # diag 'all=1 & minor=1 lists all the changes';
         test get('?all=1&minor=1'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>Changes</h1>' .* first .* second .* third .* fourth .* fifth /;
+            body => / '<h1>Changes</h1>' .* fifth .* fourth .* third .* second .* first /;
 
         # diag 'all=1 & minor=1 & author=Alex lists all the changes by Alex';
         test get('?all=1&minor=1&author=Alex'),
             status => 200,
             content-type => 'text/html',
-            body => / '<h1>Changes</h1>' .* second .* third .* fourth .* fifth /;
+            body => / '<h1>Changes</h1>' .* fifth .* fourth .* third .* second /;
         test get('?all=1&minor=1&author=Alex'), body => { $_ !~~ /« first »/ };
     }
 }

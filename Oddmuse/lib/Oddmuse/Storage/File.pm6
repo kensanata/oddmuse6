@@ -131,13 +131,13 @@ class Oddmuse::Storage::File {
 		my $path = "$dir/rc.log";
 		return () unless $path.IO.e;
 		my $fh = open $path, :enc('UTF-8');
-		my @lines = $fh.lines;
+		my @lines = $fh.lines.reverse;
 		my @changes = map { line-to-change $_ }, @lines;
 		@changes = grep {$_.name eq $filter.name}, @changes if $filter.name;
 		@changes = grep {$_.author eq $filter.author}, @changes if $filter.author;
 		@changes = grep {!$_.minor}, @changes unless $filter.minor;
         @changes = latest-changes(@changes) unless $filter.all;
-		@changes = @changes.tail($filter.n) if $filter.n;
+		@changes = @changes.head($filter.n) if $filter.n;
 		return @changes;
 	}
 
@@ -158,12 +158,12 @@ class Oddmuse::Storage::File {
     sub latest-changes (@changes) {
         my @results;
         my %seen;
-        for @changes.reverse ->  $change {
+        for @changes ->  $change {
             next if %seen{$change.name};
             %seen{$change.name} = True;
             @results.push($change);
         }
-        return @results.reverse;
+        return @results;
     }
 
 	sub make-directory(Str $subdir!) {

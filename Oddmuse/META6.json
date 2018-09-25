@@ -42,7 +42,9 @@
   "depends": [
     "Cro::HTTP",
     "Text::Markdown",
-    "Template::Mustache"
+    "Template::Mustache",
+    "Algorithm::Diff",
+    "HTML::Escape"
   ],
   "build-depends": [],
   "test-depends": [

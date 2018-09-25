@@ -1,0 +1,32 @@
+<div class="diff">
+{{#hunks}}
+{{#insert}}
+<div class="insert">
+<p><strong>Added:</strong></p>
+<p class="insert"><ins>
+{{{text}}}
+</ins></p>
+</div>
+{{/insert}}
+{{#delete}}
+<div class="delete">
+<p><strong>Deleted:</strong></p>
+<p class="delete"><del>
+{{{text}}}
+</del></p>
+</div>
+{{/delete}}
+{{#change}}
+<div class="change">
+<p><strong>Changed:</strong></p>
+<p class="delete">
+{{{from}}}
+</p>
+<p><strong>to:</strong></p>
+<p class="insert">
+{{{to}}}
+</p>
+</div>
+{{/change}}
+{{/hunks}}
+</div>

@@ -20,10 +20,9 @@ use HTML::Escape;
 use Oddmuse::Storage;
 
 =head1 Diff
-=head2 view-diff (Str $id, Int $to --> Str) is export
 =begin pod
-Return the diff of the page give for a revision and it's predecessor.
-This uses the C<diff> template. The context contains the following keys:
+The functions exported all concern themselves with the the C<diff>
+template. The context for this template contains the following keys:
 
 =item C<id> is the page name
 
@@ -48,21 +47,30 @@ Each hunk is a hash with the following keys:
 The values of C<from> and C<to> contain the HTML tags C<ins> and
 C<del> to highlight particular words that were changed. The C<text>,
 C<from> and C<to> are otherwise plain text.
-
 =end pod
 
-sub view-diff (Str $id, Int $to --> Str) is export {
+=head2 view-diff (Str $id, Int $to --> Str)
+=begin pod
+Return the diff of the page give for a revision and it's predecessor.
+=end pod
+
+multi view-diff (Str $id, Int $to --> Str) is export {
+    my $storage = Oddmuse::Storage.new;
+    my $rev = $to || $storage.get-current-revision($id);
+    return view-diff($id, $rev-1, $rev);
+}
+
+=head2 view-diff (Str $id, Int $from, Int $to --> Str)
+=begin pod
+Return the diff of two revisions of a page.
+=end pod
+
+multi view-diff (Str $id, Int $from, Int $to --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('diff');
 
-    # If we don't know the current revision
-    my $revision = $to || $storage.get-current-revision($id);
-
     # Get id and diff.
-    my %context = id => $id,
-                  from => $revision - 1,
-                  to => $revision,
-                  hunks => diff($id, $revision - 1, $revision);
+    my %context = :$id, :$from, :$to, hunks => diff($id, $from, $to);
 
     # Get the data for the main menu, too.
     my $menu = %*ENV<menu> || "Home, Changes";
@@ -73,7 +81,7 @@ sub view-diff (Str $id, Int $to --> Str) is export {
     return Template::Mustache.render($template, %context, :from([%partials]));
 }
 
-=head2 diff (Str $id, Int $from, Int $to --> Array) is export
+=head2 diff (Str $id, Int $from, Int $to --> Array)
 =begin pod
 Retrieve the texts of the two revisions and return a diff, if
 available. If the a revision cannot be retrieved, then the current
@@ -89,11 +97,10 @@ multi diff (Str $id, Int $from, Int $to --> Array) is export {
     return diff($old, $new);
 }
 
-=head2 diff (Str $old, Str $new --> Array) is export
+=head2 diff (Str $old, Str $new --> Array)
 =begin pod
-Return diff between two strings. The return value is generated using
-the C<diff> template. You may provide addition data for the template
-using the C<:%context> argument, e.g. C<id> for the page name.
+Return diff between two strings. The result is a list of hashes
+suitable for the C<diff> template.
 =end pod
 
 multi diff (Str $old, Str $new --> Array) is export {

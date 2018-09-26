@@ -140,6 +140,13 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
     %context<pages> = [ map { id => $_ }, @pages ];
     my %partials = menu => $storage.get-template('menu');
 
-    my $template = $storage.get-template('changes');
+    # The template for a page history is slightly different.
+    my $template;
+    if $filter.name {
+        $template = $storage.get-template('history');
+    } else {
+        $template = $storage.get-template('changes');
+    }
+
     return Template::Mustache.render($template, %context, :from([%partials]));
 }

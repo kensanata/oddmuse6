@@ -40,8 +40,10 @@ sub routes() is export {
         get -> 'history', $id {
             content 'text/html', view-changes(Oddmuse::Filter.new(name => $id, all => True));
         }
-        get -> 'diff', $id {
-            content 'text/html', view-diff($id, 0);
+        get -> 'diff', $id, :%params {
+            my $a = $%params<from>.Int;
+            my $b = $%params<to>.Int;
+            content 'text/html', view-diff($id, min($a, $b), max($a, $b));
         }
         get -> 'diff', $id, $n where /^\d+$/ {
             content 'text/html', view-diff($id, $n.Int);

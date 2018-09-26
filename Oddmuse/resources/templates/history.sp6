@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>Changes</title>
+    <title>History for {{filter.name}}</title>
     <link rel="stylesheet" href="/css/default.css">
   </head>
   <body>
 		{{> menu}}
 		<div id="content">
 			<div id="changes">
-				<h1>{{id}}</h1>
+				<h1>History for {{filter.name}}</h1>
 
 				{{#filter}}
 				<form id="filter" action="/changes">
@@ -27,27 +27,31 @@
 				</form>
 				{{/filter}}
 
-				{{#changes}}
-				{{#first}}<h2>{{date}}</h2><ul id="items">{{/first}}
-				{{#day}}</ul><h2>{{date}}</h2><ul id="items">{{/day}}
-				<li>
-					{{time}}
-					(<a href="/history/{{name}}">history</a>)
-					{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
-					<a href="/view/{{name}}/{{to}}">{{name}}</a> …
-					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
-					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
-					{{#summary}}
-					– {{summary}}
-					{{/summary}}
-					{{#minor}}(minor){{/minor}}
-				</li>
-				{{#last}}</ul>{{/last}}
-				{{/changes}}
-				{{^changes}}
-				<p><strong>There are no changes.</strong></p>
-				{{/changes}}
+				<form id="filter" action="/diff/{{filter.name}}">
 
+					{{#changes}}
+					{{#first}}<h2>{{date}}</h2>{{/first}}
+					{{#day}}<h2>{{date}}</h2>{{/day}}
+					<p>
+						<input type="radio" name="from" value="{{to}}">
+						<input type="radio" name="to" value="{{to}}">
+						{{time}}
+						{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
+						<a href="/view/{{name}}/{{to}}">{{name}}</a> …
+						{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
+						{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
+						{{#summary}}
+						– {{summary}}
+						{{/summary}}
+						{{#minor}}(minor){{/minor}}
+					</p>
+					{{/changes}}
+					{{^changes}}
+					<p><strong>There are no changes.</strong></p>
+					{{/changes}}
+
+					<input type="submit" value="OK">
+				</form>
 			</div>
     </div>
 

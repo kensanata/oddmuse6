@@ -125,7 +125,7 @@ multi diff (Str $old, Str $new --> Array) is export {
 
 sub refine (Str $a, Str $b) {
     my @from, my @to;
-    my $diff = Algorithm::Diff.new($a.words, $b.words);
+    my $diff = Algorithm::Diff.new($a.split(/ |w /), $b.split(/ |w /));
     while $diff.Next {
         if $diff.Same {
             @from.push($diff.Items(1));

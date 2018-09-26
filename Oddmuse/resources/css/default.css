@@ -38,10 +38,10 @@ pre {
 
 /* Diff */
 
-.diff { white-space: nowrap; }
-.insert { background: #c1ffc1; padding: 2pt; }
+.insert, .delete { white-space: pre; padding: 2pt; }
+.insert { background: #c1ffc1; }
 .insert ins { background: #b4eeb4; }
-.delete { background: #ff82ab; padding: 2pt; }
+.delete { background: #ff82ab; }
 .delete del { background: #ee799f; }
 
 /* Changes */

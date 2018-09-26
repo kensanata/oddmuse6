@@ -42,33 +42,23 @@ But after they are produced,
   they have different names.
 };
 
-my $d = q{<div class="diff">
-<div class="change">
-<p><strong>Changed:</strong></p>
-<p class="delete">
-The <del>Way</del> that can be told of is not the eternal <del>Way;</del>
-</p>
-<p><strong>to:</strong></p>
-<p class="insert">
-The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao;</ins>
-</p>
-</div>
-<div class="insert">
-<p><strong>Added:</strong></p>
-<p class="insert"><ins>
-The Named is the mother of all things.
-</ins></p>
-</div>
-<div class="delete">
-<p><strong>Deleted:</strong></p>
-<p class="delete"><del>
-The two are the same,
-</del></p>
-</div>
-</div>
-};
+my $c = [
+    {
+        change => 1,
+        from => 'The <del>Way</del> that can be told of is not the eternal <del>Way;</del>',
+	    to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao;</ins>',
+    },
+    {
+        insert => 1,
+        text => 'The Named is the mother of all things.',
+    },
+    {
+        delete => 1,
+        text => 'The two are the same,',
+    }
+];
 
-is diff($a, $b), $d, "diffing two strings";
+is diff($a, $b), $c, "diffing two strings";
 
 # write test data
 my $root = get-random-wiki-directory;
@@ -76,6 +66,6 @@ mkdir "$root/keep";
 "$root/keep/page.md.~1~".IO.spurt($a);
 "$root/keep/page.md.~2~".IO.spurt($b);
 
-is diff("page", 1, 2), $d, "diffing two revisions";
+is diff("page", 1, 2), $c, "diffing two revisions";
 
 done-testing;

@@ -35,6 +35,7 @@
 					{{^filter.name}}
 					(<a href="/history/{{name}}">history</a>)
 					{{/filter.name}}
+					{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
 					<a href="/view/{{name}}/{{to}}">{{name}}</a> …
 					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
 					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}

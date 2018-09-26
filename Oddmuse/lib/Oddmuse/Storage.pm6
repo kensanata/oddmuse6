@@ -61,7 +61,7 @@ class Oddmuse::Storage {
     require ::($class);
     has $!delegate handles <
 		get-page put-page get-keep-page put-keep-page
-		put-change get-changes
+		put-change get-changes get-current-revision
 		> = ::($class).new;
 
 	=head4 get-template

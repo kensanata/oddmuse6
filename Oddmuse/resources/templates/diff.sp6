@@ -1,32 +1,55 @@
-<div class="diff">
-{{#hunks}}
-{{#insert}}
-<div class="insert">
-<p><strong>Added:</strong></p>
-<p class="insert"><ins>
-{{{text}}}
-</ins></p>
-</div>
-{{/insert}}
-{{#delete}}
-<div class="delete">
-<p><strong>Deleted:</strong></p>
-<p class="delete"><del>
-{{{text}}}
-</del></p>
-</div>
-{{/delete}}
-{{#change}}
-<div class="change">
-<p><strong>Changed:</strong></p>
-<p class="delete">
-{{{from}}}
-</p>
-<p><strong>to:</strong></p>
-<p class="insert">
-{{{to}}}
-</p>
-</div>
-{{/change}}
-{{/hunks}}
-</div>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>{{id}}</title>
+    <link rel="stylesheet" href="/css/default.css">
+  </head>
+  <body>
+
+		{{> menu}}
+
+		<h1>Diff for {{id}}</h1>
+
+		<p>Comparing revisions <a href="/view/{{id}}/{{from}}">{{from}}</a>
+		and <a href="/view/{{id}}/{{to}}">{{to}}</a>.</p>
+
+		<div class="diff">
+			{{^hunks}}
+			<p class="message">No difference found!</p>
+			{{/hunks}}
+			{{#hunks}}
+			{{#insert}}
+			<div class="insert">
+				<p><strong>Added:</strong></p>
+				<p class="insert"><ins>{{{text}}}</ins></p>
+			</div>
+			{{/insert}}
+			{{#delete}}
+			<div class="delete">
+				<p><strong>Deleted:</strong></p>
+				<p class="delete"><del>{{{text}}}</del></p>
+			</div>
+			{{/delete}}
+			{{#change}}
+			<div class="change">
+				<p><strong>Changed:</strong></p>
+				<p class="delete">{{{from}}}</p>
+				<p><strong>to:</strong></p>
+				<p class="insert">{{{to}}}</p>
+			</div>
+			{{/change}}
+			{{/hunks}}
+		</div>
+
+		<div id="footer">
+			<hr/>
+			<p>
+				{{#diff}}<a href="/view/{{id}}/{{revision}}">View</a>{{/diff}}
+				<a href="/view/{{id}}">View</a>
+				<a href="/history/{{id}}">History</a>
+			</p>
+		</div>
+
+  </body>
+</html>

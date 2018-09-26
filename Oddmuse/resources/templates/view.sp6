@@ -9,7 +9,7 @@
 
 		{{> menu}}
 
-		{{#revision}}<strong>Showing revision {{revision}}.</strong>{{/revision}}
+		{{#revision}}<p><strong>Showing revision {{revision}}.</strong></p>{{/revision}}
 
     <div id="content">
       {{{html}}}
@@ -20,6 +20,10 @@
       <p>
 				<a href="/edit/{{id}}">Edit</a>
 				<a href="/history/{{id}}">History</a>
+				{{#diff}}
+				{{#revision}}<a href="/diff/{{id}}/{{revision}}">Diff</a>{{/revision}}
+				{{^revision}}<a href="/diff/{{id}}">Diff</a>{{/revision}}
+				{{/diff}}
       </p>
     </div>
 

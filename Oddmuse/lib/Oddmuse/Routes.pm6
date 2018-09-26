@@ -20,6 +20,7 @@ use Oddmuse::Edit;
 use Oddmuse::Save;
 use Oddmuse::Changes;
 use Oddmuse::Filter;
+use Oddmuse::Diff;
 
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
@@ -38,6 +39,12 @@ sub routes() is export {
         }
         get -> 'history', $id {
             content 'text/html', view-changes(Oddmuse::Filter.new(name => $id, all => True));
+        }
+        get -> 'diff', $id {
+            content 'text/html', view-diff($id, 0);
+        }
+        get -> 'diff', $id, $n where /^\d+$/ {
+            content 'text/html', view-diff($id, $n.Int);
         }
         get -> 'edit', $id {
             content 'text/html', edit-page($id);

@@ -33,7 +33,7 @@ class Oddmuse::Storage::File {
     Pages are files in the C<page> subdirectory with the C<md> extension.
     =end pod
 
-    method get-page (Str $id!) is export {
+    method get-page (Str $id! --> Oddmuse::Page) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/$id.md";
 		return Oddmuse::Page.new(exists => False) unless $path.IO.e;
@@ -61,7 +61,7 @@ class Oddmuse::Storage::File {
     and maybe others.
     =end pod
 
-    method get-keep-page (Str $id!, Int $n!) is export {
+    method get-keep-page (Str $id!, Int $n! --> Oddmuse::Page) is export {
 		my $dir   = make-directory('keep');
 		my $path = "$dir/$id.md.~$n~";
 		if $path.IO.e {
@@ -141,7 +141,7 @@ class Oddmuse::Storage::File {
 		return @changes;
 	}
 
-	sub line-to-change (Str $line!) {
+	sub line-to-change (Str $line! --> Oddmuse::Change) {
 		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Oddmuse::Change.new(
 			ts			=> DateTime.new($ts),
@@ -179,4 +179,17 @@ class Oddmuse::Storage::File {
         }
 		return $dir;
 	}
+
+    method get-current-revision (Str $id! --> Int) is export {
+		my $dir = make-directory('');
+		my $path = "$dir/rc.log";
+		return 0 unless $path.IO.e;
+		my $fh = open $path, :enc('UTF-8');
+		my @lines = $fh.lines.grep(/$SEP $id $SEP/);
+		my @changes = map { line-to-change($_) }, @lines;
+        for @changes.reverse {
+            return $_.revision + 1 if $_.name eq $id;
+        }
+        return 0;
+    }
 }

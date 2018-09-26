@@ -33,8 +33,8 @@
 					{{#first}}<h2>{{date}}</h2>{{/first}}
 					{{#day}}<h2>{{date}}</h2>{{/day}}
 					<p>
-						<input type="radio" name="from" value="{{to}}">
-						<input type="radio" name="to" value="{{to}}">
+						<input type="radio" name="from" value="{{to}}" {{#second}}checked{{/second}}>
+						<input type="radio" name="to" value="{{to}}" {{#first}}checked{{/first}}>
 						{{time}}
 						{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
 						<a href="/view/{{name}}/{{to}}">{{name}}</a> …

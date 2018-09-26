@@ -122,6 +122,7 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
 	}, @changes;
 
     @hashes[*-1]<last> = True;
+    @hashes[min(1, @hashes.end)]<second> = True; # 0 or 1
     %context<changes> = @hashes;
 
 	# The same is true for the filter description...

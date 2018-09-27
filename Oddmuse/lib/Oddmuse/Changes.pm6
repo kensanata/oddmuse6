@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Template::Mustache;
 use Oddmuse::Storage;
 use Oddmuse::Filter;
+use Oddmuse::Layout;
 
 =head1 Changes
 
@@ -135,12 +135,6 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
 
 	%context<filter> = %filter;
 
-    # Get the data for the main menu, too.
-    my $menu = %*ENV<menu> || "Home, Changes";
-    my @pages = $menu.split(/ ',' \s* /);
-    %context<pages> = [ map { id => $_ }, @pages ];
-    my %partials = menu => $storage.get-template('menu');
-
     # The template for a page history is slightly different.
     my $template;
     if $filter.name {
@@ -149,5 +143,5 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
         $template = $storage.get-template('changes');
     }
 
-    return Template::Mustache.render($template, %context, :from([%partials]));
+    return render($template, %context);
 }

@@ -14,10 +14,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Template::Mustache;
 need Algorithm::Diff;
 use HTML::Escape;
 use Oddmuse::Storage;
+use Oddmuse::Layout;
 
 =head1 Diff
 =begin pod
@@ -72,13 +72,7 @@ multi view-diff (Str $id, Int $from, Int $to --> Str) is export {
     # Get id and diff.
     my %context = :$id, :$from, :$to, hunks => diff($id, $from, $to);
 
-    # Get the data for the main menu, too.
-    my $menu = %*ENV<menu> || "Home, Changes";
-    my @pages = $menu.split(/ ',' \s* /);
-    %context<pages> = [ map { id => $_ }, @pages ];
-    my %partials = menu => $storage.get-template('menu');
-
-    return Template::Mustache.render($template, %context, :from([%partials]));
+    return render($template, %context);
 }
 
 =head2 diff (Str $id, Int $from, Int $to --> Array)
@@ -125,15 +119,15 @@ multi diff (Str $old, Str $new --> Array) is export {
 
 sub refine (Str $a, Str $b) {
     my @from, my @to;
-    my $diff = Algorithm::Diff.new($a.split(/ |w /), $b.split(/ |w /));
+    my $diff = Algorithm::Diff.new($a.split(/ <|w> /), $b.split(/ <|w> /));
     while $diff.Next {
         if $diff.Same {
-            @from.push($diff.Items(1));
-            @to.push($diff.Items(2));
+            @from.append($diff.Items(1));
+            @to.append($diff.Items(2));
         } else {
             @from.push('<del>' ~ $diff.Items(1) ~ '</del>') if $diff.Items(1);
             @to.push('<ins>' ~ $diff.Items(2) ~ '</ins>') if $diff.Items(2);
         }
     }
-    return @from.join(' '), @to.join(' ');
+    return @from.join(''), @to.join('');
 }

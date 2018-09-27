@@ -15,8 +15,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Text::Markdown;
-use Template::Mustache;
 use Oddmuse::Storage;
+use Oddmuse::Layout;
 
 =head1 View
 
@@ -61,11 +61,5 @@ multi view-page (Str $id, Int $n) is export {
 		$template = $storage.get-template('empty');
 	}
 
-    # Get the data for the main menu, too.
-    my $menu = %*ENV<menu> || "Home, Changes";
-    my @pages = $menu.split(/ ',' \s* /);
-    %context<pages> = [ map { id => $_ }, @pages ];
-    my %partials = menu => $storage.get-template('menu');
-
-    return Template::Mustache.render($template, %context, :from([%partials]));
+    return render($template, %context);
 }

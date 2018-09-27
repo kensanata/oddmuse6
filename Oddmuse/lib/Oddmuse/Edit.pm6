@@ -14,19 +14,28 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Template::Mustache;
 use Oddmuse::Storage;
+use Oddmuse::Layout;
 
-sub edit-page (Str $id) is export {
-    my %params =
-    id => $id,
-    pages => [ { id => 'Home' },
-	       { id => 'About' } ];
+=head1 Edit
+=pod begin
+Function used for the edit page, i.e. the user interface people see
+before they save their edits.
+=pod end
+
+=head2 edit-page (Str $id --> Str)
+=pod begin
+Shows the edit form for a given page. This uses the C<edit> template.
+The only keys required are C<id> and C<text>.
+=pod end
+
+sub edit-page (Str $id --> Str) is export {
+    my %context = id => $id;
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('edit');
     my $page = $storage.get-page($id);
     if $page.exists {
-	%params<text> = $page.text;
+	    %context<text> = $page.text;
     }
-    return Template::Mustache.render($template, %params);
+    return render($template, %context);
 }

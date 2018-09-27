@@ -15,11 +15,11 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 class Oddmuse::Change {
-    has DateTime $.ts;
-    has Bool $.minor;
-    has Str $.name;
+	has DateTime $.ts;
+	has Bool $.minor;
+	has Str $.name;
 	has Int $.revision;
-    has Str $.author;
-    has Str $.code;
-    has Str $.summary;
+	has Str $.author;
+	has Str $.code;
+	has Str $.summary;
 }

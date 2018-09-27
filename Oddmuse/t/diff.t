@@ -45,8 +45,8 @@ But after they are produced,
 my $c = [
     {
         change => 1,
-        from => 'The <del>Way</del> that can be told of is not the eternal <del>Way;</del>',
-	    to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao;</ins>',
+        from => 'The <del>Way</del> that can be told of is not the eternal <del>Way</del>;',
+	    to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao</ins>;',
     },
     {
         insert => 1,

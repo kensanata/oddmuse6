@@ -1,5 +1,11 @@
 # Oddmuse 6
 
+This file is for the people wanting to download and install Oddmuse 6.
+
+If you're a developer, see the [to do list](TODO.md).
+
+If you're curious, see the [feature list](FEATURES.md).
+
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 

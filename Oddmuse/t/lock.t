@@ -41,6 +41,6 @@ is($path.IO.slurp, "Done\n", "overwrite locked file");
 
 my $duration = DateTime.now.Instant - $ts;
 
-is($duration.round(0.2), 0.6, "duration is correct");
+is($duration.round(0.2), 3, "duration is correct");
 
 done-testing;

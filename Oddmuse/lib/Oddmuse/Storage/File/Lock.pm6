@@ -22,7 +22,7 @@ code block. Inside the code block, the file handle is "locked".
 
 When some other code attempts to do something with the same file, the
 code will wait for up to the max time before overwriting the locked
-file. It will check the lock once a second.
+file.
 
 We can't use IO::Handle.lock because this defaults to fcntl which
 means they are I<per process>.
@@ -31,10 +31,10 @@ means they are I<per process>.
 sub with-locked-file(Str $path, Int $max-delay, &code) is export {
     react {
 		my $lock = "$path.lock";
+        whenever Promise.in($max-delay) {
+            $lock.IO.rmdir;
+        }
 		whenever Supply.interval(0.2) {
-			if $_ >= $max-delay {
-				$lock.IO.rmdir;
-			}
 			if !$lock.IO.e {
 				$lock.IO.mkdir;
 				&code();

@@ -20,10 +20,24 @@ use Oddmuse::Filter;
 use Oddmuse::Storage::File::Lock;
 
 =head1 Oddmuse::Storage::File
-==begin pod
-This module implements the C<Storage> layer using plain text files.
-==end pod
 
+=begin pod
+
+This module implements the C<Storage> layer using plain text files.
+
+Pages are saved in the C<page> subdirectory with the <md> extension.
+
+Old revisions are saved in the C<keep> subdirectory with the <md>
+extension, as numbered backups. Thus, the filenames have names such as
+C<foo.md.~1~> and C<foo.md.~2~>. These are the numbered backups
+supported by Emacs and C<cp --backup=numbered>, and maybe others. The
+backup number is the revision. It starts at 1.
+
+The log of all changes is C<rc.log> in the data directory.
+
+=end pod
+
+#|{Implement storage layer using files.}
 class Oddmuse::Storage::File {
 
     my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
@@ -33,34 +47,25 @@ class Oddmuse::Storage::File {
     Pages are files in the C<page> subdirectory with the C<md> extension.
     =end pod
 
-    method get-page (Str $id! --> Oddmuse::Page) is export {
+    #|{Return a new Page.}
+    method get-page(Str $id! --> Oddmuse::Page) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/$id.md";
 		return Oddmuse::Page.new(exists => False) unless $path.IO.e;
 		return Oddmuse::Page.new(exists => True, text => $path.IO.slurp);
     }
 
-    =head3 put-page
-    =begin pod
-    Pages are saved in the C<page> subdirectory with the <md> extension.
-    =end pod
-
-    method put-page (Oddmuse::Page $page!) is export {
+    #|{Save a Page.}
+    method put-page(Oddmuse::Page $page!) is export {
 		my $dir = make-directory('page');
 		my $path = "$dir/{$page.name}.md";
 		with-locked-file $path, 2, {
 			spurt $path, $page.text, :enc('UTF-8');
 		};
 	}
-    =head3 get-keep-page
-    =begin pod
-    Backup pages are saved in the C<keep> subdirectory with the
-    <md.~n~> extension, where C<n> is an integer. These are the
-    numbered backups supported by Emacs and C<cp --backup=numbered>,
-    and maybe others.
-    =end pod
 
-    method get-keep-page (Str $id!, Int $n! --> Oddmuse::Page) is export {
+    #|{Get an old revision.}
+    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
 		my $dir   = make-directory('keep');
 		my $path = "$dir/$id.md.~$n~";
 		if $path.IO.e {
@@ -72,16 +77,8 @@ class Oddmuse::Storage::File {
 		return $.get-page($id);
 	}
 
-    =head3 put-keep-page
-    =begin pod
-    Backup pages are saved in the C<keep> subdirectory with the
-    <md.~n~> extension, where C<n> is an integer. These are the
-    numbered backups supported by Emacs and C<cp --backup=numbered>,
-    and maybe others. Return this number. This number is the revision.
-    It starts at 1.
-    =end pod
-
-    method put-keep-page (Str $id!) is export {
+    #|{Save new revision of a page and return the revision number.}
+    method put-keep-page(Str $id!) is export {
 		my $from-dir = make-directory('page');
 		my $to-dir   = make-directory('keep');
 
@@ -103,12 +100,8 @@ class Oddmuse::Storage::File {
 		return $n;
 	}
 
-	=head4 put-change
-	=begin pod
-	The log of all changes is C<rc.log> in the data directory.
-	=end pod
-
-	method put-change (Oddmuse::Change $change!) is export {
+    #|{Add a Change to the log.}
+	method put-change(Oddmuse::Change $change!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		with-locked-file $path, 2, {
@@ -119,26 +112,23 @@ class Oddmuse::Storage::File {
         }
 	}
 
-	=head4 get-changes
-	=begin pod
-	The log of all changes is C<rc.log> in the data directory.
-	=end pod
-
-	method get-changes (Oddmuse::Filter $filter!) is export {
-		my $dir = make-directory('');
+    #|{Get the changes matching a filter from the log file.}
+	method get-changes(Oddmuse::Filter $filter!) is export {
+		my $dir = make-directory '';
 		my $path = "$dir/rc.log";
 		return () unless $path.IO.e;
 		my @lines = $path.IO.lines.reverse;
-		my @changes = map { line-to-change $_ }, @lines;
-		@changes = grep {$_.name eq $filter.name}, @changes if $filter.name;
-		@changes = grep {$_.author eq $filter.author}, @changes if $filter.author;
-		@changes = grep {!$_.minor}, @changes unless $filter.minor;
-        @changes = latest-changes(@changes) unless $filter.all;
-		@changes = @changes.head($filter.n) if $filter.n;
+		my @changes = @lines.map: { line-to-change $_ };
+		@changes = @changes.grep: {$_.name eq $filter.name} if $filter.name;
+		@changes = @changes.grep: {$_.author eq $filter.author} if $filter.author;
+		@changes = @changes.grep: {!$_.minor} unless $filter.minor;
+        @changes = latest-changes @changes unless $filter.all;
+		@changes = @changes.head: $filter.n if $filter.n;
 		return @changes;
 	}
 
-	sub line-to-change (Str $line! --> Oddmuse::Change) {
+    #|{Helper to turn a log line into a Change.}
+	sub line-to-change(Str $line! --> Oddmuse::Change) {
 		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Oddmuse::Change.new(
 			ts			=> DateTime.new($ts),
@@ -152,22 +142,27 @@ class Oddmuse::Storage::File {
 		return $change;
 	}
 
-    sub latest-changes (@changes) {
+    #|{Helper to hide previous changes to the same page.}
+    sub latest-changes(@changes) {
         my @results;
         my %seen;
         for @changes ->  $change {
             next if %seen{$change.name};
             %seen{$change.name} = True;
-            @results.push($change);
+            @results.push: $change;
         }
         return @results;
     }
 
+    #|{
+     Create appropriate subdirectory, if it doesn't exist. Copy
+     default home page if creating the page subdirectory.
+    }
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
         if !$dir.IO.e {
-		    mkdir($dir);
+		    mkdir $dir;
             if $subdir eq 'page' {
                 my $welcome = %?RESOURCES<wiki/page/Home.md>
                 	|| 'resources/wiki/page/Home.md';
@@ -177,12 +172,13 @@ class Oddmuse::Storage::File {
 		return $dir;
 	}
 
-    method get-current-revision (Str $id! --> Int) is export {
-		my $dir = make-directory('');
+    #|{Get the current revision for a page.}
+    method get-current-revision(Str $id! --> Int) is export {
+		my $dir = make-directory '';
 		my $path = "$dir/rc.log";
 		return 0 unless $path.IO.e;
-        my @lines = $path.IO.lines.grep(/$SEP $id $SEP/);
-		my @changes = map { line-to-change($_) }, @lines;
+        my @lines = $path.IO.lines.grep: /$SEP $id $SEP/;
+		my @changes = @lines.map: { line-to-change($_) };
         for @changes.reverse {
             return $_.revision + 1 if $_.name eq $id;
         }

@@ -106,11 +106,11 @@ multi diff (Str $old, Str $new --> Array) is export {
             when 3 {
                 my ($from, $to) = refine($diff.Items(1).join("\n"),
                                          $diff.Items(2).join("\n"));
-                @hunks.push({ change => 1, :$from, :$to});
+                @hunks.push({ :change, :$from, :$to});
             }
-            when 2 { @hunks.push({ insert => 1,
+            when 2 { @hunks.push({ :insert,
                                    text => $diff.Items(2).join("\n")}); }
-            when 1 { @hunks.push({ delete => 1,
+            when 1 { @hunks.push({ :delete,
                                    text => $diff.Items(1).join("\n")}); }
         }
     }

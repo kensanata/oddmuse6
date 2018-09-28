@@ -44,16 +44,16 @@ But after they are produced,
 
 my $c = [
     {
-        change => 1,
+        change => True,
         from => 'The <del>Way</del> that can be told of is not the eternal <del>Way</del>;',
 	    to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao</ins>;',
     },
     {
-        insert => 1,
+        insert => True,
         text => 'The Named is the mother of all things.',
     },
     {
-        delete => 1,
+        delete => True,
         text => 'The two are the same,',
     }
 ];

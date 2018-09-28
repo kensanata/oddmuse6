@@ -14,12 +14,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-class Oddmuse::Filter {
-    has Int $.n is rw;      # limit to the last n items
-    has Str $.name is rw;   # limit to a specific page name
-    has Str $.author is rw; # limit to a specific author
-    has Bool $.minor is rw; # include minor changes
-    has Bool $.all is rw;   # just the last one
+class Oddmuse::Filter is rw {
+    has Int $.n;      # limit to the last n items
+    has Str $.name;   # limit to a specific page name
+    has Str $.author; # limit to a specific author
+    has Bool $.minor; # include minor changes
+    has Bool $.all;   # just the last one
 
     method from-hash(%params!) {
         if %params<n> and %params<n> ~~ /^\d+$/ {
@@ -27,8 +27,8 @@ class Oddmuse::Filter {
         } else {
             $!n = 30;
         }
-        $!minor = Bool(%params<minor>);
-        $!all = Bool(%params<all>);
+        $!minor = so %params<minor>;
+        $!all = so %params<all>;
         $!name = %params<name> || '';
         $!author = %params<author> || '';
         return self;

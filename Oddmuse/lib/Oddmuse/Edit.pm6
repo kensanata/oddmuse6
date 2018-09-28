@@ -30,12 +30,10 @@ The only keys required are C<id> and C<text>.
 =pod end
 
 sub edit-page (Str $id --> Str) is export {
-    my %context = id => $id;
+    my %context = :$id;
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('edit');
     my $page = $storage.get-page($id);
-    if $page.exists {
-	    %context<text> = $page.text;
-    }
+    %context<text> = $page.text if $page.exists;
     return render($template, %context);
 }

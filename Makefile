@@ -18,4 +18,4 @@ test: clean
 	cd Oddmuse && make test
 
 clean:
-	rm -rf test-*
+	rm -rf test-* Oddmuse/lib/.precomp

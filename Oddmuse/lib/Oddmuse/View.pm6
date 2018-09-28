@@ -20,26 +20,38 @@ use Oddmuse::Layout;
 
 =head1 View
 
-=head2 view-page($id)
-
 =begin pod
 
-The page $id is read and used as the text item for the C<view>
-template, which is rendered to HTML.
+These functions display pages to the user. If the page exists, its
+content is rendered from Markdown to HTML and the C<view> template is
+used to display it. The context keys of interest are the following:
 
-If the page $id does not exist, the special C<empty> template is used.
+=item C<id> is the page name
 
-Pages and templates are retrieved via C<Storage>.
+=item C<html> is the rendered page content
+
+=item C<revision> is the revision shown, if any
+
+=item C<diff> is set if the revision is bigger than 1 (since that
+allows us to generate a diff)
+
+Note that a revision of 0 is the same as the current revision. Pages
+and templates are retrieved via L<Oddmuse::Storage>.
+
+If the page does not exist, the special C<empty> template is used. In
+this case, only the C<id> key of the context is used.
 
 =end pod
 
+#|{Show a page.}
 multi view-page (Str $id) is export {
 	view-page($id, 0);
 }
 
+#|{Show a particular revision of a page.}
 multi view-page (Str $id, Int $n) is export {
 
-    my %context = id => $id;
+    my %context = :$id;
 
     # Get page data.
     my $storage = Oddmuse::Storage.new;

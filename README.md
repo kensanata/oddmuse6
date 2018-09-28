@@ -34,7 +34,7 @@ then I asked myself: why not go all the way‽ I might as well give Perl
 To run it, you need to install the dependencies:
 
 ```
-zef install --depsonly ./oddmuse
+zef install --depsonly ./Oddmuse
 ```
 
 Then start the service:

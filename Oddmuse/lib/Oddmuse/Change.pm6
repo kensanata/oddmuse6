@@ -14,6 +14,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+=head1 Change
+
+#|{
+An instance of this class represents a line from the change log. The
+actual representation of the change log is determined by
+Oddmuse::Storage.
+}
 class Oddmuse::Change {
 	has DateTime $.ts;
 	has Bool $.minor;

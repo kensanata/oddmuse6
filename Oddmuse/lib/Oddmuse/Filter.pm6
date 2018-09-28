@@ -14,6 +14,29 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+=head1 Oddmuse::Filter
+
+=begin pod
+
+Instances of this class act as a container for various attributes
+describing a filter to the list of changes. See L<Oddmuse::Changes>
+for more.
+
+If you add more filter attributes, be sure to change the following:
+
+=item in L<Oddmuse::Changes>, in C<view-changes>, make sure you
+      convert the value from C<%params> into a C<Filter> attribute
+
+=item in the same file, at the end, make sure you add it back to the
+      C<%filter> hash
+
+=item in C<changes.sp6>, add it to the C<#filter> section
+
+=item in the same file, add it to the form
+
+=end pod
+
+#|{Container for filter criteria, for changes.}
 class Oddmuse::Filter is rw {
     has Int $.n;      # limit to the last n items
     has Str $.name;   # limit to a specific page name
@@ -21,6 +44,7 @@ class Oddmuse::Filter is rw {
     has Bool $.minor; # include minor changes
     has Bool $.all;   # just the last one
 
+    #|{Create a new Filter from query parameters.}
     method from-hash(%params!) {
         if %params<n> and %params<n> ~~ /^\d+$/ {
             $!n = Int(%params<n>);
@@ -34,15 +58,3 @@ class Oddmuse::Filter is rw {
         return self;
     }
 }
-
-# If you add more filter attributes, be sure to change the following:
-#
-# 1. in Changes.pm6, in view-changes, make sure you convert the value
-#    from %params into a Filter attribute
-#
-# 2. in the same file, at the end, make sure you add it back to the
-#    %filter hash
-#
-# 3. in changes.sp6, add it to the #filter section
-#
-# 4. in the same file, add it to the form

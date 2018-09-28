@@ -37,8 +37,7 @@ class Oddmuse::Storage::File {
 		my $dir = make-directory('page');
 		my $path = "$dir/$id.md";
 		return Oddmuse::Page.new(exists => False) unless $path.IO.e;
-		my $fh = open $path, :enc('UTF-8');
-		return Oddmuse::Page.new(exists => True, text => $fh.slurp);
+		return Oddmuse::Page.new(exists => True, text => $path.IO.slurp);
     }
 
     =head3 put-page
@@ -65,11 +64,10 @@ class Oddmuse::Storage::File {
 		my $dir   = make-directory('keep');
 		my $path = "$dir/$id.md.~$n~";
 		if $path.IO.e {
-			my $fh = open $path, :enc('UTF-8');
 			return Oddmuse::Page.new(
 				exists		=> True,
 				revision	=> $n,
-				text		=> $fh.slurp);
+				text		=> $path.IO.slurp);
 		}
 		return $.get-page($id);
 	}
@@ -114,11 +112,11 @@ class Oddmuse::Storage::File {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		with-locked-file $path, 2, {
-			my $fh = open $path, :a, :enc('UTF-8');
-			$fh.say(($change.ts, $change.minor ?? 1 !! 0,
-					 $change.name, $change.revision, $change.author,
-					 $change.code, $change.summary).join($SEP));
-		};
+            $path.IO.spurt(($change.ts, $change.minor ?? 1 !! 0,
+					        $change.name, $change.revision, $change.author,
+					        $change.code, $change.summary).join($SEP) ~ "\n",
+                           :append);
+        }
 	}
 
 	=head4 get-changes
@@ -130,8 +128,7 @@ class Oddmuse::Storage::File {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		return () unless $path.IO.e;
-		my $fh = open $path, :enc('UTF-8');
-		my @lines = $fh.lines.reverse;
+		my @lines = $path.IO.lines.reverse;
 		my @changes = map { line-to-change $_ }, @lines;
 		@changes = grep {$_.name eq $filter.name}, @changes if $filter.name;
 		@changes = grep {$_.author eq $filter.author}, @changes if $filter.author;
@@ -184,8 +181,7 @@ class Oddmuse::Storage::File {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		return 0 unless $path.IO.e;
-		my $fh = open $path, :enc('UTF-8');
-		my @lines = $fh.lines.grep(/$SEP $id $SEP/);
+        my @lines = $path.IO.lines.grep(/$SEP $id $SEP/);
 		my @changes = map { line-to-change($_) }, @lines;
         for @changes.reverse {
             return $_.revision + 1 if $_.name eq $id;

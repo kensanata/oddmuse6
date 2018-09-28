@@ -75,7 +75,6 @@ class Oddmuse::Storage {
         if !$path.IO.e {
             $path = %?RESOURCES{"templates/$id.sp6"};
         }
-		my $fh = open $path, :enc('UTF-8');
-		return $fh.slurp;
+		return $path.slurp;
 	}
 }

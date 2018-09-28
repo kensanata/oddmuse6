@@ -17,22 +17,24 @@
 use Template::Mustache;
 use Oddmuse::Storage;
 
-=head1 Layout
+=head1 Oddmuse::Layout
 
-=head2 render(Str $template, %context --> Str)
 =begin pod
-Renders the given template with the given context. It also adds the
-following key: C<pages>, an array of hashes, each hash with just one
-key: C<id>. The value of this array is derived from the environment
-variable C<pages>.
+
+Function to render the given template with the given context. It also
+adds the following key: C<pages>, an array of hashes, each hash with
+just one key: C<id>. The value of this array is derived from the
+environment variable C<pages>.
 
 Given C<pages=Home, Changes, About> the value for the C<pages> key is:
 
     [{id => "Home"}, {id => "Changes"}, {id => "About"}]
 
 It also adds the C<menu> partial. This uses the C<menu> template.
+
 =end pod
 
+#|{Render a template and context, adding some more stuff to the context.}
 sub render(Str $template, %context --> Str) is export {
 
     my $storage = Oddmuse::Storage.new;
@@ -41,7 +43,7 @@ sub render(Str $template, %context --> Str) is export {
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     %context<pages> = [ map { id => $_ }, @pages ];
-    my %partials = menu => $storage.get-template('menu');
+    my %partials = menu => $storage.get-template: 'menu';
 
     return Template::Mustache.render($template, %context, :from([%partials]));
 }

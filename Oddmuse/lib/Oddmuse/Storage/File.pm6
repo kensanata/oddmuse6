@@ -166,7 +166,7 @@ class Oddmuse::Storage::File {
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
-        if (!$dir.IO.e) {
+        if !$dir.IO.e {
 		    mkdir($dir);
             if $subdir eq 'page' {
                 my $welcome = %?RESOURCES<wiki/page/Home.md>

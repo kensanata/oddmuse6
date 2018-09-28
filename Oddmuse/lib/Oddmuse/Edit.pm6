@@ -18,17 +18,20 @@ use Oddmuse::Storage;
 use Oddmuse::Layout;
 
 =head1 Edit
-=pod begin
-Function used for the edit page, i.e. the user interface people see
-before they save their edits.
-=pod end
 
-=head2 edit-page (Str $id --> Str)
-=pod begin
-Shows the edit form for a given page. This uses the C<edit> template.
-The only keys required are C<id> and C<text>.
-=pod end
+=begin pod
 
+The function used for the edit page, i.e. the user interface people
+see before they save their edits. The C<edit> template has the
+following keys you need to set in the context:
+
+=item C<id> is the page name
+
+=item C<text> is the raw text
+
+=end pod
+
+#|{Shows the edit form for a given page.}
 sub edit-page (Str $id --> Str) is export {
     my %context = :$id;
     my $storage = Oddmuse::Storage.new;

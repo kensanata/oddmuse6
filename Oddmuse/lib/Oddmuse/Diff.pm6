@@ -129,5 +129,5 @@ sub refine (Str $a, Str $b) {
             @to.push('<ins>' ~ $diff.Items(2) ~ '</ins>') if $diff.Items(2);
         }
     }
-    return @from.join(''), @to.join('');
+    return @from.join, @to.join;
 }

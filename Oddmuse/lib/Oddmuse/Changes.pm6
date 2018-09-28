@@ -20,26 +20,22 @@ use Oddmuse::Layout;
 
 =head1 Changes
 
-=head2 view-changes()
-
 =begin pod
 
-This loads all the changes and renders them using the C<changes>
-template.
-
-This happens via an array called C<changes>. Each element is a hash
-with the following keys:
+Changes are rendered using the C<changes> template. This happens via
+an array called C<changes>. Each element is a hash with the following
+keys:
 
 =item C<date> in the format C<YYYY-mm-dd>.
 
 =item C<first> is set when this is the first change in the list of
-changes. The template can uses this for the first day heading.
+changes. The template uses this for the first day heading.
 
 =item C<last> is set when this is the last change in the list of
-changes. The template can uses this for HTML cleanup.
+changes. The template uses this for HTML cleanup.
 
 =item C<day> is set when this change is on a different date compared
-to previous changes. The template can uses this for subsequent day
+to previous changes. The template uses this for subsequent day
 heading.
 
 =item C<time> in the format C<hh-mm-ss>.
@@ -49,11 +45,15 @@ heading.
 =item C<name> is the name of the page affected.
 
 =item C<revision> is the revision that was changed, which is
-equivalent to the number of edits made to a page.
+equivalent to the number of edits made to a page. The first revision
+is number 1. To look at the change, however, you'd want to look at the
+result, the revision after that! Thus, for the last change, there is
+no keep file! That's why we introduce a new key, C<to>.
 
 =item C<to> is the revision that the change resulted in, which is just
 the revision + 1. That's the revision that will be shown when looking
-at the change.
+at the change. This is important: basically the changes are I<between>
+the revisions!
 
 =item C<author> is the name of the author, if specified.
 
@@ -80,37 +80,33 @@ change per page.
 
 =end pod
 
-multi view-changes (%params!) is export {
-    view-changes(Oddmuse::Filter.new.from-hash(%params));
-}
+#|{This function creates a new Filter based on query parameters.}
+multi view-changes(%params!) is export {
+view-changes(Oddmuse::Filter.new.from-hash(%params)); }
 
+#|{This function shows changes based on a Filter.}
 multi view-changes (Oddmuse::Filter $filter!) is export {
 
     my %context = id => %*ENV<changes> || "Changes";
 
-	# Get the changes from storage. Note that the revision is the
-	# revision that was changed: the first revision has number 1. To
-	# look at the change, however, you'd want to look at the result,
-	# the revision after that! Thus, for the last change, there is no
-	# keep file! That's why we introduce the new key show-revision,
-	# below.
+	# Get the changes from storage.
     my $storage = Oddmuse::Storage.new;
-    my @changes = $storage.get-changes($filter);
+    my @changes = $storage.get-changes: $filter;
 
     # Turn the object into a hash fit for the template.
     my $day = '';
-    my @hashes = map {
+    my @hashes = @changes.map: {
 		my %change =
-			date => $_.ts.yyyy-mm-dd,
-			time => $_.ts.hh-mm-ss,
-			minor => $_.minor,
-			name => $_.name,
-			revision => $_.revision,
-			to => $_.revision + 1,
-			author => $_.author,
+			date => .ts.yyyy-mm-dd,
+			time => .ts.hh-mm-ss,
+			minor => .minor,
+			name => .name,
+			revision => .revision,
+			to => .revision + 1,
+			author => .author,
 			# { c => "1", c=> "2", c=> "3", c=> "4", }
-			code => [ map { c => $_ }, $_.code.split("", :skip-empty) ],
-			summary => $_.summary||'';
+			code => [ map { c => $_ }, .code.split("", :skip-empty) ],
+			summary => .summary||'';
         if not $day {
             %change<first> = True;
             $day = %change<date>;
@@ -119,10 +115,10 @@ multi view-changes (Oddmuse::Filter $filter!) is export {
             $day = %change<date>;
         }
         %change;
-	}, @changes;
+	};
 
     @hashes[*-1]<last> = True;
-    @hashes[min(1, @hashes.end)]<second> = True; # 0 or 1
+    @hashes[min(1, @hashes.end)]<second> = True; # index is 0 or 1
     %context<changes> = @hashes;
 
 	# The same is true for the filter description...

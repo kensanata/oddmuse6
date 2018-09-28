@@ -49,22 +49,14 @@ C<del> to highlight particular words that were changed. The C<text>,
 C<from> and C<to> are otherwise plain text.
 =end pod
 
-=head2 view-diff (Str $id, Int $to --> Str)
-=begin pod
-Return the diff of the page give for a revision and it's predecessor.
-=end pod
-
+#|{Return the diff of the page give for a revision and it's predecessor.}
 multi view-diff (Str $id, Int $to --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $rev = $to || $storage.get-current-revision($id);
     return view-diff($id, $rev-1, $rev);
 }
 
-=head2 view-diff (Str $id, Int $from, Int $to --> Str)
-=begin pod
-Return the diff of two revisions of a page.
-=end pod
-
+#|{Return the diff of two revisions of a page.}
 multi view-diff (Str $id, Int $from, Int $to --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('diff');
@@ -75,15 +67,11 @@ multi view-diff (Str $id, Int $from, Int $to --> Str) is export {
     return render($template, %context);
 }
 
-=head2 diff (Str $id, Int $from, Int $to --> Array)
-=begin pod
-Retrieve the texts of the two revisions and return a diff, if
-available. If the a revision cannot be retrieved, then the current
-revision is used. The actual diff is computed using the diff variant
-that just takes two strings as input. The result is a list of hashes
-suitable for the C<diff> template.
-=end pod
-
+#|{
+Retrieve the texts of the two revisions and return a list of hunks for
+the difference between the two strings, if available. If the a
+revision cannot be retrieved, then the current revision is used.
+}
 multi diff (Str $id, Int $from, Int $to --> Array) is export {
     my $storage = Oddmuse::Storage.new;
     my $old = $storage.get-keep-page($id, $from).text;
@@ -91,12 +79,9 @@ multi diff (Str $id, Int $from, Int $to --> Array) is export {
     return diff($old, $new);
 }
 
-=head2 diff (Str $old, Str $new --> Array)
-=begin pod
-Return diff between two strings. The result is a list of hashes
-suitable for the C<diff> template.
-=end pod
-
+#|{
+Return a list of hunks for the difference between two strings.
+}
 multi diff (Str $old, Str $new --> Array) is export {
     my @hunks;
     my $diff = Algorithm::Diff.new(escape-html($old).lines,
@@ -117,6 +102,11 @@ multi diff (Str $old, Str $new --> Array) is export {
     return @hunks;
 }
 
+#|{
+This helper function is not exported. It is used whenever there is a
+change. It adds ins and del HTML tags to the individual changes on a
+per-word basis.
+}
 sub refine (Str $a, Str $b) {
     my @from, my @to;
     my $diff = Algorithm::Diff.new($a.split(/ <|w> /), $b.split(/ <|w> /));

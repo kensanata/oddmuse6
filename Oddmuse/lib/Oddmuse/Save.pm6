@@ -27,11 +27,11 @@ sub save-page (Str :$id!, Str :$text!,
     # Apache Proxy (where REMOTE_ADDR will always be the IP number of
     # the host where Apache runs).
     my $code= "";
-    if (!$author) {
+    if !$author {
 		my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
 		# FIXME: double check djb2 implementation
 		# Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
-		my $hash = [5381, |$ip.comb».ord].reduce(* * 33 +^ *) mod 8**4;
+		my $hash = [5381, |$ip.ords].reduce(* * 33 +^ *) mod 8**4;
 		$code = $hash.Str;
     }
 

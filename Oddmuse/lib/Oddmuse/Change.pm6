@@ -16,12 +16,21 @@
 
 =head1 Change
 
-#|{
-An instance of this class represents a line from the change log. The
-actual representation of the change log is determined by
-Oddmuse::Storage.
-}
-class Oddmuse::Change {
+=begin pod
+
+Instances of this class act as a container for various attributes but
+the class doesn't actually define any methods.
+
+The actual representation of the change log is determined by
+L<Oddmuse::Storage>. By default, it's the C<rc.log> file in the data
+directory. The storage class creates the instances for this class.
+
+Instances of this class are processed by L<Oddmuse::Changes>.
+
+=end pod
+
+ #|{An instance of this class represents a line from the change log.}
+ class Oddmuse::Change {
 	has DateTime $.ts;
 	has Bool $.minor;
 	has Str $.name;

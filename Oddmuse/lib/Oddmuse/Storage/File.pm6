@@ -40,33 +40,33 @@ The log of all changes is C<rc.log> in the data directory.
 #|{Implement storage layer using files.}
 class Oddmuse::Storage::File {
 
-    my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
+	my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
-    =head2 get-page
-    =begin pod
-    Pages are files in the C<page> subdirectory with the C<md> extension.
-    =end pod
+	=head2 get-page
+	=begin pod
+	Pages are files in the C<page> subdirectory with the C<md> extension.
+	=end pod
 
-    #|{Return a new Page.}
-    method get-page(Str $id! --> Oddmuse::Page) is export {
-		my $dir = make-directory('page');
+	#|{Return a new Page.}
+	method get-page(Str $id! --> Oddmuse::Page) is export {
+		my $dir = make-directory 'page';
 		my $path = "$dir/$id.md";
 		return Oddmuse::Page.new(exists => False) unless $path.IO.e;
 		return Oddmuse::Page.new(exists => True, text => $path.IO.slurp);
-    }
+	}
 
-    #|{Save a Page.}
-    method put-page(Oddmuse::Page $page!) is export {
-		my $dir = make-directory('page');
+	#|{Save a Page.}
+	method put-page(Oddmuse::Page $page!) is export {
+		my $dir = make-directory 'page';
 		my $path = "$dir/{$page.name}.md";
 		with-locked-file $path, 2, {
-			spurt $path, $page.text, :enc('UTF-8');
+			spurt $path, $page.text;
 		};
 	}
 
-    #|{Get an old revision.}
-    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
-		my $dir   = make-directory('keep');
+	#|{Get an old revision.}
+	method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
+		my $dir = make-directory 'keep';
 		my $path = "$dir/$id.md.~$n~";
 		if $path.IO.e {
 			return Oddmuse::Page.new(
@@ -77,10 +77,10 @@ class Oddmuse::Storage::File {
 		return $.get-page($id);
 	}
 
-    #|{Save new revision of a page and return the revision number.}
-    method put-keep-page(Str $id!) is export {
-		my $from-dir = make-directory('page');
-		my $to-dir   = make-directory('keep');
+	#|{Save new revision of a page and return the revision number.}
+	method put-keep-page(Str $id!) is export {
+		my $from-dir = make-directory 'page';
+		my $to-dir	 = make-directory 'keep';
 
 		# lock the source file!
 		my $path = "$from-dir/$id.md";
@@ -100,19 +100,19 @@ class Oddmuse::Storage::File {
 		return $n;
 	}
 
-    #|{Add a Change to the log.}
+	#|{Add a Change to the log.}
 	method put-change(Oddmuse::Change $change!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
 		with-locked-file $path, 2, {
-            $path.IO.spurt(($change.ts, $change.minor ?? 1 !! 0,
-					        $change.name, $change.revision, $change.author,
-					        $change.code, $change.summary).join($SEP) ~ "\n",
-                           :append);
-        }
+			$path.IO.spurt(($change.ts, $change.minor ?? 1 !! 0,
+							$change.name, $change.revision, $change.author,
+							$change.code, $change.summary).join($SEP) ~ "\n",
+						   :append);
+		}
 	}
 
-    #|{Get the changes matching a filter from the log file.}
+	#|{Get the changes matching a filter from the log file.}
 	method get-changes(Oddmuse::Filter $filter!) is export {
 		my $dir = make-directory '';
 		my $path = "$dir/rc.log";
@@ -142,46 +142,46 @@ class Oddmuse::Storage::File {
 		return $change;
 	}
 
-    #|{Helper to hide previous changes to the same page.}
-    sub latest-changes(@changes) {
-        my @results;
-        my %seen;
-        for @changes ->  $change {
-            next if %seen{$change.name};
-            %seen{$change.name} = True;
-            @results.push: $change;
-        }
-        return @results;
-    }
+	#|{Helper to hide previous changes to the same page.}
+	sub latest-changes(@changes) {
+		my @results;
+		my %seen;
+		for @changes ->	 $change {
+			next if %seen{$change.name};
+			%seen{$change.name} = True;
+			@results.push: $change;
+		}
+		return @results;
+	}
 
-    #|{
-     Create appropriate subdirectory, if it doesn't exist. Copy
-     default home page if creating the page subdirectory.
-    }
+	#|{
+	 Create appropriate subdirectory, if it doesn't exist. Copy
+	 default home page if creating the page subdirectory.
+	}
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
-        if !$dir.IO.e {
-		    mkdir $dir;
-            if $subdir eq 'page' {
-                my $welcome = %?RESOURCES<wiki/page/Home.md>
-                	|| 'resources/wiki/page/Home.md';
-                copy $welcome, "$dir/Home.md" if $welcome.IO.e;
-            }
-        }
+		if !$dir.IO.e {
+			mkdir $dir;
+			if $subdir eq 'page' {
+				my $welcome = %?RESOURCES<wiki/page/Home.md>
+					|| 'resources/wiki/page/Home.md';
+				copy $welcome, "$dir/Home.md" if $welcome.IO.e;
+			}
+		}
 		return $dir;
 	}
 
-    #|{Get the current revision for a page.}
-    method get-current-revision(Str $id! --> Int) is export {
+	#|{Get the current revision for a page.}
+	method get-current-revision(Str $id! --> Int) is export {
 		my $dir = make-directory '';
 		my $path = "$dir/rc.log";
 		return 0 unless $path.IO.e;
-        my @lines = $path.IO.lines.grep: /$SEP $id $SEP/;
+		my @lines = $path.IO.lines.grep: /$SEP $id $SEP/;
 		my @changes = @lines.map: { line-to-change($_) };
-        for @changes.reverse {
-            return $_.revision + 1 if $_.name eq $id;
-        }
-        return 0;
-    }
+		for @changes.reverse {
+			return $_.revision + 1 if $_.name eq $id;
+		}
+		return 0;
+	}
 }

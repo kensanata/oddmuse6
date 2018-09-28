@@ -18,7 +18,7 @@ use Oddmuse::Storage;
 use Oddmuse::Filter;
 use Oddmuse::Layout;
 
-=head1 Changes
+=head1 Oddmuse::Changes
 
 =begin pod
 

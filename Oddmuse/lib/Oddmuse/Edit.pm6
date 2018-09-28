@@ -17,7 +17,7 @@
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
-=head1 Edit
+=head1 Oddmuse::Edit
 
 =begin pod
 

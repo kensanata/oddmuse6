@@ -18,7 +18,7 @@ use Text::Markdown;
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
-=head1 View
+=head1 Oddmuse::View
 
 =begin pod
 

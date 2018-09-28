@@ -19,8 +19,10 @@ use HTML::Escape;
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
-=head1 Diff
+=head1 Oddmuse::Diff
+
 =begin pod
+
 The functions exported all concern themselves with the the C<diff>
 template. The context for this template contains the following keys:
 
@@ -47,6 +49,7 @@ Each hunk is a hash with the following keys:
 The values of C<from> and C<to> contain the HTML tags C<ins> and
 C<del> to highlight particular words that were changed. The C<text>,
 C<from> and C<to> are otherwise plain text.
+
 =end pod
 
 #|{Return the diff of the page give for a revision and it's predecessor.}

@@ -122,12 +122,12 @@ class Oddmuse::Storage::File {
 		@changes = @changes.grep: {$_.name eq $filter.name} if $filter.name;
 		@changes = @changes.grep: {$_.author eq $filter.author} if $filter.author;
 		@changes = @changes.grep: {!$_.minor} unless $filter.minor;
-        @changes = latest-changes @changes unless $filter.all;
+		@changes = latest-changes @changes unless $filter.all;
 		@changes = @changes.head: $filter.n if $filter.n;
 		return @changes;
 	}
 
-    #|{Helper to turn a log line into a Change.}
+	#|{Helper to turn a log line into a Change.}
 	sub line-to-change(Str $line! --> Oddmuse::Change) {
 		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Oddmuse::Change.new(

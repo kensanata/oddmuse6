@@ -24,12 +24,14 @@
     "wiki/page/Home.md"
   ],
   "provides": {
-    "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
     "Oddmuse::Change":              "lib/Oddmuse/Change.pm6",
     "Oddmuse::Changes":             "lib/Oddmuse/Changes.pm6",
+    "Oddmuse::Diff":                "lib/Oddmuse/Diff.pm6",
     "Oddmuse::Edit":                "lib/Oddmuse/Edit.pm6",
     "Oddmuse::Filter":              "lib/Oddmuse/Filter.pm6",
+    "Oddmuse::Layout":              "lib/Oddmuse/Layout.pm6",
     "Oddmuse::Page":                "lib/Oddmuse/Page.pm6",
+    "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
     "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
     "Oddmuse::Save":                "lib/Oddmuse/Save.pm6",
     "Oddmuse::Storage":             "lib/Oddmuse/Storage.pm6",

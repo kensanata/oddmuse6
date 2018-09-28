@@ -1,5 +1,17 @@
 # Things to do for Oddmuse 6
 
+Code Review:
+
+- attach documentation to elements using #|{...}
+- remove spaces betwen function name and argument list in declarations
+- avoid sub forms of grep and map
+- use colon notation, e.g. @results.push($change) → @results.push: $change
+- avoid open and use the IO layer in Storage::File
+- use $dir.add: 'rc.log' instead of "$dir/rc.log" and the like
+- use more statement modifiers if the block is only one line
+- get rid of id => $id and the like: use :$id instead
+- something like %context<pages> = 'id' X=> @pages; in Layout.pm6
+
 Debt:
 
 - abstract the layout using a standard header and footer

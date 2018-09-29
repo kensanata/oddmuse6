@@ -14,13 +14,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Storage::File::Test
 =begin pod
+
+=head1 Oddmuse::Storage::File::Test
+
 C<get-random-wiki-directory> creates a directory with a random name
 and returns it. It also sets the C<wiki> environment variable such
-that any subsequent code will use it.
+that any subsequent code will use it. This allows tests to run in
+parallel as they all have their own data directory. Delete them every
+now and then using C<make clean> from the top level.
+
 =end pod
 
+#| Create a directory with a random name and return it.
 sub get-random-wiki-directory is export {
 	my $dir;
 	repeat {

@@ -17,9 +17,9 @@
 use Template::Mustache;
 use Oddmuse::Storage;
 
-=head1 Oddmuse::Layout
-
 =begin pod
+
+=head1 Oddmuse::Layout
 
 Function to render the given template with the given context. It also
 adds the following key: C<pages>, an array of hashes, each hash with
@@ -34,7 +34,7 @@ It also adds the C<menu> partial. This uses the C<menu> template.
 
 =end pod
 
-#|{Render a template and context, adding some more stuff to the context.}
+#| Render a template and context, adding some more stuff to the context.
 sub render(Str $template, %context --> Str) is export {
 
     my $storage = Oddmuse::Storage.new;

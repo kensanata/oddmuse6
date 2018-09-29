@@ -19,11 +19,11 @@ use Oddmuse::Change;
 use Oddmuse::Filter;
 use Oddmuse::Storage::File::Lock;
 
-=head1 Oddmuse::Storage::File
-
 =begin pod
 
-This module implements the C<Storage> layer using plain text files.
+=head1 Oddmuse::Storage::File
+
+This module implements the L<Oddmuse::Storage> layer using plain text files.
 
 Pages are saved in the C<page> subdirectory with the <md> extension.
 
@@ -37,17 +37,12 @@ The log of all changes is C<rc.log> in the data directory.
 
 =end pod
 
-#|{Implement storage layer using files.}
+#| Implement storage layer using files.
 class Oddmuse::Storage::File {
 
 	my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
-	=head2 get-page
-	=begin pod
-	Pages are files in the C<page> subdirectory with the C<md> extension.
-	=end pod
-
-	#|{Return a new Page.}
+	#| Return a new Page.
 	method get-page(Str $id! --> Oddmuse::Page) is export {
 		my $dir = make-directory 'page';
 		my $path = "$dir/$id.md";
@@ -55,7 +50,7 @@ class Oddmuse::Storage::File {
 		return Oddmuse::Page.new(exists => True, text => $path.IO.slurp);
 	}
 
-	#|{Save a Page.}
+	#| Save a Page.
 	method put-page(Oddmuse::Page $page!) is export {
 		my $dir = make-directory 'page';
 		my $path = "$dir/{$page.name}.md";
@@ -64,7 +59,7 @@ class Oddmuse::Storage::File {
 		};
 	}
 
-	#|{Get an old revision.}
+	#| Get an old revision.
 	method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
 		my $dir = make-directory 'keep';
 		my $path = "$dir/$id.md.~$n~";
@@ -77,7 +72,7 @@ class Oddmuse::Storage::File {
 		return $.get-page($id);
 	}
 
-	#|{Save new revision of a page and return the revision number.}
+	#| Save new revision of a page and return the revision number.
 	method put-keep-page(Str $id!) is export {
 		my $from-dir = make-directory 'page';
 		my $to-dir	 = make-directory 'keep';
@@ -100,7 +95,7 @@ class Oddmuse::Storage::File {
 		return $n;
 	}
 
-	#|{Add a Change to the log.}
+	#| Add a Change to the log.
 	method put-change(Oddmuse::Change $change!) is export {
 		my $dir = make-directory('');
 		my $path = "$dir/rc.log";
@@ -112,7 +107,7 @@ class Oddmuse::Storage::File {
 		}
 	}
 
-	#|{Get the changes matching a filter from the log file.}
+	#| Get the changes matching a filter from the log file.
 	method get-changes(Oddmuse::Filter $filter!) is export {
 		my $dir = make-directory '';
 		my $path = "$dir/rc.log";
@@ -127,7 +122,7 @@ class Oddmuse::Storage::File {
 		return @changes;
 	}
 
-	#|{Helper to turn a log line into a Change.}
+	#| Helper to turn a log line into a Change.
 	sub line-to-change(Str $line! --> Oddmuse::Change) {
 		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Oddmuse::Change.new(
@@ -142,7 +137,7 @@ class Oddmuse::Storage::File {
 		return $change;
 	}
 
-	#|{Helper to hide previous changes to the same page.}
+	#| Helper to hide previous changes to the same page.
 	sub latest-changes(@changes) {
 		my @results;
 		my %seen;
@@ -154,10 +149,8 @@ class Oddmuse::Storage::File {
 		return @results;
 	}
 
-	#|{
-	 Create appropriate subdirectory, if it doesn't exist. Copy
-	 default home page if creating the page subdirectory.
-	}
+	#| Create appropriate subdirectory, if it doesn't exist. Copy
+ 	#| default home page if creating the page subdirectory.
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
@@ -172,7 +165,7 @@ class Oddmuse::Storage::File {
 		return $dir;
 	}
 
-	#|{Get the current revision for a page.}
+	#| Get the current revision for a page.
 	method get-current-revision(Str $id! --> Int) is export {
 		my $dir = make-directory '';
 		my $path = "$dir/rc.log";

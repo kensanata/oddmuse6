@@ -14,6 +14,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+=begin pod
+
+=head1 Oddmuse::Page
+
+Instances of this class act as a container for various attributes but
+the class doesn't actually define any methods.
+
+Instances of this class are processed by L<Oddmuse::Save>.
+
+=end pod
+
+#| An instance of this class represents a wiki page.
 class Oddmuse::Page {
     has Str $.name;
     has Str $.text;

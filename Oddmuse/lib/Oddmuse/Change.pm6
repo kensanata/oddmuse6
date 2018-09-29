@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Oddmuse::Change
-
 =begin pod
+
+=head1 Oddmuse::Change
 
 Instances of this class act as a container for various attributes but
 the class doesn't actually define any methods.
@@ -29,7 +29,7 @@ Instances of this class are processed by L<Oddmuse::Changes>.
 
 =end pod
 
- #|{An instance of this class represents a line from the change log.}
+ #| An instance of this class represents a line from the change log.
  class Oddmuse::Change {
 	has DateTime $.ts;
 	has Bool $.minor;

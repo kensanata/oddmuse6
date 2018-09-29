@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Oddmuse::Filter
-
 =begin pod
+
+=head1 Oddmuse::Filter
 
 Instances of this class act as a container for various attributes
 describing a filter to the list of changes. See L<Oddmuse::Changes>
@@ -36,7 +36,7 @@ If you add more filter attributes, be sure to change the following:
 
 =end pod
 
-#|{Container for filter criteria, for changes.}
+#| Container for filter criteria, for changes.
 class Oddmuse::Filter is rw {
     has Int $.n;      # limit to the last n items
     has Str $.name;   # limit to a specific page name
@@ -44,7 +44,7 @@ class Oddmuse::Filter is rw {
     has Bool $.minor; # include minor changes
     has Bool $.all;   # just the last one
 
-    #|{Create a new Filter from query parameters.}
+    #| Create a new Filter from query parameters.
     method from-hash(%params!) {
         if %params<n> and %params<n> ~~ /^\d+$/ {
             $!n = Int(%params<n>);

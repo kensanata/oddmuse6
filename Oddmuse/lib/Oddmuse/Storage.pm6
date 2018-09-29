@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-=head1 Oddmuse::Storage
-
 =begin pod
+
+=head1 Oddmuse::Storage
 
 This module delegates most storage issues to a role as specified by
 the environment variable C<storage>. By default, that would be
@@ -25,13 +25,13 @@ C<Oddmuse::Storage::File>.
 The role must implement the following methods:
 
 =defn get-page
-Get a C<Page> given an id.
+Get a L<Oddmuse::Page> given an id.
 
 =defn put-page
-Save a C<Page>.
+Save a L<Oddmuse::Page>.
 
 =defn get-keep-page
-Save a C<Page> given an id and a revision number.
+Save a L<Oddmuse::Page> given an id and a revision number.
 saved (an integer).
 
 =defn put-keep-page
@@ -43,19 +43,21 @@ Save a backup of the page C<id>. Return the latest revision thus
 saved (an integer).
 
 =defn put-change
-Save a C<Change>.
+Save a L<Oddmuse::Change>.
 
 =defn get-changes
-Get a list of C<Change> objects.
+Get a list of L<Oddmuse::Change> objects.
 
-The following methods are implemented by C<Storage> itself:
+The following methods are implemented by L<Oddmuse::Storage> itself:
 
 =defn get-template
-Get a the text for a template. The template should be HTML and must use
-C<Template::Mustache> markup.
+Get a the text for a template. The template should be HTML and must
+use L<Template::Mustache> markup. Templates are files in the
+C<templates> subdirectory with the <sp6> extension.
 
 =end pod
 
+#| The front end which use a backend to delegate many function calls.
 class Oddmuse::Storage {
     my $class = %*ENV<storage> || 'Oddmuse::Storage::File';
     require ::($class);
@@ -64,11 +66,7 @@ class Oddmuse::Storage {
 		put-change get-changes get-current-revision
 		> = ::($class).new;
 
-	=head4 get-template
-	=begin pod
-	Pages are files in the C<templates> subdirectory with the <sp6> extension.
-	=end pod
-
+    #| Get a the text for a template.
 	method get-template (Str $id!) is export {
 		my $dir =  %*ENV<templates> || 'templates';
 		my $path = "$dir/$id.sp6";

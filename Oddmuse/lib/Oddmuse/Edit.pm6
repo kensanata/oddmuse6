@@ -17,9 +17,9 @@
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
-=head1 Oddmuse::Edit
-
 =begin pod
+
+=head1 Oddmuse::Edit
 
 The function used for the edit page, i.e. the user interface people
 see before they save their edits. The C<edit> template has the
@@ -31,7 +31,7 @@ following keys you need to set in the context:
 
 =end pod
 
-#|{Shows the edit form for a given page.}
+#| Shows the edit form for a given page.
 sub edit-page (Str $id --> Str) is export {
     my %context = :$id;
     my $storage = Oddmuse::Storage.new;

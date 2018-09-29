@@ -18,9 +18,9 @@ use Oddmuse::Storage;
 use Oddmuse::Filter;
 use Oddmuse::Layout;
 
-=head1 Oddmuse::Changes
-
 =begin pod
+
+=head1 Oddmuse::Changes
 
 Changes are rendered using the C<changes> template. This happens via
 an array called C<changes>. Each element is a hash with the following
@@ -80,11 +80,11 @@ change per page.
 
 =end pod
 
-#|{This function creates a new Filter based on query parameters.}
+#| This function creates a new Filter based on query parameters.
 multi view-changes(%params!) is export {
 view-changes(Oddmuse::Filter.new.from-hash(%params)); }
 
-#|{This function shows changes based on a Filter.}
+#| This function shows changes based on a Filter.
 multi view-changes (Oddmuse::Filter $filter!) is export {
 
     my %context = id => %*ENV<changes> || "Changes";

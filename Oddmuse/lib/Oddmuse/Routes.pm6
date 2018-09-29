@@ -22,6 +22,16 @@ use Oddmuse::Changes;
 use Oddmuse::Filter;
 use Oddmuse::Diff;
 
+=begin pod
+
+=head1 Oddmuse::Routes
+
+This is the most important code used by C<Cro>. See the C<README> for
+more information.
+
+=end pod
+
+#| Define the various routes the wiki handles.
 sub routes() is export {
     my $changes = %*ENV<changes> || 'Changes';
     route {

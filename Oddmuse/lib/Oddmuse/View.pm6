@@ -18,9 +18,9 @@ use Text::Markdown;
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
-=head1 Oddmuse::View
-
 =begin pod
+
+=head1 Oddmuse::View
 
 These functions display pages to the user. If the page exists, its
 content is rendered from Markdown to HTML and the C<view> template is
@@ -43,12 +43,12 @@ this case, only the C<id> key of the context is used.
 
 =end pod
 
-#|{Show a page.}
+#| Show a page.
 multi view-page (Str $id) is export {
 	view-page($id, 0);
 }
 
-#|{Show a particular revision of a page.}
+#| Show a particular revision of a page.
 multi view-page (Str $id, Int $n) is export {
 
     my %context = :$id;

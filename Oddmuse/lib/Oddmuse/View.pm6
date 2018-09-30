@@ -44,12 +44,12 @@ this case, only the C<id> key of the context is used.
 =end pod
 
 #| Show a page.
-multi view-page (Str $id) is export {
+multi view-page(Str $id) is export {
 	view-page($id, 0);
 }
 
 #| Show a particular revision of a page.
-multi view-page (Str $id, Int $n) is export {
+multi view-page(Str $id, Int $n) is export {
 
     my %context = :$id;
 

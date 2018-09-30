@@ -34,7 +34,7 @@ Keep files are old, numbered revisions of the page.
 =end pod
 
 #| Save a page. Compute the code for anonymous users.
-sub save-page (Str :$id!, Str :$text!,
+sub save-page(Str :$id!, Str :$text!,
 			   Str :$summary = '', Bool :$minor = False,
 			   Str :$author = '') is export {
 

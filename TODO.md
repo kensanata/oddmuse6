@@ -2,8 +2,6 @@
 
 Code Review:
 
-- attach documentation to elements using #|{...}
-- remove spaces betwen function name and argument list in declarations
 - avoid sub forms of grep and map
 - use colon notation, e.g. @results.push($change) → @results.push: $change
 - avoid open and use the IO layer in Storage::File

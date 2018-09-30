@@ -32,7 +32,7 @@ following keys you need to set in the context:
 =end pod
 
 #| Shows the edit form for a given page.
-sub edit-page (Str $id --> Str) is export {
+sub edit-page(Str $id --> Str) is export {
     my %context = :$id;
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('edit');

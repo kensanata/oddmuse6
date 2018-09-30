@@ -46,14 +46,14 @@ C<from> and C<to> are otherwise plain text.
 =end pod
 
 #| Return the diff of the page give for a revision and it's predecessor.
-multi view-diff (Str $id, Int $to --> Str) is export {
+multi view-diff(Str $id, Int $to --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $rev = $to || $storage.get-current-revision($id);
     return view-diff($id, $rev-1, $rev);
 }
 
 #| Return the diff of two revisions of a page.
-multi view-diff (Str $id, Int $from, Int $to --> Str) is export {
+multi view-diff(Str $id, Int $from, Int $to --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('diff');
 
@@ -68,7 +68,7 @@ Retrieve the texts of the two revisions and return a list of hunks for
 the difference between the two strings, if available. If a revision
 cannot be retrieved, the current revision is used.
 )
-multi diff (Str $id, Int $from, Int $to --> Array) is export {
+multi diff(Str $id, Int $from, Int $to --> Array) is export {
     my $storage = Oddmuse::Storage.new;
     my $old = $storage.get-keep-page($id, $from).text;
     my $new = $storage.get-keep-page($id, $to).text;
@@ -76,7 +76,7 @@ multi diff (Str $id, Int $from, Int $to --> Array) is export {
 }
 
 #| Return a list of hunks for the difference between two strings.
-multi diff (Str $old, Str $new --> Array) is export {
+multi diff(Str $old, Str $new --> Array) is export {
     my @hunks;
     my $diff = Algorithm::Diff.new(escape-html($old).lines,
                                    escape-html($new).lines);
@@ -101,7 +101,7 @@ This helper function is not exported. It is used whenever there is a
 change. It adds C<ins> and C<del> HTML tags to the individual changes
 on a per-word basis.
 )
-sub refine (Str $a, Str $b) {
+sub refine(Str $a, Str $b) {
     my @from, my @to;
     my $diff = Algorithm::Diff.new($a.split(/ <|w> /), $b.split(/ <|w> /));
     while $diff.Next {

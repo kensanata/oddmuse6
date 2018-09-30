@@ -85,7 +85,7 @@ multi view-changes(%params!) is export {
 view-changes(Oddmuse::Filter.new.from-hash(%params)); }
 
 #| This function shows changes based on a Filter.
-multi view-changes (Oddmuse::Filter $filter!) is export {
+multi view-changes(Oddmuse::Filter $filter!) is export {
 
     my %context = id => %*ENV<changes> || "Changes";
 

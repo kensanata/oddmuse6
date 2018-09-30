@@ -42,7 +42,7 @@ sub render(Str $template, %context --> Str) is export {
     # Get the pages for the main menu
     my $menu = %*ENV<menu> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
-    %context<pages> = [ map { id => $_ }, @pages ];
+    %context<pages> = ["id" X=> @pages]; # Template::Mustache needs an array
     my %partials = menu => $storage.get-template: 'menu';
 
     return Template::Mustache.render($template, %context, :from([%partials]));

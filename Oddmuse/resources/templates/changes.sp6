@@ -9,7 +9,7 @@
 		{{> menu}}
 		<div id="content">
 			<div id="changes">
-				<h1>{{id}}</h1>
+				<h1>Changes</h1>
 
 				{{#filter}}
 				<form id="filter" action="/changes">

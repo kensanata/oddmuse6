@@ -59,17 +59,15 @@ class Oddmuse::Storage::File {
 		};
 	}
 
-	#| Get an old revision.
+	#| Get an old revision, or the current page if it doesn't exist.
 	method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
 		my $dir = make-directory 'keep';
 		my $path = "$dir/$id.md.~$n~";
-		if $path.IO.e {
-			return Oddmuse::Page.new(
-				exists		=> True,
-				revision	=> $n,
-				text		=> $path.IO.slurp);
-		}
-		return $.get-page($id);
+		return $.get-page($id) unless $path.IO.e;
+		return Oddmuse::Page.new(
+			exists		=> True,
+			revision	=> $n,
+			text		=> $path.IO.slurp);
 	}
 
 	#| Save new revision of a page and return the revision number.
@@ -150,7 +148,7 @@ class Oddmuse::Storage::File {
 	}
 
 	#| Create appropriate subdirectory, if it doesn't exist. Copy
- 	#| default home page if creating the page subdirectory.
+	#| default home page if creating the page subdirectory.
 	sub make-directory(Str $subdir!) {
 		my $dir = %*ENV<wiki> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;

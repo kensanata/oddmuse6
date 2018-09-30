@@ -71,6 +71,6 @@ class Oddmuse::Storage {
 		my $dir =  %*ENV<templates> || 'templates';
 		my $path = "$dir/$id.sp6";
 		$path = %?RESOURCES{"templates/$id.sp6"} unless $path.IO.e;
-		return $path.slurp;
+		return $path.IO.slurp;
 	}
 }

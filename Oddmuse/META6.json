@@ -51,6 +51,7 @@
   "build-depends": [],
   "test-depends": [
     "Cro::HTTP::Test",
-    "File::Temp"
+    "File::Temp",
+    "DOM::Tiny"
   ]
 }

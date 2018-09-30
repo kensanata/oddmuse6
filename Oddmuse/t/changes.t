@@ -16,9 +16,11 @@
 
 use Oddmuse::Storage::File::Test;
 use Oddmuse::Storage;
+use Oddmuse::Changes;
 use Oddmuse::Filter;
 use Oddmuse::Routes;
 use Cro::HTTP::Test;
+use DOM::Tiny;
 use Test;
 
 my $root = get-random-wiki-directory;
@@ -43,6 +45,12 @@ is $storage.get-changes(Oddmuse::Filter.new(:all, :minor, author => 'Alex')).ele
 is $storage.get-changes(Oddmuse::Filter.new(id => 'Help')).elems, 1, "one change to Help";
 is $storage.get-changes(Oddmuse::Filter.new(id => 'Help'))[0].id, "Help", "page name matches filter id";
 is $storage.get-changes(Oddmuse::Filter.new(:all, :minor, n => 3)).elems, 3, "three changes with limit";
+
+my $dom = DOM::Tiny.parse(view-changes(Oddmuse::Filter.new));
+is $dom.find("#changes h2")[0].text, "2018-09-19", "first date heading is correct";
+like $dom.at("#changes h2:first-of-type + ul").all-text, / Help /, "Help page under the right heading";
+is $dom.find("#changes h2")[1].text, "2018-09-18", "second date heading is correct";
+like $dom.at("#changes h2:nth-of-type(2) + ul").all-text, / About /, "About page under the right heading";
 
 test-service routes(), {
 

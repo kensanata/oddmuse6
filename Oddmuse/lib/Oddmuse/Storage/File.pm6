@@ -150,7 +150,7 @@ class Oddmuse::Storage::File {
 	#| Create appropriate subdirectory, if it doesn't exist. Copy
 	#| default home page if creating the page subdirectory.
 	sub make-directory(Str $subdir!) {
-		my $dir = %*ENV<wiki> || 'wiki';
+		my $dir = %*ENV<ODDMUSE_WIKI> || 'wiki';
 		$dir ~= "/$subdir" if $subdir;
 		if !$dir.IO.e {
 			mkdir $dir;

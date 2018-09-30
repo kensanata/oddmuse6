@@ -7,19 +7,19 @@ cro: 1
 ignore:
   - resources/
 env:
-  - name: images
+  - name: ODDMUSE_IMAGES
     value: resources/images
-  - name: css
+  - name: ODDMUSE_CSS
     value: resources/css
-  - name: templates
+  - name: ODDMUSE_TEMPLATES
     value: resources/templates
-  - name: wiki
+  - name: ODDMUSE_WIKI
     value: ../wiki
-  - name: storage
+  - name: ODDMUSE_STORAGE
     value: Oddmuse::Storage::File
-  - name: menu
+  - name: ODDMUSE_MENU
     value: Home, Changes, About
-  - name: changes
+  - name: ODDMUSE_CHANGES
     value: Changes
 endpoints: 
   - 

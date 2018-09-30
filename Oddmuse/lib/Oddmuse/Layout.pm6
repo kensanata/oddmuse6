@@ -40,7 +40,7 @@ sub render(Str $template, %context --> Str) is export {
     my $storage = Oddmuse::Storage.new;
 
     # Get the pages for the main menu
-    my $menu = %*ENV<menu> || "Home, Changes";
+    my $menu = %*ENV<ODDMUSE_MENU> || "Home, Changes";
     my @pages = $menu.split(/ ',' \s* /);
     %context<pages> = ["id" X=> @pages]; # Template::Mustache needs an array
     my %partials = menu => $storage.get-template: 'menu';

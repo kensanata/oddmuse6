@@ -33,7 +33,7 @@ more information.
 
 #| Define the various routes the wiki handles.
 sub routes() is export {
-    my $changes = %*ENV<changes> || 'Changes';
+    my $changes = %*ENV<ODDMUSE_CHANGES> || 'Changes';
     route {
         get -> 'view', $id where / $changes / {
             content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
@@ -72,7 +72,7 @@ sub routes() is export {
             }
         }
 		get -> 'css', *@path {
-			my $dir = %*ENV<css> || 'css';
+			my $dir = %*ENV<ODDMUSE_CSS> || 'css';
             if $dir.IO.e {
 			    static $dir, @path;
             } else {
@@ -80,7 +80,7 @@ sub routes() is export {
             }
 		}
 		get -> 'images', *@path {
-			my $dir = %*ENV<images> || %?RESOURCES<images> || 'images';
+			my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
             if $dir.IO.e {
 			    static $dir, @path;
             } else {
@@ -88,7 +88,7 @@ sub routes() is export {
             }
 		}
 		get -> 'favicon.ico' {
-			my $dir = %*ENV<images> || %?RESOURCES<images> || 'images';
+			my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
             if $dir.IO.e {
 			    static $dir, 'logo.png';
             } else {

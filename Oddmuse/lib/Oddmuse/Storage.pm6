@@ -59,7 +59,7 @@ C<templates> subdirectory with the <sp6> extension.
 
 #| The front end which use a backend to delegate many function calls.
 class Oddmuse::Storage {
-	my $class = %*ENV<storage> || 'Oddmuse::Storage::File';
+	my $class = %*ENV<ODDMUSE_STORAGE> || 'Oddmuse::Storage::File';
 	require ::($class);
 	has $!delegate handles <
 		get-page put-page get-keep-page put-keep-page
@@ -68,7 +68,7 @@ class Oddmuse::Storage {
 
 	#| Get a the text for a template.
 	method get-template(Str $id!) is export {
-		my $dir =  %*ENV<templates> || 'templates';
+		my $dir =  %*ENV<ODDMUSE_TEMPLATES> || 'templates';
 		my $path = "$dir/$id.sp6";
 		$path = %?RESOURCES{"templates/$id.sp6"} unless $path.IO.e;
 		return $path.IO.slurp;

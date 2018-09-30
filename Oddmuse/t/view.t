@@ -20,7 +20,7 @@ use Cro::HTTP::Test;
 
 # Testing, whether the default Home page gets copied to the new test directory
 # and whether the menu gets shown by the template.
-%*ENV<menu> = 'Home, About';
+%*ENV<ODDMUSE_MENU> = 'Home, About';
 get-random-wiki-directory;
 
 test-service routes(), {

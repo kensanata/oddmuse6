@@ -34,6 +34,6 @@ sub get-random-wiki-directory is export {
 		$dir = sprintf("../test-%04d", $n);
 	} while ($dir.IO.e);
 	say "Using $dir";
-	%*ENV<wiki> = $dir;
+	%*ENV<ODDMUSE_WIKI> = $dir;
 	return mkdir $dir;
 }

@@ -102,33 +102,34 @@ Using ../test-1288
 If you look at the `oddmuse/.cro.yml` file you'll find a section with
 environment variables with which to configure the wiki.
 
-* `storage` is the class handling your storage requirements. The
-  default is `Storage::File` which stores everything in plain text
+* `ODDMUSE_STORAGE` is the class handling your storage requirements.
+  The default is `Storage::File` which stores everything in plain text
   files.
 
-* `wiki` is the location of your wiki, your data directory, if you are
-  using `Storage::File`. The default is `../wiki`. That's the top
-  directory where this `README.md` is.
+* `ODDMUSE_WIKI` is the location of your wiki, your data directory, if
+  you are using `Storage::File`. The default is `../wiki`. That's the
+  top directory where this `README.md` is.
 
-* `menu` is a comma separated list of pages for the main menu. The
-  default is `Home, Changes, About`. That also means that none of the
-  pages in the menu may contain a comma.
+* `ODDMUSE_MENU` is a comma separated list of pages for the main menu.
+  The default is `Home, Changes, About`. That also means that none of
+  the pages in the menu may contain a comma.
 
-* `changes` is the page which acts as an alias for the `/changes`
-  route. The default is `Changes`. This means that you can add
-  `Changes` to the main menu and it'll work. This also means that you
-  cannot edit the `Changes` page: it's content is inaccessible. Don't
-  forget to change the `changes.sp6` template as well.
+* `ODDMUSE_CHANGES` is the page which acts as an alias for the
+  `/changes` route. The default is `Changes`. This means that you can
+  add `Changes` to the main menu and it'll work. This also means that
+  you cannot edit the `Changes` page: it's content is inaccessible.
+  Don't forget to change the `changes.sp6` template as well.
 
 To reiterate, here's an example of how to have a page called
 "RecentChanges":
 
-1. Set the `menu` environment variable to `Home, RecentChanges,
-   About`. This makes sure that "RecentChanges" shows up in the menu.
+1. Set the `ODDMUSE_MENU` environment variable to `Home,
+   RecentChanges, About`. This makes sure that "RecentChanges" shows
+   up in the menu.
 
-2. Set the `changes` environment variable to `RecentChanges`. This
-   makes sure that clicking on the link is the equivalent of visiting
-   `/changes`.
+2. Set the `ODDMUSE_CHANGES` environment variable to `RecentChanges`.
+   This makes sure that clicking on the link is the equivalent of
+   visiting `/changes`.
 
 3. Edit the `changes.sp6` template and replace occurences of "Changes"
    with "RecentChanges" in the `title` element and the `h1` element.
@@ -136,10 +137,10 @@ To reiterate, here's an example of how to have a page called
 The following variables point to directories used to server resources.
 More on that below.
 
-- `images`
-- `css`
-- `templates`
-- `wiki`
+- `ODDMUSE_IMAGES`
+- `ODDMUSE_CSS`
+- `ODDMUSE_TEMPLATES`
+- `ODDMUSE_WIKI`
 
 For images, css files and templates, this is how lookup works:
 
@@ -163,11 +164,11 @@ copied so that your wiki comes with at least one page.
 
 Your website needs two directories for the static files:
 
-* `images` is where `logo.png` is. This is used for the `favicon.ico`.
-  Files from this directory are served as-is. You could use the logo
-  image in your templates, for example.
+* `ODDMUSE_IMAGES` is where `logo.png` is. This is used for the
+  `favicon.ico`. Files from this directory are served as-is. You could
+  use the logo image in your templates, for example.
 
-* `css` is there `default.css` is. This is used by the default
+* `ODDMUSE_CSS` is there `default.css` is. This is used by the default
   templates.
 
 These directories can be shared between various instances of the wiki.
@@ -226,13 +227,13 @@ mkdir wiki1 wiki2
 Start the first wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 wiki=wiki1 perl6 -Ioddmuse/lib oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -Ioddmuse/lib oddmuse/service.p6
 ```
 
 Start the second wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 wiki=wiki2 perl6 -Ioddmuse/lib oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -Ioddmuse/lib oddmuse/service.p6
 ```
 
 Now you can visit both `http://localhost:9000/` and
@@ -274,7 +275,7 @@ following:
 
 ```
 env:
-  - name: menu
+  - name: ODDMUSE_MENU
     value: Home, Changes, About
 ```
 

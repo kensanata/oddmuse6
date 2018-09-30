@@ -18,7 +18,7 @@ use Oddmuse::Storage;
 use Test;
 
 # testing the default Home page
-%*ENV<wiki> = 'resources/wiki';
+%*ENV<ODDMUSE_WIKI> = 'resources/wiki';
 
 my $storage = Oddmuse::Storage.new;
 

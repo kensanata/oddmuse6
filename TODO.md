@@ -5,8 +5,6 @@ Code Review:
 - avoid sub forms of grep and map
 - use colon notation, e.g. @results.push($change) → @results.push: $change
 - use $dir.add: 'rc.log' instead of "$dir/rc.log" and the like
-- get rid of id => $id and the like: use :$id instead
-- something like %context<pages> = 'id' X=> @pages; in Layout.pm6
 
 Debt:
 

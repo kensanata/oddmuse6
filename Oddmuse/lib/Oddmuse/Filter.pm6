@@ -39,7 +39,7 @@ If you add more filter attributes, be sure to change the following:
 #| Container for filter criteria, for changes.
 class Oddmuse::Filter is rw {
     has Int $.n;      # limit to the last n items
-    has Str $.name;   # limit to a specific page name
+    has Str $.id;     # limit to a specific page name
     has Str $.author; # limit to a specific author
     has Bool $.minor; # include minor changes
     has Bool $.all;   # just the last one
@@ -53,7 +53,7 @@ class Oddmuse::Filter is rw {
         }
         $!minor = so %params<minor>;
         $!all = so %params<all>;
-        $!name = %params<name> || '';
+        $!id = %params<id> || '';
         $!author = %params<author> || '';
         return self;
     }

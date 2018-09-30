@@ -27,7 +27,7 @@ Instances of this class are processed by L<Oddmuse::Save>.
 
 #| An instance of this class represents a wiki page.
 class Oddmuse::Page {
-    has Str $.name;
+    has Str $.id;
     has Str $.text;
     has Bool $.exists;
 	has Int $.revision;

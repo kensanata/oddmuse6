@@ -53,18 +53,13 @@ sub save-page(Str :$id!, Str :$text!,
 
     my $storage = Oddmuse::Storage.new;
 
-    my $page = Oddmuse::Page.new(name => $id, text => $text);
+    my $page = Oddmuse::Page.new(:$id, :$text);
     my $revision = $storage.put-keep-page($id);
     $storage.put-page($page);
 
     my $change = Oddmuse::Change.new(
-        ts => DateTime.now,
-		:$minor,
-		name => $id,
-		:$revision,
-		author => $author,
-		code => $code,
-		:$summary);
+        ts => DateTime.now, :$minor, :$id, :$revision, :$author,
+		:$code, :$summary);
 
     $storage.put-change($change);
 }

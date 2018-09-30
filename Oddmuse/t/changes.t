@@ -15,6 +15,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Oddmuse::Storage::File::Test;
+use Oddmuse::Storage;
+use Oddmuse::Filter;
 use Oddmuse::Routes;
 use Cro::HTTP::Test;
 use Test;
@@ -28,6 +30,19 @@ my $root = get-random-wiki-directory;
 2018-09-18T15:36:40.000000+02:001About4Alexfourth
 2018-09-19T15:36:41.000000+02:000Help1Alexfifth
 EOF
+
+my $storage = Oddmuse::Storage.new;
+is $storage.get-changes(Oddmuse::Filter.new).elems, 2, "two major changes";
+is $storage.get-changes(Oddmuse::Filter.new(:all)).elems, 3, "three major changes including older ones";
+my %params = all => 'on', id => '', author => '', n => '30';
+is $storage.get-changes(Oddmuse::Filter.new.from-hash(%params)).elems, 3, "same but from a parameter hash";
+is $storage.get-changes(Oddmuse::Filter.new(:all, :minor)).elems, 5, "five changes total";
+is $storage.get-changes(Oddmuse::Filter.new(:all, author => 'Alex')).elems, 2, "two major changes by Alex";
+is $storage.get-changes(Oddmuse::Filter.new(:all, :minor, author => 'Alex')).elems, 4, "four changes by Alex";
+is $storage.get-changes(Oddmuse::Filter.new(:all, :minor, author => 'Alex')).elems, 4, "four changes by Alex";
+is $storage.get-changes(Oddmuse::Filter.new(id => 'Help')).elems, 1, "one change to Help";
+is $storage.get-changes(Oddmuse::Filter.new(id => 'Help'))[0].id, "Help", "page name matches filter id";
+is $storage.get-changes(Oddmuse::Filter.new(:all, :minor, n => 3)).elems, 3, "three changes with limit";
 
 test-service routes(), {
 

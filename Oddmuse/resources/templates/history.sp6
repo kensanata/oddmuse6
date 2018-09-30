@@ -2,14 +2,14 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>History for {{filter.name}}</title>
+    <title>History for {{filter.id}}</title>
     <link rel="stylesheet" href="/css/default.css">
   </head>
   <body>
 		{{> menu}}
 		<div id="content">
 			<div id="changes">
-				<h1>History for {{filter.name}}</h1>
+				<h1>History for {{filter.id}}</h1>
 
 				{{#filter}}
 				<form id="filter" action="/changes">
@@ -18,8 +18,8 @@
 					<label for="minor">include minor changes</label><br>
 					<input type="checkbox" id="all" name="all" {{#all}}checked{{/all}}>
 					<label for="all">list all changes (not just the last one)</label><br>
-					<label for="name" class="wide">by page name </label>
-					<input type="text" class="wide" id="name" name="name" value="{{name}}"><br>
+					<label for="id" class="wide">by page name </label>
+					<input type="text" class="wide" id="name" name="id" value="{{id}}"><br>
 					<label for="author" class="wide">by author name </label>
 					<input type="text" class="wide" id="author" name="author" value="{{author}}"><br>
 					<label>limit to <input type="number" class="narrow" name="n" value="{{n}}"> items</label><br>
@@ -27,31 +27,34 @@
 				</form>
 				{{/filter}}
 
-				<form id="filter" action="/diff/{{filter.name}}">
+				{{^empty}}
+				<form id="filter" action="/diff/{{filter.id}}">
+				{{/empty}}
 
-					{{#changes}}
-					{{#first}}<h2>{{date}}</h2>{{/first}}
-					{{#day}}<h2>{{date}}</h2>{{/day}}
-					<p>
-						<input type="radio" name="from" value="{{to}}" {{#second}}checked{{/second}}>
-						<input type="radio" name="to" value="{{to}}" {{#first}}checked{{/first}}>
-						{{time}}
-						{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
-						<a href="/view/{{name}}/{{to}}">{{name}}</a> …
-						{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
-						{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
-						{{#summary}}
-						– {{summary}}
-						{{/summary}}
-						{{#minor}}(minor){{/minor}}
-					</p>
-					{{/changes}}
-					{{^changes}}
-					<p><strong>There are no changes.</strong></p>
-					{{/changes}}
-
-					<input type="submit" value="OK">
+				{{#changes}}
+				{{#first}}<h2>{{date}}</h2>{{/first}}
+				{{#day}}<h2>{{date}}</h2>{{/day}}
+				<p>
+					<input type="radio" name="from" value="{{to}}" {{#second}}checked{{/second}}>
+					<input type="radio" name="to" value="{{to}}" {{#first}}checked{{/first}}>
+					{{time}}
+					{{#revision}}(<a href="/diff/{{filter.id}}/{{to}}">diff</a>){{/revision}}
+					<a href="/view/{{filter.id}}/{{to}}">{{filter.id}}</a> …
+					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
+					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
+					{{#summary}}
+					– {{summary}}
+					{{/summary}}
+					{{#minor}}(minor){{/minor}}
+				</p>
+				{{/changes}}
+				{{^empty}}
+				<input type="submit" value="OK">
 				</form>
+				{{/empty}}
+				{{#empty}}
+				<p><strong>There are no changes.</strong></p>
+				{{/empty}}
 			</div>
     </div>
 

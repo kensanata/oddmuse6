@@ -117,10 +117,24 @@ environment variables with which to configure the wiki.
 * `changes` is the page which acts as an alias for the `/changes`
   route. The default is `Changes`. This means that you can add
   `Changes` to the main menu and it'll work. This also means that you
-  cannot edit the `Changes` page: it's content is inaccessible.
+  cannot edit the `Changes` page: it's content is inaccessible. Don't
+  forget to change the `changes.sp6` template as well.
 
-These variables point to directories used to server resources. More on
-that below.
+To reiterate, here's an example of how to have a page called
+"RecentChanges":
+
+1. Set the `menu` environment variable to `Home, RecentChanges,
+   About`. This makes sure that "RecentChanges" shows up in the menu.
+
+2. Set the `changes` environment variable to `RecentChanges`. This
+   makes sure that clicking on the link is the equivalent of visiting
+   `/changes`.
+
+3. Edit the `changes.sp6` template and replace occurences of "Changes"
+   with "RecentChanges" in the `title` element and the `h1` element.
+
+The following variables point to directories used to server resources.
+More on that below.
 
 - `images`
 - `css`
@@ -152,7 +166,7 @@ Your website needs two directories for the static files:
 * `images` is where `logo.png` is. This is used for the `favicon.ico`.
   Files from this directory are served as-is. You could use the logo
   image in your templates, for example.
-   
+
 * `css` is there `default.css` is. This is used by the default
   templates.
 

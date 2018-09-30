@@ -42,7 +42,7 @@ heading.
 
 =item C<minor> to indicate whether this is a minor change.
 
-=item C<name> is the name of the page affected.
+=item C<id> is the name of the page affected.
 
 =item C<revision> is the revision that was changed, which is
 equivalent to the number of edits made to a page. The first revision
@@ -69,7 +69,7 @@ The template also gets a hash for the filter.
 
 =item C<n> is the number of latest items to be shown
 
-=item C<name> is the name of the page.
+=item C<id> is the name of the page.
 
 =item C<author> is the name of the author.
 
@@ -82,12 +82,13 @@ change per page.
 
 #| This function creates a new Filter based on query parameters.
 multi view-changes(%params!) is export {
-view-changes(Oddmuse::Filter.new.from-hash(%params)); }
+    view-changes(Oddmuse::Filter.new.from-hash(%params));
+}
 
 #| This function shows changes based on a Filter.
 multi view-changes(Oddmuse::Filter $filter!) is export {
 
-    my %context = id => %*ENV<changes> || "Changes";
+    my %context;
 
 	# Get the changes from storage.
     my $storage = Oddmuse::Storage.new;
@@ -100,12 +101,12 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
 			date => .ts.yyyy-mm-dd,
 			time => .ts.hh-mm-ss,
 			minor => .minor,
-			name => .name,
+			id => .id,
 			revision => .revision,
 			to => .revision + 1,
 			author => .author,
 			# { c => "1", c=> "2", c=> "3", c=> "4", }
-			code => [ map { c => $_ }, .code.split("", :skip-empty) ],
+			code => [ "c" X=> .code.split("", :skip-empty) ],
 			summary => .summary||'';
         if not $day {
             %change<first> = True;
@@ -117,14 +118,18 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
         %change;
 	};
 
-    @hashes[*-1]<last> = True;
-    @hashes[min(1, @hashes.end)]<second> = True; # index is 0 or 1
-    %context<changes> = @hashes;
+    if @hashes {
+        @hashes[*-1]<last> = True;
+        @hashes[min(1, @hashes.end)]<second> = True; # index is 0 or 1
+        %context<changes> = @hashes;
+    } else {
+        %context<empty> = True;
+    }
 
 	# The same is true for the filter description...
 	my %filter =
 	    n		=> $filter.n,
-	    name	=> $filter.name,
+	    id	    => $filter.id,
 		author	=> $filter.author,
 		minor	=> $filter.minor,
 		all	    => $filter.all;
@@ -133,7 +138,7 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
 
     # The template for a page history is slightly different.
     my $template;
-    if $filter.name {
+    if $filter.id {
         $template = $storage.get-template('history');
     } else {
         $template = $storage.get-template('changes');

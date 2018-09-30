@@ -53,7 +53,7 @@ class Oddmuse::Storage::File {
 	#| Save a Page.
 	method put-page(Oddmuse::Page $page!) is export {
 		my $dir = make-directory 'page';
-		my $path = "$dir/{$page.name}.md";
+		my $path = "$dir/{$page.id}.md";
 		with-locked-file $path, 2, {
 			spurt $path, $page.text;
 		};
@@ -99,7 +99,7 @@ class Oddmuse::Storage::File {
 		my $path = "$dir/rc.log";
 		with-locked-file $path, 2, {
 			$path.IO.spurt(($change.ts, $change.minor ?? 1 !! 0,
-							$change.name, $change.revision, $change.author,
+							$change.id, $change.revision, $change.author,
 							$change.code, $change.summary).join($SEP) ~ "\n",
 						   :append);
 		}
@@ -112,7 +112,7 @@ class Oddmuse::Storage::File {
 		return () unless $path.IO.e;
 		my @lines = $path.IO.lines.reverse;
 		my @changes = @lines.map: { line-to-change $_ };
-		@changes = @changes.grep: {$_.name eq $filter.name} if $filter.name;
+		@changes = @changes.grep: {$_.id eq $filter.id} if $filter.id;
 		@changes = @changes.grep: {$_.author eq $filter.author} if $filter.author;
 		@changes = @changes.grep: {!$_.minor} unless $filter.minor;
 		@changes = latest-changes @changes unless $filter.all;
@@ -122,15 +122,15 @@ class Oddmuse::Storage::File {
 
 	#| Helper to turn a log line into a Change.
 	sub line-to-change(Str $line! --> Oddmuse::Change) {
-		my ($ts, $minor, $name, $revision, $author, $code, $summary) = $line.split(/$SEP/);
+		my ($ts, $minor, $id, $revision, $author, $code, $summary) = $line.split(/$SEP/);
 		my $change = Oddmuse::Change.new(
 			ts			=> DateTime.new($ts),
 			minor		=> Bool.new($minor),
-			name		=> $name,
+			:$id,
 			revision	=> $revision.Int,
-			author		=> $author,
-			code		=> $code,
-			summary		=> $summary,
+			:$author,
+			:$code,
+			:$summary,
 		);
 		return $change;
 	}
@@ -140,8 +140,8 @@ class Oddmuse::Storage::File {
 		my @results;
 		my %seen;
 		for @changes ->	 $change {
-			next if %seen{$change.name};
-			%seen{$change.name} = True;
+			next if %seen{$change.id};
+			%seen{$change.id} = True;
 			@results.push: $change;
 		}
 		return @results;
@@ -171,7 +171,7 @@ class Oddmuse::Storage::File {
 		my @lines = $path.IO.lines.grep: /$SEP $id $SEP/;
 		my @changes = @lines.map: { line-to-change($_) };
 		for @changes.reverse {
-			return $_.revision + 1 if $_.name eq $id;
+			return $_.revision + 1 if .id eq $id;
 		}
 		return 0;
 	}

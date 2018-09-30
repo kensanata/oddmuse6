@@ -33,7 +33,7 @@ Instances of this class are processed by L<Oddmuse::Changes>.
  class Oddmuse::Change {
 	has DateTime $.ts;
 	has Bool $.minor;
-	has Str $.name;
+	has Str $.id;
 	has Int $.revision;
 	has Str $.author;
 	has Str $.code;

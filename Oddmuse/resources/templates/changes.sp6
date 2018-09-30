@@ -18,8 +18,8 @@
 					<label for="minor">include minor changes</label><br>
 					<input type="checkbox" id="all" name="all" {{#all}}checked{{/all}}>
 					<label for="all">list all changes (not just the last one)</label><br>
-					<label for="name" class="wide">by page name </label>
-					<input type="text" class="wide" id="name" name="name" value="{{name}}"><br>
+					<label for="id" class="wide">by page name </label>
+					<input type="text" class="wide" id="name" name="id" value="{{id}}"><br>
 					<label for="author" class="wide">by author name </label>
 					<input type="text" class="wide" id="author" name="author" value="{{author}}"><br>
 					<label>limit to <input type="number" class="narrow" name="n" value="{{n}}"> items</label><br>
@@ -32,9 +32,9 @@
 				{{#day}}</ul><h2>{{date}}</h2><ul id="items">{{/day}}
 				<li>
 					{{time}}
-					(<a href="/history/{{name}}">history</a>)
-					{{#revision}}(<a href="/diff/{{name}}/{{to}}">diff</a>){{/revision}}
-					<a href="/view/{{name}}/{{to}}">{{name}}</a> …
+					(<a href="/history/{{id}}">history</a>)
+					{{#revision}}(<a href="/diff/{{id}}/{{to}}">diff</a>){{/revision}}
+					<a href="/view/{{id}}/{{to}}">{{id}}</a> …
 					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}
 					{{^author}}<span class="ip-code">{{#code}}<span class="c{{c}}">{{c}}</span>{{/code}}</span>{{/author}}
 					{{#summary}}
@@ -44,10 +44,9 @@
 				</li>
 				{{#last}}</ul>{{/last}}
 				{{/changes}}
-				{{^changes}}
+				{{#empty}}
 				<p><strong>There are no changes.</strong></p>
-				{{/changes}}
-
+				{{/empty}}
 			</div>
     </div>
 

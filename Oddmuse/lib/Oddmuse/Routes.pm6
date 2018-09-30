@@ -48,7 +48,7 @@ sub routes() is export {
             content 'text/html', view-changes($%params);
         }
         get -> 'history', $id {
-            content 'text/html', view-changes(Oddmuse::Filter.new(name => $id, all => True));
+            content 'text/html', view-changes(Oddmuse::Filter.new(:$id, :minor, :all));
         }
         get -> 'diff', $id, :%params {
             my $a = $%params<from>.Int;

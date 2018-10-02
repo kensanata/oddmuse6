@@ -21,6 +21,7 @@ use Oddmuse::Save;
 use Oddmuse::Changes;
 use Oddmuse::Filter;
 use Oddmuse::Diff;
+use Oddmuse::Secret;
 
 =begin pod
 
@@ -61,14 +62,29 @@ sub routes() is export {
         get -> 'edit', $id {
             content 'text/html', edit-page($id);
         }
-        post -> 'save' {
+        post -> 'save', :$secret is cookie {
             request-body -> (:$id!, :$text!,
-							 :$summary, :$minor,
-							 :$author) {
-				save-page(:$id, :$text, :$summary,
-						  minor => $minor ?? True !! False,
-						  :$author);
-				content 'text/html', view-page($id);
+							 :$summary = '', :$minor = False,
+							 :$author = '', :$answer = '') {
+                my $edit-allowed = False;
+                if $answer && verify-answer $answer {
+                    set-cookie 'secret', 'FIXME',
+                    	expires => DateTime.now.later(years => 1);
+                    $edit-allowed = True;
+                } elsif $secret {
+                    $edit-allowed = $secret eq 'FIXME';
+                }
+                if $edit-allowed {
+				    save-page(:$id, :$text, :$summary,
+						      minor => $minor ?? True !! False,
+						      :$author);
+				    content 'text/html', view-page($id);
+                } else {
+                    content 'text/html', ask-for-secret(
+                        :$id, :$text,
+						:$summary, :$minor,
+						:$author);
+                }
             }
         }
 		get -> 'css', *@path {

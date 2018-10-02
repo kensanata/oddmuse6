@@ -22,22 +22,32 @@ use Test;
 my $root = get-random-wiki-directory;
 
 test-service routes(), {
-    test get('/edit/About'),
-        status => 200,
-        content-type => 'text/html',
-        body => / 'Edit About' .* 'form method="post"' /;
+  test get('/edit/About'),
+      status => 200,
+      content-type => 'text/html',
+      body => / 'Edit About' .* 'form method="post"' /;
 
-    test-given '/save', {
-      test post(json => { :id('About'), :text('Hallo'), :summary('testing'),
-			  :author(''), }),
-	  status => 200,
-	  content-type => 'text/html',
-	  body => / 'Hallo' /;
-    }
+  test post('/save',
+	    json => { :id('About'), :text('# Hallo'), :summary('testing'), :author(''), }),
+      status => 200,
+      content-type => 'text/html',
+      body => / 'First time editor' /;
+
+  test post('/save',
+	    json => { :id('About'), :text('# Morning'), :summary('testing'), :author(''), :answer('cats'), }),
+      status => 200,
+      content-type => 'text/html',
+      body => / '<h1>Morning</h1>' /;
+
+  test post('/save', cookies => { secret => 'FIXME', },
+	    json => { :id('About'), :text('# Hallo'), :summary('testing'), :author(''), }),
+      status => 200,
+      content-type => 'text/html',
+      body => / '<h1>Hallo</h1>' /;
 }
 
 ok "$root/page/About.md".IO.e, 'page name correct';
-is "$root/page/About.md".IO.slurp, 'Hallo', 'page content saved';
+is "$root/page/About.md".IO.slurp, '# Hallo', 'page content saved';
 
 ok "$root/rc.log".IO.e, 'changes correct';
 my @data = "$root/rc.log".IO.slurp.split(/\x1e/);
@@ -52,21 +62,20 @@ like @data[6], /testing/, "summary";
 
 # make sure checkbox is handled correctly
 test-service routes(), {
-    test-given '/save', {
-      test post(json => { :id('About'), :text('Hullo'), :summary('typo'),
-			  :author('Alex'), :minor('on'), }),
-	  status => 200,
-	  content-type => 'text/html',
-	  body => / 'Hullo' /;
-    }
+  test post('/save', cookies => { secret => 'FIXME', },
+	    json => { :id('About'), :text('Hullo'), :summary('typo'), :author('Alex'), :minor('on')}),
+      status => 200,
+      content-type => 'text/html',
+      body => / '<p>Hullo</p>' /;
 }
 
-@data = "$root/rc.log".IO.slurp.split(/\n/)[1].split(/\x1e/);
+# last log file entry
+@data = "$root/rc.log".IO.slurp.split(/\n/)[2].split(/\x1e/);
 like @data[0], / \d\d\d\d '-' \d\d '-' \d\d /, "year";
 like @data[0], / \d\d : \d\d : \d\d /, "time";
 is @data[1], 1, "minor change";
 is @data[2], "About", "page name";
-is @data[3], "1", "revision";
+is @data[3], "2", "revision";
 like @data[4], /Alex/, "author";
 # code is empty
 like @data[6], /typo/, "summary";

@@ -2,7 +2,6 @@
 
 Code Review:
 
-- avoid sub forms of grep and map
 - use colon notation, e.g. @results.push($change) → @results.push: $change
 - use $dir.add: 'rc.log' instead of "$dir/rc.log" and the like
 
@@ -14,15 +13,14 @@ Debt:
 
 Missing features:
 
-- unified layout
+- question asking for first time posters
+- admin passwords
+- banning regular expressions
 - merge in case of conflicts
 - expiration of old page revisions
-- admin passwords
 - page passwords
 - locking the site
 - locking pages
-- banning regular expressions
-- question asking for first time posters
 - rolling back changes
 - RSS feed
 - tags

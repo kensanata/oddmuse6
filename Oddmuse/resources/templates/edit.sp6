@@ -24,7 +24,7 @@
 				<textarea id="summary" name="summary"></textarea>
 				<p id="authorlabel">
 					<label for="author">Your name</label>:
-					<input id="author" name="author" type="text">
+					<input id="author" name="author" type="text" value="{{author}}">
 				</p>
 				<p id="minorlabel">
 					<label for="minor">

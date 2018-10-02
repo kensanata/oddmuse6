@@ -59,13 +59,17 @@ sub routes() is export {
         get -> 'diff', $id, $n where /^\d+$/ {
             content 'text/html', view-diff($id, $n.Int);
         }
-        get -> 'edit', $id {
-            content 'text/html', edit-page($id);
+        get -> 'edit', $id, :$author is cookie {
+            content 'text/html', edit-page($id, $author||'');
         }
         post -> 'save', :$secret is cookie {
             request-body -> (:$id!, :$text!,
 							 :$summary = '', :$minor = False,
 							 :$author = '', :$answer = '') {
+                if $author {
+                    set-cookie 'author', $author,
+                    	expires => DateTime.now.later(years => 1);
+                }
                 my $edit-allowed = False;
                 if $answer && verify-answer $answer {
                     set-cookie 'secret', 'FIXME',

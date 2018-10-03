@@ -16,22 +16,61 @@
 
 use Oddmuse::Storage;
 use Oddmuse::Layout;
+use Oddmuse::Cookie;
 
 =begin pod
 
 =head1 Oddmuse::Secret
 
-This function is an alternative for L<Oddmuse::Save> which is called
-by L<Oddmuse::Route> when the user doesn't have the secret cookie set.
+C<with-secret> is how you wrap C<save-page> from L<Oddmuse::Save>.
+Depending on whether the secret is known, or whether a correct answer
+was given, the C<ok> or the C<not-ok> code is called. The C<not-ok>
+code should probably call C<ask-for-secret> so that users can provide
+an answer.
 
-If the page does not exist, the C<secret> template is used.
+C<ask-for-secret> uses the C<secret> template which takes the same
+context keys as when saving a page:
+
+=item C<id> for the page name
+=item C<text> for the new text
+=item C<summary> for the optional change summary
+=item C<minor> for the optional marking as a minor change
+=item C<author> for the optional author name
+=item C<question> for the question
+
+The C<question> is set from the C<ODDMUSE_QUESTION> environment
+variable. The answer provided is then compared with the solutions
+presented in the C<ODDMUSE_ANSWER> environment variable. This variable
+contains the comma-separated correct answers. The comparison is
+case-insensitive.
+
+One way to set these up, for example:
+
+    ODDMUSE_QUESTION=Name a colour of the rainbow.
+    ODDMUSE_ANSWER=red, orange, yellow, green, blue, indigo, violet
 
 =end pod
 
+#| Run either the ok or the not-ok code depending on whether the user has the secret cookie.
+sub with-secret($secret, $answer, &not-ok, &ok --> Str) is export {
+    if !%*ENV<ODDMUSE_SECRET> || $secret && $secret eq %*ENV<ODDMUSE_SECRET> {
+        # If no secret is configured, or if a secret was provided and
+        # it matches what we have, the code gets called.
+        &ok();
+    } elsif $answer && verify-answer $answer {
+        # If the correct answer was given, let them know the secret,
+        # and call the code.
+        save-to-cookie 'secret', %*ENV<ODDMUSE_SECRET>;
+        &ok();
+    } else {
+        # Otherwise ask the question and see whether they can answer
+        # it.
+        &not-ok();
+    }
+}
+
 #| Show the page asking for the secret.
-sub ask-for-secret(:$id!, :$text!,
-                   :$summary, :$minor,
-                   :$author) is export {
+sub ask-for-secret(:$id!, :$text!, :$summary, :$minor, :$author --> Str) is export {
     my $question = %*ENV<ODDMUSE_QUESTION>;
     my %context = :$id, :$text, :$summary, :$minor, :$author, :$question;
     my $storage = Oddmuse::Storage.new;
@@ -40,8 +79,9 @@ sub ask-for-secret(:$id!, :$text!,
 }
 
 #| Verify the answer given to the secret question
-sub verify-answer(Str $answer! --> Bool) is export {
+sub verify-answer(Str $answer! --> Bool) {
     return True unless %*ENV<ODDMUSE_ANSWER>;
-    my @answers = %*ENV<ODDMUSE_ANSWER>.split(/ ',' \s* /);
-    return @answers.grep($answer).Bool;
+    return False unless $answer;
+    my @answers = %*ENV<ODDMUSE_ANSWER>.split(/ ',' \s* /).map: { .fc };
+    return @answers.grep($answer.fc).Bool;
 }

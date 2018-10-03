@@ -14,17 +14,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use Oddmuse::View;
 use Oddmuse::Page;
 use Oddmuse::Change;
+use Oddmuse::Secret;
 use Oddmuse::Storage;
 
 =begin pod
 
 =head1 Oddmuse::Save
 
-This is the convenience function used to save pages. It's the
+C<save-page> is the convenience function used to save pages. It's the
 front-end to the various L<Oddmuse::Storage> functions:
 
+=item check whether you know the secret
 =item save a "keep" page
 =item save the new page
 =item record the change
@@ -32,6 +35,23 @@ front-end to the various L<Oddmuse::Storage> functions:
 Keep files are old, numbered revisions of the page.
 
 =end pod
+
+sub save-with-secret(Str :$id!,
+                     Str :$text!,
+                     Str :$summary = '',
+                     Bool :$minor = False,
+                     Str :$author = '',
+                     Str :$answer = '',
+                     Str :$secret = '') is export {
+    with-secret($secret, $answer,
+    {
+        ask-for-secret(:$id, :$text, :$summary, :$minor, :$author);
+    },
+    {
+        save-page(:$id, :$text, :$summary, :$minor, :$author);
+        view-page($id)
+    });
+}
 
 #| Save a page. Compute the code for anonymous users.
 sub save-page(Str :$id!, Str :$text!,

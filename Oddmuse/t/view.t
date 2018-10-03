@@ -28,15 +28,15 @@ test-service routes(), {
         status => 200,
         content-type => 'text/html',
         body => / '<a href="/view/Home">Home</a>'
-	          .* '<a href="/view/About">About</a>'
-	          .* '<h1>Home</h1>'
-     		  .* 'Welcome!' /;
+            .* '<a href="/view/About">About</a>'
+	    .* '<h1>Home</h1>'
+	    .* 'Welcome!' /;
 
     test get('/view/Home'),
         status => 200,
         content-type => 'text/html',
         body => / '<h1>Home</h1>'
-	          .* 'Welcome!' /;
+            .* 'Welcome!' /;
 
     test get('/view/About'),
         status => 200,

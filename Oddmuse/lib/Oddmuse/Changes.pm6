@@ -90,24 +90,24 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
 
     my %context;
 
-	# Get the changes from storage.
+    # Get the changes from storage.
     my $storage = Oddmuse::Storage.new;
     my @changes = $storage.get-changes: $filter;
 
     # Turn the object into a hash fit for the template.
     my $day = '';
     my @hashes = @changes.map: {
-		my %change =
-			date => .ts.yyyy-mm-dd,
-			time => .ts.hh-mm-ss,
-			minor => .minor,
-			id => .id,
-			revision => .revision,
-			to => .revision + 1,
-			author => .author,
-			# { c => "1", c=> "2", c=> "3", c=> "4", }
-			code => [ "c" X=> .code.split("", :skip-empty) ],
-			summary => .summary||'';
+        my %change =
+            date => .ts.yyyy-mm-dd,
+            time => .ts.hh-mm-ss,
+            minor => .minor,
+            id => .id,
+            revision => .revision,
+            to => .revision + 1,
+            author => .author,
+            # { c => "1", c=> "2", c=> "3", c=> "4", }
+            code => [ "c" X=> .code.split("", :skip-empty) ],
+            summary => .summary||'';
         if not $day {
             %change<first> = True;
             $day = %change<date>;
@@ -116,7 +116,7 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
             $day = %change<date>;
         }
         %change;
-	};
+    };
 
     if @hashes {
         @hashes[*-1]<last> = True;
@@ -126,15 +126,15 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
         %context<empty> = True;
     }
 
-	# The same is true for the filter description...
-	my %filter =
-	    n		=> $filter.n,
-	    id	    => $filter.id,
-		author	=> $filter.author,
-		minor	=> $filter.minor,
-		all	    => $filter.all;
+    # The same is true for the filter description...
+    my %filter =
+        n        => $filter.n,
+        id        => $filter.id,
+        author    => $filter.author,
+        minor    => $filter.minor,
+        all        => $filter.all;
 
-	%context<filter> = %filter;
+    %context<filter> = %filter;
 
     # The template for a page history is slightly different.
     my $template;

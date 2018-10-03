@@ -35,17 +35,17 @@ which means they are I<per process>.
 #| bit, however.
 sub with-locked-file(Str $path, Int $max-delay, &code) is export {
     react {
-		my $lock = "$path.lock";
+        my $lock = "$path.lock";
         whenever Promise.in($max-delay) {
             $lock.IO.rmdir;
         }
-		whenever Supply.interval(0.2) {
-			if !$lock.IO.e {
-				$lock.IO.mkdir;
-				&code();
-				$lock.IO.rmdir;
-				done;
-			}
-		}
+        whenever Supply.interval(0.2) {
+            if !$lock.IO.e {
+                $lock.IO.mkdir;
+                &code();
+                $lock.IO.rmdir;
+                done;
+            }
+        }
     }
 }

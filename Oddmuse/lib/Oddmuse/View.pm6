@@ -45,7 +45,7 @@ this case, only the C<id> key of the context is used.
 
 #| Show a page.
 multi view-page(Str $id) is export {
-	view-page($id, 0);
+    view-page($id, 0);
 }
 
 #| Show a particular revision of a page.
@@ -56,22 +56,22 @@ multi view-page(Str $id, Int $n) is export {
     # Get page data.
     my $storage = Oddmuse::Storage.new;
     my $page;
-	if $n {
-		$page = $storage.get-keep-page($id, $n);
-	} else {
-		$page = $storage.get-page($id);
-	}
+    if $n {
+        $page = $storage.get-keep-page($id, $n);
+    } else {
+        $page = $storage.get-page($id);
+    }
 
     # Get template and render page data.
-	my $template;
-	if $page.exists {
-		$template = $storage.get-template('view');
-	    %context<html> = parse-markdown($page.text).to-html;
-		%context<revision> = $page.revision;
-		%context<diff> = $n > 1;
+    my $template;
+    if $page.exists {
+        $template = $storage.get-template('view');
+        %context<html> = parse-markdown($page.text).to-html;
+        %context<revision> = $page.revision;
+        %context<diff> = $n > 1;
     } else {
-		$template = $storage.get-template('empty');
-	}
+        $template = $storage.get-template('empty');
+    }
 
     return render($template, %context);
 }

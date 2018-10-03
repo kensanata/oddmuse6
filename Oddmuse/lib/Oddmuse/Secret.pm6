@@ -30,12 +30,12 @@ If the page does not exist, the C<secret> template is used.
 
 #| Show the page asking for the secret.
 sub ask-for-secret(:$id!, :$text!,
-				   :$summary, :$minor,
-				   :$author) is export {
+                   :$summary, :$minor,
+                   :$author) is export {
     my $question = %*ENV<ODDMUSE_QUESTION>;
     my %context = :$id, :$text, :$summary, :$minor, :$author, :$question;
     my $storage = Oddmuse::Storage.new;
-	my $template = $storage.get-template('secret');
+    my $template = $storage.get-template('secret');
     return render($template, %context);
 }
 

@@ -46,7 +46,7 @@ my $c = [
     {
         change => True,
         from => 'The <del>Way</del> that can be told of is not the eternal <del>Way</del>;',
-	    to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao</ins>;',
+        to => 'The <ins>Tao</ins> that can be told of is not the eternal <ins>Tao</ins>;',
     },
     {
         insert => True,

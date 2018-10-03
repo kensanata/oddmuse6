@@ -45,7 +45,7 @@ sub routes() is export {
         get -> 'view', $id, $n where /^\d+$/ {
             content 'text/html', view-page($id, $n.Int);
         }
-		get -> 'changes', :%params {
+        get -> 'changes', :%params {
             content 'text/html', view-changes($%params);
         }
         get -> 'history', $id {
@@ -64,11 +64,11 @@ sub routes() is export {
         }
         post -> 'save', :$secret is cookie {
             request-body -> (:$id!, :$text!,
-							 :$summary = '', :$minor = False,
-							 :$author = '', :$answer = '') {
+                             :$summary = '', :$minor = False,
+                             :$author = '', :$answer = '') {
                 if $author {
                     set-cookie 'author', $author,
-                    	expires => DateTime.now.later(years => 1);
+                        expires => DateTime.now.later(years => 1);
                 }
                 my $edit-allowed = False;
                 if !%*ENV<ODDMUSE_SECRET> {
@@ -80,42 +80,42 @@ sub routes() is export {
                     $edit-allowed = $secret eq %*ENV<ODDMUSE_SECRET>;
                 }
                 if $edit-allowed {
-				    save-page(:$id, :$text, :$summary,
-						      minor => $minor ?? True !! False,
-						      :$author);
-				    content 'text/html', view-page($id);
+                    save-page(:$id, :$text, :$summary,
+                              minor => $minor ?? True !! False,
+                              :$author);
+                    content 'text/html', view-page($id);
                 } else {
                     content 'text/html', ask-for-secret(
                         :$id, :$text,
-						:$summary, :$minor,
-						:$author);
+                        :$summary, :$minor,
+                        :$author);
                 }
             }
         }
-		get -> 'css', *@path {
-			my $dir = %*ENV<ODDMUSE_CSS> || 'css';
+        get -> 'css', *@path {
+            my $dir = %*ENV<ODDMUSE_CSS> || 'css';
             if $dir.IO.e {
-			    static $dir, @path;
+                static $dir, @path;
             } else {
                 static %?RESOURCES<css/default.css>
             }
-		}
-		get -> 'images', *@path {
-			my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
+        }
+        get -> 'images', *@path {
+            my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
             if $dir.IO.e {
-			    static $dir, @path;
+                static $dir, @path;
             } else {
                 static %?RESOURCES<images/logo.png>
             }
-		}
-		get -> 'favicon.ico' {
-			my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
+        }
+        get -> 'favicon.ico' {
+            my $dir = %*ENV<ODDMUSE_IMAGES> || %?RESOURCES<images> || 'images';
             if $dir.IO.e {
-			    static $dir, 'logo.png';
+                static $dir, 'logo.png';
             } else {
                 static %?RESOURCES<images/logo.png>
             }
-		}
+        }
         get -> {
             content 'text/html', view-page("Home");
         }

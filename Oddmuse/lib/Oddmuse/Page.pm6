@@ -30,5 +30,5 @@ class Oddmuse::Page {
     has Str $.id;
     has Str $.text;
     has Bool $.exists;
-	has Int $.revision;
+    has Int $.revision;
 }

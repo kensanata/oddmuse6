@@ -35,8 +35,8 @@ Keep files are old, numbered revisions of the page.
 
 #| Save a page. Compute the code for anonymous users.
 sub save-page(Str :$id!, Str :$text!,
-			   Str :$summary = '', Bool :$minor = False,
-			   Str :$author = '') is export {
+               Str :$summary = '', Bool :$minor = False,
+               Str :$author = '') is export {
 
     # Use djb2 to generate octal numbers for pseudoanonymity based on
     # the IP number. X-Forwarded-For is the header available behind an
@@ -44,11 +44,11 @@ sub save-page(Str :$id!, Str :$text!,
     # the host where Apache runs).
     my $code= "";
     if !$author {
-		my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
-		# FIXME: double check djb2 implementation
-		# Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
-		my $hash = [5381, |$ip.ords].reduce(* * 33 +^ *) mod 8**4;
-		$code = $hash.Str;
+        my $ip = %*ENV<HTTP_X_FORWARDED_FOR> || %*ENV<REMOTE_ADDR> || "";
+        # FIXME: double check djb2 implementation
+        # Also check https://stackoverflow.com/questions/1579721/why-are-5381-and-33-so-important-in-the-djb2-algorithm
+        my $hash = [5381, |$ip.ords].reduce(* * 33 +^ *) mod 8**4;
+        $code = $hash.Str;
     }
 
     my $storage = Oddmuse::Storage.new;
@@ -59,7 +59,7 @@ sub save-page(Str :$id!, Str :$text!,
 
     my $change = Oddmuse::Change.new(
         ts => DateTime.now, :$minor, :$id, :$revision, :$author,
-		:$code, :$summary);
+        :$code, :$summary);
 
     $storage.put-change($change);
 }

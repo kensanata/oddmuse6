@@ -31,11 +31,11 @@ Instances of this class are processed by L<Oddmuse::Changes>.
 
  #| An instance of this class represents a line from the change log.
  class Oddmuse::Change {
-	has DateTime $.ts;
-	has Bool $.minor;
-	has Str $.id;
-	has Int $.revision;
-	has Str $.author;
-	has Str $.code;
-	has Str $.summary;
+    has DateTime $.ts;
+    has Bool $.minor;
+    has Str $.id;
+    has Int $.revision;
+    has Str $.author;
+    has Str $.code;
+    has Str $.summary;
 }

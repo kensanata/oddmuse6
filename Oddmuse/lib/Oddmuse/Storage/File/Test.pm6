@@ -28,12 +28,12 @@ now and then using C<make clean> from the top level.
 
 #| Create a directory with a random name and return it.
 sub get-random-wiki-directory is export {
-	my $dir;
-	repeat {
-		my $n = (1..^10000).rand.floor;
-		$dir = sprintf("../test-%04d", $n);
-	} while ($dir.IO.e);
-	say "Using $dir";
-	%*ENV<ODDMUSE_WIKI> = $dir;
-	return mkdir $dir;
+    my $dir;
+    repeat {
+        my $n = (1..^10000).rand.floor;
+        $dir = sprintf("../test-%04d", $n);
+    } while ($dir.IO.e);
+    say "Using $dir";
+    %*ENV<ODDMUSE_WIKI> = $dir;
+    return mkdir $dir;
 }

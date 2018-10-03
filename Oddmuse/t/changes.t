@@ -57,23 +57,23 @@ test-service routes(), {
     test-given '/view/Changes', {
         # diag '/view/Changes is a synonym for /changes';
         test get(),
-  	        status => 200,
-	        content-type => 'text/html',
-	        body => / '<h1>Changes</h1>' .* fifth .* third /;
+            status => 200,
+            content-type => 'text/html',
+            body => / '<h1>Changes</h1>' .* fifth .* third /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
     }
 
     test-given '/changes', {
         # diag 'default lists the last major change of every page';
         test get(),
-  	            status => 200,
-	            content-type => 'text/html',
-	            body => / '<h1>Changes</h1>' .*
-                     '<h2>2018-09-19</h2>' .*
-                     fifth .*
-                     '<h2>2018-09-18</h2>' .*
-                     third
-                     /;
+            status => 200,
+            content-type => 'text/html',
+            body => / '<h1>Changes</h1>' .*
+                 '<h2>2018-09-19</h2>' .*
+                 fifth .*
+                 '<h2>2018-09-18</h2>' .*
+                 third
+                 /;
         test get(), body => { $_ !~~ /« ( first | second | fourth ) »/ };
 
         # diag 'n=1 lists just the one last major change';

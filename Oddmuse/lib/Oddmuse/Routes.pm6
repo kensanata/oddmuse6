@@ -71,12 +71,13 @@ sub routes() is export {
                     	expires => DateTime.now.later(years => 1);
                 }
                 my $edit-allowed = False;
-                if $answer && verify-answer $answer {
-                    set-cookie 'secret', 'FIXME',
-                    	expires => DateTime.now.later(years => 1);
+                if !%*ENV<ODDMUSE_SECRET> {
+                    $edit-allowed = True;
+                } elsif $answer && verify-answer $answer {
+                    set-cookie 'secret', %*ENV<ODDMUSE_SECRET>, expires => DateTime.now.later(years => 1);
                     $edit-allowed = True;
                 } elsif $secret {
-                    $edit-allowed = $secret eq 'FIXME';
+                    $edit-allowed = $secret eq %*ENV<ODDMUSE_SECRET>;
                 }
                 if $edit-allowed {
 				    save-page(:$id, :$text, :$summary,

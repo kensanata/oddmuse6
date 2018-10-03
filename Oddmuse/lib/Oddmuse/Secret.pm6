@@ -32,8 +32,7 @@ If the page does not exist, the C<secret> template is used.
 sub ask-for-secret(:$id!, :$text!,
 				   :$summary, :$minor,
 				   :$author) is export {
-    # FIXME
-    my $question = "Do you prefer cats or dogs?";
+    my $question = %*ENV<ODDMUSE_QUESTION>;
     my %context = :$id, :$text, :$summary, :$minor, :$author, :$question;
     my $storage = Oddmuse::Storage.new;
 	my $template = $storage.get-template('secret');
@@ -41,7 +40,8 @@ sub ask-for-secret(:$id!, :$text!,
 }
 
 #| Verify the answer given to the secret question
-sub verify-answer($answer!) is export {
-    # FIXME
-    $answer ~~ /^ ( cats | dogs ) $/;
+sub verify-answer(Str $answer! --> Bool) is export {
+    return True unless %*ENV<ODDMUSE_ANSWER>;
+    my @answers = %*ENV<ODDMUSE_ANSWER>.split(/ ',' \s* /);
+    return @answers.grep($answer).Bool;
 }

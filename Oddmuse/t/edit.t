@@ -21,6 +21,10 @@ use Test;
 
 my $root = get-random-wiki-directory;
 
+%*ENV<ODDMUSE_QUESTION> = 'Name a colour of the rainbow.';
+%*ENV<ODDMUSE_ANSWER> = 'red, orange, yellow, green, blue, indigo, violet';
+%*ENV<ODDMUSE_SECRET> = 'rainbow-unicorn';
+
 test-service routes(), {
   test get('/edit/About'),
       status => 200,
@@ -31,15 +35,15 @@ test-service routes(), {
 	    json => { :id('About'), :text('# Hallo'), :summary('testing'), :author(''), }),
       status => 200,
       content-type => 'text/html',
-      body => / 'First time editor' /;
+      body => / 'First time editor' .* "%*ENV<ODDMUSE_QUESTION>" /;
 
   test post('/save',
-	    json => { :id('About'), :text('# Morning'), :summary('testing'), :author(''), :answer('cats'), }),
+	    json => { :id('About'), :text('# Morning'), :summary('testing'), :author(''), :answer('red'), }),
       status => 200,
       content-type => 'text/html',
       body => / '<h1>Morning</h1>' /;
 
-  test post('/save', cookies => { secret => 'FIXME', },
+  test post('/save', cookies => { secret => %*ENV<ODDMUSE_SECRET>, },
 	    json => { :id('About'), :text('# Hallo'), :summary('testing'), :author(''), }),
       status => 200,
       content-type => 'text/html',
@@ -62,7 +66,7 @@ like @data[6], /testing/, "summary";
 
 # make sure checkbox is handled correctly
 test-service routes(), {
-  test post('/save', cookies => { secret => 'FIXME', },
+  test post('/save', cookies => { secret => %*ENV<ODDMUSE_SECRET>, },
 	    json => { :id('About'), :text('Hullo'), :summary('typo'), :author('Alex'), :minor('on')}),
       status => 200,
       content-type => 'text/html',

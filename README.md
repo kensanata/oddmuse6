@@ -114,14 +114,23 @@ environment variables with which to configure the wiki.
   The default is `Home, Changes, About`. That also means that none of
   the pages in the menu may contain a comma.
 
-* `ODDMUSE_CHANGES` is the page which acts as an alias for the
-  `/changes` route. The default is `Changes`. This means that you can
-  add `Changes` to the main menu and it'll work. This also means that
-  you cannot edit the `Changes` page: it's content is inaccessible.
-  Don't forget to change the `changes.sp6` template as well.
+### Changes
 
-To reiterate, here's an example of how to have a page called
-"RecentChanges":
+One page name is special: viewing this page lists recent changes on
+the wiki instead of the page itself. By default, this page is called
+"Changes". It's name is stored in an environment variable:
+
+- `ODDMUSE_CHANGES` is the page which acts as an alias for the
+  `/changes` route. The default is `Changes`.
+
+This means that you can add `Changes` to the main menu and it'll work.
+This also means that you cannot edit the `Changes` page: it's content
+is inaccessible.
+
+Don't forget to change the `changes.sp6` template if you change the
+name of this page.
+
+Here's an example of how to have a page called "RecentChanges":
 
 1. Set the `ODDMUSE_MENU` environment variable to `Home,
    RecentChanges, About`. This makes sure that "RecentChanges" shows
@@ -132,7 +141,10 @@ To reiterate, here's an example of how to have a page called
    visiting `/changes`.
 
 3. Edit the `changes.sp6` template and replace occurences of "Changes"
-   with "RecentChanges" in the `title` element and the `h1` element.
+   with "RecentChanges" in the `title` element and the `h1` element
+   such that there is no mismatch between the link and the title.
+
+### Resources
 
 The following variables point to directories used to server resources.
 More on that below.
@@ -201,7 +213,7 @@ body {
   color: green;
 }
 EOF
-ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 -I Oddmuse/lib Oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 perl6 -I Oddmuse/lib Oddmuse/service.p6
 ```
 
 This works because now we're not using `cro` to launch the process and
@@ -215,6 +227,35 @@ Taking it from here should be easy: the `templates` directory and the
 
 If you want these changes to take effect and you still want to `cro
 run`, you need to make changes to the `.cro.yml` file.
+
+### Spam Protection
+
+There is currently a very simple protection scheme in place, using
+three pieces of information in three environment variables:
+
+1. `ODDMUSE_QUESTION` is a question
+2. `ODDMUSE_ANSWER` are possible answers, comma separated
+3. `ODDMUSE_SECRET` is a secret which can be stored in a cookie, which
+   basically means you should only use alphanumeric ASCII characters:
+   no spaces, nothing fancy
+
+This is how it works: whenever somebody tries to save a page, we check
+if they have answered the question. If they do, they'll have a cookie
+holding the secret. If they don't we redirect them to a page where
+they must answer the question. If they answer correctly, the cookie
+with the secret is set and the page is saved.
+
+As the secret is stored in the cookie, people have to answer the
+question whenever they delete their cookies, or whenever they change
+browsers.
+
+An example setup might use the following settings, for examples:
+
+```sh
+ODDMUSE_QUESTION=Name a colour of the rainbow.
+ODDMUSE_ANSWER=red, orange, yellow, green, blue, indigo, violet
+ODDMUSE_SECRET=rainbow-unicorn
+```
 
 ## Hosting Multiple Wikis
 

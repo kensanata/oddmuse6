@@ -21,6 +21,12 @@ env:
     value: Home, Changes, About
   - name: ODDMUSE_CHANGES
     value: Changes
+  - name: ODDMUSE_QUESTION
+    value: Do you prefer cats or dogs?
+  - name: ODDMUSE_ANSWER
+    value: cat, cats, dog, dogs, bird, birds
+  - name: ODDMUSE_SECRET
+    value: This-is-a-secret.
 endpoints: 
   - 
     id: http

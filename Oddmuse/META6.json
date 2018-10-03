@@ -26,6 +26,7 @@
   "provides": {
     "Oddmuse::Change":              "lib/Oddmuse/Change.pm6",
     "Oddmuse::Changes":             "lib/Oddmuse/Changes.pm6",
+    "Oddmuse::Cookie":              "lib/Oddmuse/Cookie.pm6",
     "Oddmuse::Diff":                "lib/Oddmuse/Diff.pm6",
     "Oddmuse::Edit":                "lib/Oddmuse/Edit.pm6",
     "Oddmuse::Filter":              "lib/Oddmuse/Filter.pm6",
@@ -34,6 +35,7 @@
     "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
     "Oddmuse::Routes":              "lib/Oddmuse/Routes.pm6",
     "Oddmuse::Save":                "lib/Oddmuse/Save.pm6",
+    "Oddmuse::Secret":              "lib/Oddmuse/Secret.pm6",
     "Oddmuse::Storage":             "lib/Oddmuse/Storage.pm6",
     "Oddmuse::Storage::File":       "lib/Oddmuse/Storage/File.pm6",
     "Oddmuse::Storage::File::Lock": "lib/Oddmuse/Storage/File/Lock.pm6",

@@ -10,13 +10,17 @@ If you're curious, see the [feature list](FEATURES.md).
 **Table of Contents**
 
 - [Installation](#installation)
+    - [Bugs](#bugs)
 - [Docker](#docker)
 - [Test](#test)
 - [Configuration](#configuration)
+    - [Changes](#changes)
+    - [Resources](#resources)
     - [Images and CSS](#images-and-css)
     - [Templates](#templates)
     - [Wiki](#wiki)
     - [Changing the CSS](#changing-the-css)
+    - [Spam Protection](#spam-protection)
 - [Hosting Multiple Wikis](#hosting-multiple-wikis)
 - [Using it as a module](#using-it-as-a-module)
 

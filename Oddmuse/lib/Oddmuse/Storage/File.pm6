@@ -65,15 +65,15 @@ class Oddmuse::Storage::File {
         my $path = "$dir/$id.md.~$n~";
         return $.get-page($id) unless $path.IO.e;
         return Oddmuse::Page.new(
-            exists        => True,
-            revision    => $n,
-            text        => $path.IO.slurp);
+            exists   => True,
+            revision => $n,
+            text     => $path.IO.slurp);
     }
 
     #| Save new revision of a page and return the revision number.
     method put-keep-page(Str $id!) is export {
         my $from-dir = make-directory 'page';
-        my $to-dir     = make-directory 'keep';
+        my $to-dir = make-directory 'keep';
 
         # lock the source file!
         my $path = "$from-dir/$id.md";
@@ -110,8 +110,9 @@ class Oddmuse::Storage::File {
         my $dir = make-directory '';
         my $path = "$dir/rc.log";
         return () unless $path.IO.e;
+        my %revisions = existing-revisions $filter;
         my @lines = $path.IO.lines.reverse;
-        my @changes = @lines.map: { line-to-change $_ };
+        my @changes = @lines.map: { line-to-change $_, %revisions };
         @changes = @changes.grep: {$_.id eq $filter.id} if $filter.id;
         @changes = @changes.grep: {$_.author eq $filter.author} if $filter.author;
         @changes = @changes.grep: {!$_.minor} unless $filter.minor;
@@ -121,16 +122,17 @@ class Oddmuse::Storage::File {
     }
 
     #| Helper to turn a log line into a Change.
-    sub line-to-change(Str $line! --> Oddmuse::Change) {
+    sub line-to-change(Str $line!, %revisions --> Oddmuse::Change) {
         my ($ts, $minor, $id, $revision, $author, $code, $summary) = $line.split(/$SEP/);
         my $change = Oddmuse::Change.new(
-            ts            => DateTime.new($ts),
-            minor        => Bool.new($minor),
+            ts => DateTime.new($ts),
+            minor => Bool.new($minor),
             :$id,
-            revision    => $revision.Int,
+            revision => $revision.Int,
             :$author,
             :$code,
             :$summary,
+            kept => so %revisions{$revision.Int + 1},
         );
         return $change;
     }
@@ -139,12 +141,25 @@ class Oddmuse::Storage::File {
     sub latest-changes(@changes) {
         my @results;
         my %seen;
-        for @changes ->     $change {
+        for @changes -> $change {
             next if %seen{$change.id};
             %seen{$change.id} = True;
             @results.push: $change;
         }
         return @results;
+    }
+
+    #| Helper to get the existing revisions
+    sub existing-revisions(Oddmuse::Filter $filter --> Hash) {
+        return {} unless $filter.id and $filter.all;
+        my Str $id = $filter.id;
+        my $dir = make-directory 'keep';
+        my @keep-pages = $dir.IO.dir(test => /^ $id '.md.~' \d+ '~' $/);
+        my %h;
+        for @keep-pages {
+            %h{$0} = True if $_ ~~ / "~" (\d+) "~" $/;
+        }
+        return %h;
     }
 
     #| Create appropriate subdirectory, if it doesn't exist. Copy

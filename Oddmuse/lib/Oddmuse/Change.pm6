@@ -38,4 +38,5 @@ Instances of this class are processed by L<Oddmuse::Changes>.
     has Str $.author;
     has Str $.code;
     has Str $.summary;
+    has Bool $.kept is rw;
 }

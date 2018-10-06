@@ -35,9 +35,16 @@ wanted to start a rewrite in order to get rid of the CGI module, and
 then I asked myself: why not go all the way‽ I might as well give Perl
 6 a try.
 
+Get sources:
+
+```
+git clone https://alexschroeder.ch/cgit/oddmuse6
+```
+
 To run it, you need to install the dependencies:
 
 ```
+cd oddmuse6
 zef install --depsonly ./Oddmuse
 ```
 
@@ -52,7 +59,13 @@ saved in the `wiki` directory.
 
 ### Bugs
 
-When I ran into the error `Type check failed in binding $high;
+🔥 When installing dependencies using `zef` as shown, you could be
+running into an OpenSSL issue even if you have the correct development
+libraries installed. On Debian, you need `libssl-dev` but apparently
+versions 1.1.0f and 1.1.0g won't work. See
+[issue #34](https://github.com/jnthn/p6-io-socket-async-ssl/issues/34).
+
+🔥 When I ran into the error `Type check failed in binding $high;
 expected Any but got Mu` when computing a `diff` I found [issue
 #12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
 `Algorithm::Diff`. [Pull request

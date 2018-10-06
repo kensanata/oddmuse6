@@ -66,12 +66,12 @@ versions 1.1.0f and 1.1.0g won't work. See
 [issue #34](https://github.com/jnthn/p6-io-socket-async-ssl/issues/34).
 
 🔥 When I ran into the error `Type check failed in binding $high;
-expected Any but got Mu` when computing a `diff` I found [issue
-#12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
-`Algorithm::Diff`. [Pull request
-#16](https://github.com/Takadonet/Algorithm--Diff/pull/16) is supposed
-to fix this. Feel free to check out [my
-fork](https://github.com/kensanata/Algorithm--Diff) and install it
+expected Any but got Mu` when computing a `diff` I found
+[issue #12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
+`Algorithm::Diff`.
+[Pull request #16](https://github.com/Takadonet/Algorithm--Diff/pull/16)
+is supposed to fix this. Feel free to check out
+[my fork](https://github.com/kensanata/Algorithm--Diff) and install it
 with `zef install --force-install .` – hopefully that fixes it for
 you.
 

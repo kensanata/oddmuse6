@@ -10,6 +10,11 @@ These are the features it supports:
 - old revisions are also stored as plain text files
 - the change log is also a text file
 - every page can be edited; click the *Edit* link at the bottom
+- page edits are protected from bots by a question defined via an
+  environment variable; multiple correct answers are also defined via
+  an environment variable; when people edit a page for the first time,
+  they have to answer this question correctly before their edit is
+  accepted
 - there's a page history available for review; click the *History*
   link at the bottom
 - there's a wiki history available for review; click the *Changes*
@@ -27,3 +32,6 @@ These are the features it supports:
   order to reduce the "noise" on the Changes page
 - if you're interested in reviewing all the changes made, you should
   definitely use the *all* checkbox to include minor changes
+- from the *History* pages, you can rollback to older revisions of a
+  page, if and only if the old revision has been "kept", i.e. the
+  "keep" file still exists

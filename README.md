@@ -272,13 +272,13 @@ mkdir wiki1 wiki2
 Start the first wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -Ioddmuse/lib oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -IOddmuse/lib Oddmuse/service.p6
 ```
 
 Start the second wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -Ioddmuse/lib oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -IOddmuse/lib Oddmuse/service.p6
 ```
 
 Now you can visit both `http://localhost:9000/` and

@@ -75,6 +75,13 @@ is supposed to fix this. Feel free to check out
 with `zef install --force-install .` – hopefully that fixes it for
 you.
 
+🔥 Every now and then I run into the error `This type (NQPMu) does not
+support associative operations` while I'm working on the code. As it
+turns out, `rm -rf Oddmuse/lib/.precomp` solves this issue. You'll be
+doing this a lot until
+[issue #2294](https://github.com/rakudo/rakudo/issues/2294) gets fixed.
+
+
 ## Docker
 
 I'm not sure how you would go about building the docker image. Any

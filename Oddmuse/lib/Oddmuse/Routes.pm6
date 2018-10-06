@@ -73,7 +73,7 @@ sub routes() is export {
             }
         }
         post -> 'rollback', $id, $revision where /^\d+$/, :$author is cookie, :$secret is cookie {
-            request-body -> (:$summary!) {
+            request-body -> (:$summary!, *%) {
                 content 'text/html', rollback-with-secret(
                     :$id, revision => $revision.Int, :$summary, :$author, :$secret);
             }

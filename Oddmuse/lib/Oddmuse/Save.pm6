@@ -83,3 +83,15 @@ sub save-page(Str :$id!, Str :$text!,
 
     $storage.put-change($change);
 }
+
+sub rollback-with-secret(Str :$id!,
+                          Int :$revision!,
+                          Str :$summary!,
+                          Str :$author = '',
+                          Str :$secret = '') is export {
+    my $minor = False; # FIXME: to be determined based on what we can see
+    my $storage = Oddmuse::Storage.new;
+    my $page = $storage.get-keep-page: $id, $revision;
+    my $text = $page.text;
+    save-with-secret(:$id, :$text, :$summary, :$minor, :$author, :$secret);
+}

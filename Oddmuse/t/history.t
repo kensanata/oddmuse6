@@ -18,9 +18,16 @@ use Oddmuse::Storage::File::Test;
 use Oddmuse::Storage;
 use Oddmuse::Filter;
 use Oddmuse::Save;
+use Oddmuse::Routes;
+use Cro::HTTP::Test;
+use DOM::Tiny;
 use Test;
 
 my $root = get-random-wiki-directory;
+
+%*ENV<ODDMUSE_QUESTION> = 'Name a colour of the rainbow.';
+%*ENV<ODDMUSE_ANSWER> = 'red, orange, yellow, green, blue, indigo, violet';
+%*ENV<ODDMUSE_SECRET> = 'rainbow-unicorn';
 
 save-page(id => "About", text => "one");
 save-page(id => "About", text => "two");
@@ -43,5 +50,37 @@ is @changes[2].kept, True, "revision 1 is kept";
 
 # There is no need to roll back to the current page, but there is always the
 # option of rolling everything back, i.e. to revision 0: delete it all.
+
+test-service routes(), {
+
+    my $dom;
+
+    test get('/history/About'),
+    status =>200,
+    content-type => 'text/html',
+    body => { $dom = DOM::Tiny.parse($_) };
+
+    is $dom.at('h1').text, 'History for About', 'title is correct';
+    nok $dom.find('button[formaction="/rollback/About/0"]'), 'rollback 0';
+    is $dom.at('button[formaction="/rollback/About/1"]').text, 'rollback', 'rollback 1';
+    is $dom.at('button[formaction="/rollback/About/2"]').text, 'rollback', 'rollback 2';
+    nok $dom.find('button[formaction="/rollback/About/3"]'), 'rollback 3';
+
+    test post('/rollback/About/1', cookies => { author => 'Alex', secret => %*ENV<ODDMUSE_SECRET>, },
+              json => { :summary('Rollback to 1') }),
+    status =>200,
+    content-type => 'text/html',
+    body => / one /;
+}
+
+# double check page content
+my $page = $storage.get-page('About');
+is $page.text, 'one', 'page rolled back';
+
+# make sure changes were written
+@changes = $storage.get-changes($filter);
+is @changes.elems, 4, "four changes in history";
+
+is @changes[0].summary, "Rollback to 1", "changes written";
 
 done-testing;

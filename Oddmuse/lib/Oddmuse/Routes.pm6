@@ -68,10 +68,14 @@ sub routes() is export {
                              :$author = '', :$answer = '') {
                 save-to-cookie('author', $author);
                 content 'text/html', save-with-secret(
-                    :$id, :$text, :$summary,
-                    :$author, :$answer,
-                    minor => $minor ?? True !! False,
-                    secret => $secret || '');
+                    :$id, :$text, :$summary, :$author, :$answer, :$secret,
+                    minor => $minor ?? True !! False);
+            }
+        }
+        post -> 'rollback', $id, $revision where /^\d+$/, :$author is cookie, :$secret is cookie {
+            request-body -> (:$summary!) {
+                content 'text/html', rollback-with-secret(
+                    :$id, revision => $revision.Int, :$summary, :$author, :$secret);
             }
         }
         get -> 'css', *@path {

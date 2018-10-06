@@ -104,6 +104,7 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
             id => .id,
             revision => .revision,
             to => .revision + 1,
+            kept => .kept,
             author => .author,
             # { c => "1", c=> "2", c=> "3", c=> "4", }
             code => [ "c" X=> .code.split("", :skip-empty) ],

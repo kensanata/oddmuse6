@@ -68,8 +68,9 @@ sub routes() is export {
                              :$author = '', :$answer = '') {
                 save-to-cookie('author', $author);
                 content 'text/html', save-with-secret(
-                    :$id, :$text, :$summary, :$author, :$answer, :$secret,
-                    minor => $minor ?? True !! False);
+                    :$id, :$text, :$summary, :$author, :$answer,
+                    minor => $minor ?? True !! False,
+                    secret => $secret || '');
             }
         }
         post -> 'rollback', $id, $revision where /^\d+$/, :$author is cookie, :$secret is cookie {

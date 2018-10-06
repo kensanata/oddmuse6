@@ -41,7 +41,7 @@
 					<input type="radio" name="from" value="{{to}}" {{#second}}checked{{/second}}>
 					<input type="radio" name="to" value="{{to}}" {{#first}}checked{{/first}}>
 					{{time}}
-					{{#kept}}<button formmethod="post" formaction="/rollback/{{filter.id}}/{{to}}" name="summary" value="Rollback to revision {{to}}">rollback</button>{{/kept}}
+					{{#kept}}<button formmethod="post" formaction="/rollback/{{filter.id}}/{{to}}" name="summary" value="Rollback to {{time}}">rollback</button>{{/kept}}
 					{{#revision}}(<a href="/diff/{{filter.id}}/{{to}}">diff</a>){{/revision}}
 					<a href="/view/{{filter.id}}/{{to}}">{{filter.id}}</a> …
 					{{#author}}<a href="/view/{{author}}">{{author}}</a>{{/author}}

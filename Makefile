@@ -26,7 +26,10 @@ clean:
 	rm -rf test-* lib/.precomp
 
 dist:
-	git archive --prefix=Oddmuse-$(VERSION)/ -o ../Oddmuse-$(VERSION).tar.gz $(VERSION)
+	git archive --prefix=Oddmuse-$(VERSION)/ -o Oddmuse-$(VERSION).tar.gz $(VERSION)
+
+upload:
+	cpan-upload Oddmuse-$(VERSION).tar.gz
 
 # use make t/view without the .t suffix
 t/%:

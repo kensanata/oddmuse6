@@ -10,3 +10,4 @@ node_modules/
 
 # Default directory
 /wiki
+/Oddmuse*.tar.gz

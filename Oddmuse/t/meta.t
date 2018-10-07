@@ -2,11 +2,70 @@ use v6.c;
 
 use Test;
 use Test::META;
+use JSON::Fast;
 
+# Check whether META6.json satisfies the usual constraints.
 # FIXME: currently the license is not recognized
-# plan 1;
-
-# That's it
 # meta-ok();
+
+my $meta = from-json "META6.json".IO.slurp;
+
+
+# Check whether the templates are all published in META6.json.
+my @errors;
+my @files = 'resources/templates'.IO.dir(test => / '.sp6' $/).map: { .substr(10) };
+for @files.sort -> $file {
+    @errors.push($file) unless $meta<resources>.grep(/^ $file $/);
+}
+diag "Missing in META6.json: " ~ @errors if @errors;
+ok @errors.elems == 0, "all templates are found in META6.json";
+
+# Reverse check for outdated files
+@errors = ();
+for $meta<resources>.grep(/ '.sp6' $/).sort -> $file {
+    @errors.push($file) unless @files.grep($file);
+}
+diag "Extra templates in META6.json: " ~ @errors if @errors;
+ok @errors.elems == 0, "all templates in META6.json exist as files";
+
+# This library is used via the default setting of ODDMUSE_STORAGE in
+# .cro.yml, it doesn't actually get mentioned in any of the source
+# files.
+my %libs = 'Oddmuse::Storage::File' => True;
+
+# Recursively go through all the source files and add any Oddmuse
+# library used.
+my @todo = 'lib'.IO;
+while @todo {
+    for @todo.pop.dir -> $path {
+        if $path.d and $path.Str[0] ne "." {
+            @todo.push: $path;
+        } elsif $path ~~ / '.pm6' $/ {
+            my @uses = $path.IO.lines.grep: /^ 'use' \s+ 'Oddmuse::' /;
+            for @uses -> $use {
+                %libs{$0} = True if $use ~~ /:i ( 'Oddmuse::' <[ a .. z : ]> + ) /;
+            }
+        }
+    }
+}
+
+# Check that all the libraries we actually use are listed in
+# META6.json.
+@errors = ();
+for %libs.keys.sort -> $lib {
+    @errors.push: $lib unless $meta<provides>{$lib};
+}
+diag "Missing in META6.json: " ~ @errors if @errors;
+ok @errors.elems == 0, "all libraries are found in META6.json";
+
+# Reverse check for outdated libraries
+@errors = ();
+for $meta<provides>.keys.sort -> $lib {
+    # Oddmuse::Routes is the only lib we don't use.
+    next if $lib eq 'Oddmuse::Routes';
+    @errors.push($lib) unless %libs{$lib};
+}
+diag "Extra libraries in META6.json: " ~ @errors if @errors;
+ok @errors.elems == 0, "all libraries in META6.json exist as files";
 
 done-testing;

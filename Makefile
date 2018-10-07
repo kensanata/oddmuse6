@@ -14,8 +14,13 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+VERSION=$(shell perl6 -M JSON::Fast -e 'from-json("Oddmuse/META6.json".IO.slurp)<version>.say')
+
 test: clean
 	cd Oddmuse && make test
 
 clean:
 	rm -rf test-* Oddmuse/lib/.precomp
+
+dist:
+	cd Oddmuse && git archive --prefix=Oddmuse-$(VERSION)/ -o ../Oddmuse-$(VERSION).tar.gz $(VERSION)

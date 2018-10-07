@@ -43,8 +43,11 @@ zef install --/test cro
 zef install Oddmuse6
 ```
 
-Create a new application. Start with a stub and accept all the
-defaults:
+Create a new application. Remember that installing `cro` printed a
+message telling you where the binary got installed. I'm assuming you
+added `$HOME/rakudo/share/perl6/site/bin` to your `PATH`.
+
+Start with a stub and accept all the defaults:
 
 ```
 cro stub http test test

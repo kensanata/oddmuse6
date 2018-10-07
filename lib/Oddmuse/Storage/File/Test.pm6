@@ -31,7 +31,7 @@ sub get-random-wiki-directory is export {
     my $dir;
     repeat {
         my $n = (1..^10000).rand.floor;
-        $dir = sprintf("../test-%04d", $n);
+        $dir = sprintf("test-%04d", $n);
     } while ($dir.IO.e);
     say "Using $dir";
     %*ENV<ODDMUSE_WIKI> = $dir;

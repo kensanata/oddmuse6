@@ -45,7 +45,7 @@ To run it, you need to install the dependencies:
 
 ```
 cd oddmuse6
-zef install --depsonly ./Oddmuse
+zef install --depsonly .
 ```
 
 Then start the service:
@@ -67,8 +67,8 @@ versions 1.1.0f and 1.1.0g won't work. See
 
 🔥 Every now and then I run into the error `This type (NQPMu) does not
 support associative operations` while I'm working on the code. As it
-turns out, `rm -rf Oddmuse/lib/.precomp` solves this issue. You'll be
-doing this a lot until
+turns out, `rm -rf lib/.precomp` solves this issue. You'll be doing
+this a lot until
 [issue #2294](https://github.com/rakudo/rakudo/issues/2294) gets fixed.
 
 🔥 When I ran into the error `Type check failed in binding $high;
@@ -96,24 +96,26 @@ variable to control how many jobs run in parallel. The default is 4.
 jobs=1 make test
 ```
 
-Running tests create test data directories (`test-nnnn`). To clean
-these up:
+Running tests create test data directories (`test-nnnn`). This allows
+us to run multiple tests in parallel. The directories are kept around
+for developers to inspect in case something went wrong. Eventually,
+you'll need to clean these up:
 
 ```
 make clean
 ```
 
-To run just one suite of tests:
+To run just one suite of tests, name the tests without the `.t`
+extension:
 
 ```
-cd oddmuse
 make t/keep
 ```
 
 This also shows you the data directory it uses:
 
 ```
-Using ../test-1288
+Using test-1288
 ```
 
 ## Configuration
@@ -225,21 +227,21 @@ Here's a simple change to make:
 
 ```
 mkdir css
-cp Oddmuse/resources/css/default.css css/
+cp resources/css/default.css css/
 cat - << EOF >> css/default.css
 body {
   background: black;
   color: green;
 }
 EOF
-ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 perl6 -I Oddmuse/lib Oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 perl6 -I lib service.p6
 ```
 
 This works because now we're not using `cro` to launch the process and
-thus `Oddmuse/.cro.yml` isn't being used and thus the environment
-defined in that file isn't being used. That's why we had to provide
-our own host and port, and that's why the modified `default.css` from
-the local `css` directory is being used.
+thus `.cro.yml` isn't being used and thus the environment defined in
+that file isn't being used. That's why we had to provide our own host
+and port, and that's why the modified `default.css` from the local
+`css` directory is being used.
 
 Taking it from here should be easy: the `templates` directory and the
 `images` directory work just the same.
@@ -268,7 +270,7 @@ As the secret is stored in the cookie, people have to answer the
 question whenever they delete their cookies, or whenever they change
 browsers.
 
-An example setup might use the following settings, for examples:
+An example setup might use the following settings, for example:
 
 ```sh
 ODDMUSE_QUESTION=Name a colour of the rainbow.
@@ -287,13 +289,13 @@ mkdir wiki1 wiki2
 Start the first wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -IOddmuse/lib Oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -Ilib service.p6
 ```
 
 Start the second wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -IOddmuse/lib Oddmuse/service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -Ilib service.p6
 ```
 
 Now you can visit both `http://localhost:9000/` and

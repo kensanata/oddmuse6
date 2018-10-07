@@ -1,6 +1,5 @@
 # Caches
 .precomp/
-node_modules/
 
 # Backup files
 *~
@@ -10,4 +9,6 @@ node_modules/
 
 # Default directory
 /wiki
+
+# Distribution files
 /Oddmuse*.tar.gz

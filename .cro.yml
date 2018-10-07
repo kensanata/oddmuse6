@@ -14,7 +14,7 @@ env:
   - name: ODDMUSE_TEMPLATES
     value: resources/templates
   - name: ODDMUSE_WIKI
-    value: ../wiki
+    value: wiki
   - name: ODDMUSE_STORAGE
     value: Oddmuse::Storage::File
   - name: ODDMUSE_MENU

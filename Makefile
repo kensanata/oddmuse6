@@ -14,13 +14,20 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-VERSION=$(shell perl6 -M JSON::Fast -e 'from-json("Oddmuse/META6.json".IO.slurp)<version>.say')
+VERSION=$(shell perl6 -M JSON::Fast -e 'from-json("META6.json".IO.slurp)<version>.say')
+
+# How many jobs to run in parallel when testing
+jobs ?= 4
 
 test: clean
-	cd Oddmuse && make test
+	prove6 -l -j=$(jobs) t
 
 clean:
-	rm -rf test-* Oddmuse/lib/.precomp
+	rm -rf test-* lib/.precomp
 
 dist:
-	cd Oddmuse && git archive --prefix=Oddmuse-$(VERSION)/ -o ../Oddmuse-$(VERSION).tar.gz $(VERSION)
+	git archive --prefix=Oddmuse-$(VERSION)/ -o ../Oddmuse-$(VERSION).tar.gz $(VERSION)
+
+# use make t/view without the .t suffix
+t/%:
+	perl6 -Ilib $@.t

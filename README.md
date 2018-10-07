@@ -105,6 +105,14 @@ This is my page.
 
 Your first edit! 🎉
 
+In order to make it public, you'll need to set two environment
+variables. Each `cro` service gets to environment variables that
+determine its *host* and its *port*. Their names depend on the name
+you provided when you called `cro stub`. If you called it `test` like
+I did in the example above, the two environment variables you need are
+called `TEST_HOST` and `TEST_PORT`. Feel free to change them in
+`service.p6` and `.cro.yml`, though.
+
 ## Development
 
 Get the sources:

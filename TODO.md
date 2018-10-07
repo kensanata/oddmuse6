@@ -11,29 +11,40 @@ Debt:
 - change all the calls from Storage.new to Storage.get which return a
   singleton
 
-Missing features:
+Here's what it still needs before it can deployed on the Intranet:
 
-- question asking for first time posters
-- admin passwords
-- banning regular expressions
+- a link to an administration page
+- a way to enter your administrator password
+- a way for administrators to lock the site for non-administrators
+- a way for administrators to lock a page for non-administrators
+- a way to list all the locked pages
+- a protected page where administrators can put banned phrases.
+- an error when people try to save pages containing banned phrases
+- a way to list all the pages containing banned phrases
+
+Here's what I'd like to see:
+
+- preview button
+- cancel button
+- full text search
+- page title match
+- page tagging
+- tag search
+- tag cloud
 - merge in case of conflicts
-- expiration of old page revisions
-- page passwords
-- locking the site
-- locking pages
-- rolling back changes
-- RSS feed
-- tags
-- search
+
+Interesting next steps:
+
+- namespaces
 - comments
-- image upload
-- better HTML caching
+- file uploads
+- better HTML caching (measure it first?)
 - better HTTP caching (Etags, 304)
 
-Missing big ideas:
+Nice to have:
 
-- a plugin system
-- markup rules which users can add, ideally by merging grammars (this
-  enables us to have rules that protect text from further processing,
-  such as code blocks; this requires the notion of rule precedence)
-- a backend implementation using SQLite
+- a SQLite backend, once the storage API is stable
+- an extension to provide an example of how this could be achieved
+- expiration of old page revisions
+- page passwords
+- RSS feed

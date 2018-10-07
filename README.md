@@ -36,12 +36,15 @@ If you're curious, see the [feature list](FEATURES.md).
 
 ## Quickstart
 
+Install [cro](https://cro.services/) and Oddmuse 6:
+
 ```
+zef install --/test cro
 zef install Oddmuse6
 ```
 
-Create a new [Cro](https://cro.services/) application. Start with a
-stub and accept all the defaults:
+Create a new application. Start with a stub and accept all the
+defaults:
 
 ```
 cro stub http test test
@@ -131,6 +134,11 @@ running into an OpenSSL issue even if you have the correct development
 libraries installed. On Debian, you need `libssl-dev` but apparently
 versions 1.1.0f and 1.1.0g won't work. See
 [issue #34](https://github.com/jnthn/p6-io-socket-async-ssl/issues/34).
+You could decide to ignore SSL support and opt to have a web server
+act as a proxy which provides SSL. That's what I intend to do. In
+which case there is a terrible workaround available: run `zef install
+--force-test IO::Socket::Async::SSL` before you `zef install
+Oddmuse6`.
 
 🔥 Every now and then I run into the error `This type (NQPMu) does not
 support associative operations` while I'm working on the code. As it

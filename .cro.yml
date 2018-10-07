@@ -6,6 +6,7 @@ entrypoint: service.p6
 cro: 1
 ignore:
   - resources/
+  - wiki/
 env:
   - name: ODDMUSE_IMAGES
     value: resources/images

@@ -2,6 +2,14 @@
 
 This file is for the people wanting to download and install Oddmuse 6.
 
+This is Oddmuse based on [Perl 6](https://perl6.org/) and
+[Cro](https://cro.services/). The current stable version of
+[Oddmuse](https://oddmuse.org/) is based on Perl 5 and `CGI.pm`,
+optionally using `Mojolicious` and `Mojolicious::Plugin::CGI`. I
+wanted to start a rewrite in order to get rid of the CGI module, and
+then I asked myself: why not go all the way‽ I might as well give Perl
+6 a try.
+
 If you're a developer, see the [to do list](TODO.md).
 
 If you're curious, see the [feature list](FEATURES.md).
@@ -9,9 +17,9 @@ If you're curious, see the [feature list](FEATURES.md).
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Installation](#installation)
-    - [Bugs](#bugs)
-- [Docker](#docker)
+- [Quickstart](#quickstart)
+- [Development](#development)
+- [Bugs](#bugs)
 - [Test](#test)
 - [Configuration](#configuration)
     - [Changes](#changes)
@@ -19,23 +27,81 @@ If you're curious, see the [feature list](FEATURES.md).
     - [Images and CSS](#images-and-css)
     - [Templates](#templates)
     - [Wiki](#wiki)
-    - [Changing the CSS](#changing-the-css)
+    - [Example: Changing the CSS](#example-changing-the-css)
     - [Spam Protection](#spam-protection)
 - [Hosting Multiple Wikis](#hosting-multiple-wikis)
-- [Using it as a module](#using-it-as-a-module)
+- [Docker](#docker)
 
 <!-- markdown-toc end -->
 
-## Installation
+## Quickstart
 
-This is Oddmuse based on Perl 6 and Cro. The current stable version of
-[Oddmuse](https://oddmuse.org/) is based on Perl 5 and `CGI.pm`,
-optionally using `Mojolicious` and `Mojolicious::Plugin::CGI`. I
-wanted to start a rewrite in order to get rid of the CGI module, and
-then I asked myself: why not go all the way‽ I might as well give Perl
-6 a try.
+```
+zef install Oddmuse6
+```
 
-Get sources:
+Create a new [Cro](https://cro.services/) application. Start with a
+stub and accept all the defaults:
+
+```
+cro stub http test test
+```
+
+This creates a service called "test" in a directory called `test`. If
+you accept all the defaults, you'll get a service doing HTTP 1.1. Good
+enough for us!
+
+Now edit `test/services.p6` and replace `use Routes` with `use
+Oddmuse::Routes`.
+
+You can delete the `test/lib/Routes.pm6` which `cro stub` generated
+for you.
+
+Your default wiki directory is `test/wiki`, so we need to tell `cro`
+to ignore it. If you don't, you'll confuse `cro` to no end as soon as
+you start editing files! Add the following section section to your in
+`test/.cro.yml` file:
+
+```
+ignore:
+  - wiki/
+```
+
+Run it:
+
+```
+cd test
+cro run
+```
+
+Check it out by visiting `http://localhost:20000`. Your wiki is ready!
+🙃
+
+Let's configure it by setting an environment variable. More on this
+[below](#configuration). Replace the empty environment section in
+`test/.cro.yml` with the following and restart `cro`:
+
+```
+env:
+  - name: ODDMUSE_MENU
+    value: Home, Changes, About
+```
+
+And now you have a link to the *About* page. Follow the link and click
+the *create it* link. Write the following into the text area and click
+the *Save* button:
+
+```
+# About
+
+This is my page.
+```
+
+Your first edit! 🎉
+
+## Development
+
+Get the sources:
 
 ```
 git clone https://alexschroeder.ch/cgit/oddmuse6
@@ -57,7 +123,8 @@ cro run
 This should start the wiki on http://localhost:20000/ and its data is
 saved in the `wiki` directory.
 
-### Bugs
+
+## Bugs
 
 🔥 When installing dependencies using `zef` as shown, you could be
 running into an OpenSSL issue even if you have the correct development
@@ -76,16 +143,6 @@ expected Any but got Mu` when computing a `diff` I found
 [issue #12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
 `Algorithm::Diff`. It's supposed to be fixed, now.
 
-
-## Docker
-
-I'm not sure how you would go about building the docker image. Any
-help is appreciated.
-
-```
-docker build -t edit .
-docker run --rm -p 10000:10000 edit
-```
 
 ## Test
 
@@ -123,13 +180,16 @@ Using test-1288
 If you look at the `oddmuse/.cro.yml` file you'll find a section with
 environment variables with which to configure the wiki.
 
+Let's talk about these, first:
+
 * `ODDMUSE_STORAGE` is the class handling your storage requirements.
   The default is `Storage::File` which stores everything in plain text
-  files.
+  files. We'd love to add more!
 
-* `ODDMUSE_WIKI` is the location of your wiki, your data directory, if
-  you are using `Storage::File`. The default is `../wiki`. That's the
-  top directory where this `README.md` is.
+* `ODDMUSE_WIKI` is the location of your wiki. If you are using
+  `Storage::File` (the default), then this refers to your wiki
+  directory. Its default value is `wiki`. That's the same directory
+  where this `README.md` is.
 
 * `ODDMUSE_MENU` is a comma separated list of pages for the main menu.
   The default is `Home, Changes, About`. That also means that none of
@@ -138,37 +198,35 @@ environment variables with which to configure the wiki.
 ### Changes
 
 One page name is special: viewing this page lists recent changes on
-the wiki instead of the page itself. By default, this page is called
-"Changes". It's name is stored in an environment variable:
+the wiki instead of showing the page itself. By default, this page is
+called "Changes". It's name is stored in an environment variable:
 
 - `ODDMUSE_CHANGES` is the page which acts as an alias for the
   `/changes` route. The default is `Changes`.
 
-This means that you can add `Changes` to the main menu and it'll work.
-This also means that you cannot edit the `Changes` page: it's content
-is inaccessible.
+This means that you cannot edit the `Changes` page: it's content is
+inaccessible as the automatic list of recent changes is displayed
+instead.
 
 Don't forget to change the `changes.sp6` template if you change the
 name of this page.
 
-Here's an example of how to have a page called "RecentChanges":
+Here's an example of how to have a page called "Updates":
 
-1. Set the `ODDMUSE_MENU` environment variable to `Home,
-   RecentChanges, About`. This makes sure that "RecentChanges" shows
-   up in the menu.
+1. Set the `ODDMUSE_MENU` environment variable to `Home, Updates,
+   About`. This makes sure that "Updates" shows up in the menu.
 
-2. Set the `ODDMUSE_CHANGES` environment variable to `RecentChanges`.
-   This makes sure that clicking on the link is the equivalent of
-   visiting `/changes`.
+2. Set the `ODDMUSE_CHANGES` environment variable to `Updates`. This
+   makes sure that clicking on the link is the equivalent of visiting
+   `/changes`.
 
 3. Edit the `changes.sp6` template and replace occurences of "Changes"
-   with "RecentChanges" in the `title` element and the `h1` element
-   such that there is no mismatch between the link and the title.
+   with "Updates" in the `title` element and the `h1` element such
+   that there is no mismatch between the link and the title.
 
 ### Resources
 
 The following variables point to directories used to server resources.
-More on that below.
 
 - `ODDMUSE_IMAGES`
 - `ODDMUSE_CSS`
@@ -178,20 +236,23 @@ More on that below.
 For images, css files and templates, this is how lookup works:
 
 1. If an environment variable with the correct name exists, it's value
-   is used as the directory. Since the `Oddmuse/.cro.yml` file does
+   is used as the directory. Since the `.cro.yml` file does
    that, you can simply run `cro run` and it should find all the
    files.
 
 2. If no environment variable exists, the current working dir is
    checked for directories with the right names. If they exist, they
-   are used.
+   are used. This is important when you run `perl6 -I lib service.pm6`
+   directly, since that ignores the `.cro.yml` file.
 
 3. If none of the above, the copies in the `resources` folder of the
-   module itself are used.
+   module itself are used, if you installed Oddmuse via `zef`.
 
 As for the wiki directory: it is created if it doesn't exist. At that
 point the `Home.md` page from the module's `resources` folder is
-copied so that your wiki comes with at least one page.
+copied so that your wiki comes with at least one page. As this refers
+to the `resources` folder, it only works if you installed Oddmuse via
+`zef`.
 
 ### Images and CSS
 
@@ -209,8 +270,7 @@ These directories can be shared between various instances of the wiki.
 ### Templates
 
 This is where the templates are. The templates use the
-[Mustache](https://mustache.github.io/) format. They cannot be changed
-via the web interface.
+[Mustache](https://mustache.github.io/) format.
 
 ### Wiki
 
@@ -221,7 +281,7 @@ This is where the dynamic content of your wiki is. If you use the
 * `keep` is where older revisions of pages are kept
 * `rc.log` is the log file
 
-### Changing the CSS
+### Example: Changing the CSS
 
 Here's a simple change to make:
 
@@ -301,54 +361,13 @@ ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -Ilib service.
 Now you can visit both `http://localhost:9000/` and
 `http://localhost:9001/` and you'll find two independent wikis.
 
-## Using it as a module
 
-Here's what you can do if you installed `Oddmuse::Routes` as a module
-and now you want to write your own [Cro](https://cro.services/)
-application.
+## Docker
 
-Start with a stub and accept all the defaults:
+I'm not sure how you would go about building the docker image. Any
+help is appreciated.
 
 ```
-cro stub http test test
+docker build -t edit .
+docker run --rm -p 10000:10000 edit
 ```
-
-This creates a service called "test" in a directory called `test`. If
-you accept all the defaults, you'll get a service doing HTTP 1.1. Good
-enough for us!
-
-Now edit `test/services.p6` and replace `use Routes` with `use
-Oddmuse::Routes`.
-
-You can delete the `test/lib/Routes.pm6` which `cro stub` generated
-for you.
-
-Run it:
-
-```
-cro run
-```
-
-Check it out by visiting `http://localhost:20000`. Your wiki directory
-is `test/wiki`.
-
-Replace the empty environment section in `test/.cro.yml` with the
-following:
-
-```
-env:
-  - name: ODDMUSE_MENU
-    value: Home, Changes, About
-```
-
-And now you have a link to the *About* page. Follow the link and click
-the *create it* link. Write the following into the text area and click
-the *Save* button:
-
-```
-# About
-
-This is my page.
-```
-
-Your first edit! 🎉

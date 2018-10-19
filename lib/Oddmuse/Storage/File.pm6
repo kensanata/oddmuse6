@@ -46,8 +46,12 @@ class Oddmuse::Storage::File {
     method get-page(Str $id! --> Oddmuse::Page) is export {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.md";
-        return Oddmuse::Page.new(exists => False) unless $path.IO.e;
-        return Oddmuse::Page.new(exists => True, text => $path.IO.slurp);
+        return Oddmuse::Page.new() unless $path.IO.e;
+        return Oddmuse::Page.new(
+            exists => True,
+            text => $path.IO.slurp,
+            locked => self.is-locked($id),
+        );
     }
 
     #| Save a Page.
@@ -55,7 +59,7 @@ class Oddmuse::Storage::File {
         my $dir = make-directory 'page';
         my $path = "$dir/{$page.id}.md";
         with-locked-file $path, 2, {
-            spurt $path, $page.text;
+            $path.IO.spurt: $page.text;
         };
     }
 
@@ -95,7 +99,7 @@ class Oddmuse::Storage::File {
 
     #| Add a Change to the log.
     method put-change(Oddmuse::Change $change!) is export {
-        my $dir = make-directory('');
+        my $dir = make-directory '';
         my $path = "$dir/rc.log";
         with-locked-file $path, 2, {
             $path.IO.spurt(($change.ts, $change.minor ?? 1 !! 0,
@@ -189,5 +193,26 @@ class Oddmuse::Storage::File {
             return $_.revision + 1 if .id eq $id;
         }
         return 0;
+    }
+
+    #| Lock a page.
+    method lock-page(Str $id!) is export {
+        my $dir = make-directory 'page';
+        my $path = "$dir/$id.lock";
+        $path.IO.spurt: '';
+    }
+
+    #| Unlock a page.
+    method unlock-page(Str $id!) is export {
+        my $dir = make-directory 'page';
+        my $path = "$dir/$id.lock";
+        $path.IO.unlink;
+    }
+
+    #| Is this page locked?
+    method is-locked(Str $id!) is export {
+        my $dir = make-directory 'page';
+        my $path = "$dir/$id.lock";
+        return $path.IO.e;
     }
 }

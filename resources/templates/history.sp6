@@ -66,13 +66,13 @@
 
 		{{^locked}}
 		<form id="lock" method="post" action="/lock/{{filter.id}}">
-			<p>This page is currently editable by all. If you're an administrator, you can lock it.</p>
+			<p>This page editable. If you're an administrator, you can lock it.</p>
 			<p><button name="pw" value="">Lock page</button></p>
 		</form>
 		{{/locked}}
 		{{#locked}}
 		<form id="unlock" method="post" action="/unlock/{{filter.id}}">
-			<p>This page is currently locked. If you're an administrator, you can unlock it.</p>
+			<p>This page is locked. If you're an administrator, you can unlock it.</p>
 			<p><button name="pw" value="">Unlock page</button></p>
 		</form>
 		{{/locked}}

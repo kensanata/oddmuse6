@@ -48,6 +48,15 @@ Save a L<Oddmuse::Change>.
 =defn get-changes
 Get a list of L<Oddmuse::Change> objects.
 
+=defn lock-page
+Locks page C<id>.
+
+=defn unlock-page
+Unlocks page C<id>.
+
+=defn is-locked
+Return true if page C<id> is locked.
+
 The following methods are implemented by L<Oddmuse::Storage> itself:
 
 =defn get-template
@@ -64,6 +73,7 @@ class Oddmuse::Storage {
     has $!delegate handles <
         get-page put-page get-keep-page put-keep-page
         put-change get-changes get-current-revision
+        lock-page unlock-page is-locked
         > = ::($class).new;
 
     #| Get a the text for a template.

@@ -141,6 +141,7 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
     my $template;
     if $filter.id {
         $template = $storage.get-template('history');
+        %context<locked> = $storage.is-locked($filter.id);
     } else {
         $template = $storage.get-template('changes');
     }

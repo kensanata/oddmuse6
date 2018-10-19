@@ -15,6 +15,8 @@
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use Oddmuse::Password;
+use Oddmuse::Storage;
+use Oddmuse::View;
 
 =begin pod
 
@@ -27,7 +29,9 @@ sub lock-with-pw(Str :$id!, Str :$pw = '') is export {
 }
 
 sub lock-page(Str $id! --> Str) {
-    return 'FIXME';
+    my $storage = Oddmuse::Storage.new;
+    $storage.lock-page($id);
+    view-page($id);
 }
 
 sub unlock-with-pw(Str :$id!, Str :$pw = '') is export {
@@ -35,5 +39,7 @@ sub unlock-with-pw(Str :$id!, Str :$pw = '') is export {
 }
 
 sub unlock-page(Str $id! --> Str) {
-    return 'FIXME';
+    my $storage = Oddmuse::Storage.new;
+    $storage.unlock-page($id);
+    view-page($id);
 }

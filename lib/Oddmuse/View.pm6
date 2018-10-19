@@ -68,6 +68,7 @@ multi view-page(Str $id, Int $n) is export {
         $template = $storage.get-template('view');
         %context<html> = parse-markdown($page.text).to-html;
         %context<revision> = $page.revision;
+        %context<locked> = $page.locked;
         %context<diff> = $n > 1;
     } else {
         $template = $storage.get-template('empty');

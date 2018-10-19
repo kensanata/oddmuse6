@@ -18,7 +18,7 @@
     <div id="footer">
       <hr/>
       <p>
-				<a href="/edit/{{id}}">Edit</a>
+				{{^locked}}<a href="/edit/{{id}}">Edit</a>{{/locked}}
 				<a href="/history/{{id}}">History</a>
 				{{#diff}}
 				{{#revision}}<a href="/diff/{{id}}/{{revision}}">Diff</a>{{/revision}}

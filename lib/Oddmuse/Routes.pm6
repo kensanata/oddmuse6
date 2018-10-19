@@ -21,6 +21,7 @@ use Oddmuse::Save;
 use Oddmuse::Changes;
 use Oddmuse::Filter;
 use Oddmuse::Diff;
+use Oddmuse::Lock;
 use Oddmuse::Cookie;
 
 =begin pod
@@ -77,6 +78,18 @@ sub routes() is export {
             request-body -> (:$summary!, *%) {
                 content 'text/html', rollback-with-secret(
                     :$id, revision => $revision.Int, :$summary, :$author, :$secret);
+            }
+        }
+        post -> 'lock', $id, :$pw is cookie {
+            my $default = $pw || ''; # the pw in the cookie is the default
+            request-body -> (:$pw) {
+                content 'text/html', lock-with-pw(:$id, pw => $pw || $default);
+            }
+        }
+        post -> 'unlock', $id, :$pw is cookie {
+            my $default = $pw || ''; # the pw in the cookie is the default
+            request-body -> (:$pw) {
+                content 'text/html', unlock-with-pw(:$id, pw => $pw || $default);
             }
         }
         get -> 'css', *@path {

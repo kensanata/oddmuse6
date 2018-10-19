@@ -28,6 +28,8 @@ env:
     value: cat, cats, dog, dogs, bird, birds
   - name: ODDMUSE_SECRET
     value: This-is-a-secret.
+  - name: ODDMUSE_PASSWORD
+    value: mu
 endpoints: 
   - 
     id: http

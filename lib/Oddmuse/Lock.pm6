@@ -14,26 +14,26 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-VERSION=$(shell perl6 -M JSON::Fast -e 'from-json("META6.json".IO.slurp)<version>.say')
+use Oddmuse::Password;
 
-# How many jobs to run in parallel when testing
-jobs ?= 4
+=begin pod
 
-test: clean
-	prove6 -l -j=$(jobs) t
+=head1 Oddmuse::Lock
 
-clean:
-	rm -rf test-* lib/.precomp
+=end pod
 
-dist:
-	git archive --prefix=Oddmuse-$(VERSION)/ -o Oddmuse-$(VERSION).tar.gz $(VERSION)
+sub lock-with-pw(Str :$id!, Str :$pw = '') is export {
+    with-pw($pw, { ask-for-pw($id, 'lock') }, { lock-page($id) });
+}
 
-upload:
-	cpan-upload Oddmuse-$(VERSION).tar.gz
+sub lock-page(Str $id! --> Str) {
+    return 'FIXME';
+}
 
-without-cro:
-	ODDMUSE_HOST=localhost ODDMUSE_PORT=20000 perl6 -Ilib service.p6
+sub unlock-with-pw(Str :$id!, Str :$pw = '') is export {
+    with-pw($pw, { ask-for-pw($id, 'unlock') }, { unlock-page($id) });
+}
 
-# use make t/view without the .t suffix
-t/%:
-	perl6 -Ilib $@.t
+sub unlock-page(Str $id! --> Str) {
+    return 'FIXME';
+}

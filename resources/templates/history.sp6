@@ -13,6 +13,7 @@
 
 				{{#filter}}
 				<form id="filter" action="/changes">
+					<p>
 					<strong>Filter</strong><br>
 					<input type="checkbox" id="minor" name="minor" {{#minor}}checked{{/minor}}>
 					<label for="minor">include minor changes</label><br>
@@ -22,8 +23,9 @@
 					<input type="text" class="wide" id="name" name="id" value="{{id}}"><br>
 					<label for="author" class="wide">by author name </label>
 					<input type="text" class="wide" id="author" name="author" value="{{author}}"><br>
-					<label>limit to <input type="number" class="narrow" name="n" value="{{n}}"> items</label><br>
-					<input type="submit" value="OK">
+					<label>limit to <input type="number" class="narrow" name="n" value="{{n}}"> items</label>
+					</p>
+					<p><button>Filter changes</button></p>
 				</form>
 				{{/filter}}
 
@@ -53,7 +55,7 @@
 				</p>
 				{{/changes}}
 				{{^empty}}
-				<input type="submit" value="OK">
+				<input type="submit" value="Show difference">
 				</form>
 				{{/empty}}
 				{{#empty}}
@@ -61,6 +63,19 @@
 				{{/empty}}
 			</div>
     </div>
+
+		{{^locked}}
+		<form id="lock" method="post" action="/lock/{{filter.id}}">
+			<p>This page is currently editable by all. If you're an administrator, you can lock it.</p>
+			<p><button name="pw" value="">Lock page</button></p>
+		</form>
+		{{/locked}}
+		{{#locked}}
+		<form id="unlock" method="post" action="/unlock/{{filter.id}}">
+			<p>This page is currently locked. If you're an administrator, you can unlock it.</p>
+			<p><button name="pw" value="">Unlock page</button></p>
+		</form>
+		{{/locked}}
 
     <div id="footer">
       <hr/>

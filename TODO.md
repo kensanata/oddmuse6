@@ -1,9 +1,5 @@
 # Things to do for Oddmuse 6
 
-Open issues
-
-- No rollback button for locked pages
-
 Code Review:
 
 - use colon notation, e.g. @results.push($change) → @results.push: $change

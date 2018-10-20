@@ -31,7 +31,7 @@ sub lock-with-pw(Str :$id!, Str :$pw = '') is export {
 sub lock-page(Str $id! --> Str) {
     my $storage = Oddmuse::Storage.new;
     $storage.lock-page($id);
-    view-page($id);
+    view-page($id, True); # we must be admins at this point
 }
 
 sub unlock-with-pw(Str :$id!, Str :$pw = '') is export {
@@ -41,5 +41,5 @@ sub unlock-with-pw(Str :$id!, Str :$pw = '') is export {
 sub unlock-page(Str $id! --> Str) {
     my $storage = Oddmuse::Storage.new;
     $storage.unlock-page($id);
-    view-page($id);
+    view-page($id, True); # we must be admins at this point
 }

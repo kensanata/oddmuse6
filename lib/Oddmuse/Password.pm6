@@ -44,7 +44,7 @@ One way to set this up, for example:
 
 #| Run either the ok or the not-ok code depending on whether the user has the password.
 sub with-pw(Str $pw, &not-ok, &ok --> Str) is export {
-    if $pw && $pw eq %*ENV<ODDMUSE_PASSWORD> {
+    if is-admin($pw) {
         # If a password was provided and it matches what we have, the
         # code gets called. Note that without a configured password,
         # this code must not be called.
@@ -56,11 +56,28 @@ sub with-pw(Str $pw, &not-ok, &ok --> Str) is export {
     }
 }
 
-#| Show the page asking for the password, or the page explaining that no password was configured.
-sub ask-for-pw(Str $id!, Str $action! --> Str) is export {
+#| Does the current user have the admin password?
+sub is-admin(Str $pw! --> Bool) is export {
+    return so $pw && %*ENV<ODDMUSE_PASSWORD> && $pw eq %*ENV<ODDMUSE_PASSWORD>;
+}
+
+#| Show the page asking for the password, or the page explaining that
+#| no password was configured. Use this for actions that take no
+#| parameters such as locking or unlocking.
+multi ask-for-pw(Str $id!, Str $action! --> Str) is export {
     my $pw = %*ENV<ODDMUSE_PASSWORD>;
     my %context = :$id, :$action;
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template($pw ?? 'password' !! 'no-password');
+    return render($template, %context);
+}
+
+#| Show the page asking for the password, or the page explaining that
+#| no password was configured. Use this for save actions.
+multi ask-for-pw(Str :$id!, Str :$text!, Str :$summary, Bool :$minor, Str :$author --> Str) is export {
+    my $pw = %*ENV<ODDMUSE_PASSWORD>;
+    my %context = :$id, :$text, :$summary, :$minor, :$author;
+    my $storage = Oddmuse::Storage.new;
+    my $template = $storage.get-template($pw ?? 'password-save' !! 'no-password');
     return render($template, %context);
 }

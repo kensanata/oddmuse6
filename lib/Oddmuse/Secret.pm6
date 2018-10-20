@@ -52,7 +52,7 @@ One way to set these up, for example:
 =end pod
 
 #| Run either the ok or the not-ok code depending on whether the user has the secret cookie.
-sub with-secret($secret, $answer, &not-ok, &ok --> Str) is export {
+sub with-secret(Str $secret, Str $answer, &not-ok, &ok --> Str) is export {
     if !%*ENV<ODDMUSE_SECRET> || $secret && $secret eq %*ENV<ODDMUSE_SECRET> {
         # If no secret is configured, or if a secret was provided and
         # it matches what we have, the code gets called.
@@ -70,7 +70,7 @@ sub with-secret($secret, $answer, &not-ok, &ok --> Str) is export {
 }
 
 #| Show the page asking for the secret.
-sub ask-for-secret(:$id!, :$text!, :$summary, :$minor, :$author --> Str) is export {
+sub ask-for-secret(Str :$id!, Str :$text!, Str :$summary, Bool :$minor, Str :$author --> Str) is export {
     my $question = %*ENV<ODDMUSE_QUESTION>;
     my %context = :$id, :$text, :$summary, :$minor, :$author, :$question;
     my $storage = Oddmuse::Storage.new;

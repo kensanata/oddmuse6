@@ -32,11 +32,11 @@ following keys you need to set in the context:
 =end pod
 
 #| Shows the edit form for a given page.
-sub edit-page(Str:D $id, Str:D $author --> Str) is export {
+sub edit-page(Str:D $id!, Str:D $author --> Str) is export {
     my %context = :$id, :$author;
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('edit');
-    my $page = $storage.get-page($id);
+    my $page = $storage.get-page($id, False); # we assume no admin required
     %context<text> = $page.text if $page.exists;
     return render($template, %context);
 }

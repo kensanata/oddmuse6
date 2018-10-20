@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Administrator Password</title>
+		<link rel="stylesheet" href="/css/default.css">
+	</head>
+	<body>
+
+		<div id="header">
+			<ul>
+				{{#pages}}
+				<li><a href="/view/{{id}}">{{id}}</a></li>
+				{{/pages}}
+			</ul>
+		</div>
+
+		<div id="content">
+			<h1>Administrator Password</h1>
+
+			<p>
+				You need to know the administrator password in order to
+				{{action}} a page, but this wiki has not been configured with
+				a password!
+			</p>
+
+			<p>
+				As it stands, it is impossible to complete this
+				request. Sorry! 😅
+			</p>
+		</div>
+
+		<div id="footer">
+			<hr/>
+			<p>
+				<a href="/view/{{id}}">Cancel</a>
+			</p>
+		</div>
+
+	</body>
+</html>

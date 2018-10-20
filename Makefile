@@ -32,7 +32,7 @@ upload:
 	cpan-upload Oddmuse-$(VERSION).tar.gz
 
 without-cro:
-	ODDMUSE_HOST=localhost ODDMUSE_PORT=20000 perl6 -Ilib service.p6
+	ODDMUSE_HOST=localhost ODDMUSE_PORT=20000 ODDMUSE_PASSWORD=mu perl6 -Ilib service.p6
 
 # use make t/view without the .t suffix
 t/%:

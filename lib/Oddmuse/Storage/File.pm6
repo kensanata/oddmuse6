@@ -35,6 +35,11 @@ backup number is the revision. It starts at 1.
 
 The log of all changes is C<rc.log> in the data directory.
 
+Pages are locked using a lock I<directory>. It's name is the name of
+the page and the suffix C<.locked>. Note that the suffix C<.lock> is
+different: that's the short lived temporary lock created by
+C<Oddmuse::Storage::File::Lock>.
+
 =end pod
 
 #| Implement storage layer using files.
@@ -43,15 +48,20 @@ class Oddmuse::Storage::File {
     my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
     #| Return a new Page.
-    method get-page(Str $id! --> Oddmuse::Page) is export {
+    multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) is export {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.md";
         return Oddmuse::Page.new() unless $path.IO.e;
         return Oddmuse::Page.new(
             exists => True,
             text => $path.IO.slurp,
-            locked => self.is-locked($id),
+            locked => !$is-admin && self.is-locked($id),
         );
+    }
+
+    #| Return a new Page, assume no admin permissions
+    multi method get-page(Str $id! --> Oddmuse::Page) {
+        return self.get-page($id, False);
     }
 
     #| Save a Page.
@@ -198,21 +208,21 @@ class Oddmuse::Storage::File {
     #| Lock a page.
     method lock-page(Str $id!) is export {
         my $dir = make-directory 'page';
-        my $path = "$dir/$id.lock";
-        $path.IO.spurt: '';
+        my $path = "$dir/$id.locked";
+        $path.IO.mkdir;
     }
 
     #| Unlock a page.
     method unlock-page(Str $id!) is export {
         my $dir = make-directory 'page';
-        my $path = "$dir/$id.lock";
-        $path.IO.unlink;
+        my $path = "$dir/$id.locked";
+        $path.IO.rmdir;
     }
 
     #| Is this page locked?
     method is-locked(Str $id!) is export {
         my $dir = make-directory 'page';
-        my $path = "$dir/$id.lock";
+        my $path = "$dir/$id.locked";
         return $path.IO.e;
     }
 }

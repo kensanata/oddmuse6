@@ -18,7 +18,9 @@ use Oddmuse::View;
 use Oddmuse::Page;
 use Oddmuse::Change;
 use Oddmuse::Secret;
+use Oddmuse::Layout;
 use Oddmuse::Storage;
+use Oddmuse::Password;
 
 =begin pod
 
@@ -35,21 +37,27 @@ front-end to the various L<Oddmuse::Storage> functions:
 Keep files are old, numbered revisions of the page.
 
 =end pod
-
+#| Save a page but check for the secret and for a lock, first.
 sub save-with-secret(Str :$id!,
                      Str :$text!,
                      Str :$summary = '',
                      Bool :$minor = False,
                      Str :$author = '',
                      Str :$answer = '',
-                     Str :$secret = '') is export {
+                     Str :$secret = '',
+                     Str :$pw = '') is export {
     with-secret($secret, $answer,
     {
         ask-for-secret(:$id, :$text, :$summary, :$minor, :$author);
     },
     {
-        save-page(:$id, :$text, :$summary, :$minor, :$author);
-        view-page($id)
+        my $storage = Oddmuse::Storage.new;
+        if $storage.is-locked($id) && not is-admin($pw) {
+            ask-for-pw(:$id, :$text, :$summary, :$minor, :$author);
+        } else {
+            save-page(:$id, :$text, :$summary, :$minor, :$author);
+            view-page($id, is-admin($pw));
+        }
     });
 }
 
@@ -88,7 +96,8 @@ sub rollback-with-secret(Str :$id!,
                           Int :$revision!,
                           Str :$summary!,
                           Str :$author = '',
-                          Str :$secret = '') is export {
+                          Str :$secret = '',
+                          Str :$pw = '') is export {
     my $minor = False; # FIXME: to be determined based on what we can see
     my $storage = Oddmuse::Storage.new;
     my $page = $storage.get-keep-page: $id, $revision;

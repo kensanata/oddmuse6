@@ -44,12 +44,12 @@ this case, only the C<id> key of the context is used.
 =end pod
 
 #| Show a page.
-multi view-page(Str $id) is export {
-    view-page($id, 0);
+multi view-page(Str $id, Bool $is-admin) is export {
+    view-page($id, 0, $is-admin);
 }
 
 #| Show a particular revision of a page.
-multi view-page(Str $id, Int $n) is export {
+multi view-page(Str $id, Int $n, Bool $is-admin) is export {
 
     my %context = :$id;
 
@@ -59,7 +59,7 @@ multi view-page(Str $id, Int $n) is export {
     if $n {
         $page = $storage.get-keep-page($id, $n);
     } else {
-        $page = $storage.get-page($id);
+        $page = $storage.get-page($id, $is-admin);
     }
 
     # Get template and render page data.

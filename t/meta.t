@@ -10,7 +10,6 @@ use JSON::Fast;
 
 my $meta = from-json "META6.json".IO.slurp;
 
-
 # Check whether the templates are all published in META6.json.
 my @errors;
 my @files = 'resources/templates'.IO.dir(test => / '.sp6' $/).map: { .substr(10) };

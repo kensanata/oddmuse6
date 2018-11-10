@@ -6,10 +6,6 @@ Issues right now:
  services and Oddmuse doesn't handle those. Time to get HTTP caching
  to work!
 
-* "Your name" has to be a valid cookie value, i.e. it must only
- contain ASCII alpha numeric characters: no spaces. We should encode
- and decode the cookie value.
-
 * No heading when crediting a page for the first time. Add this as a
   default to the text area.
 

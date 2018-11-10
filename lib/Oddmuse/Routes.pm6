@@ -24,6 +24,7 @@ use Oddmuse::Cookie;
 use Oddmuse::Filter;
 use Oddmuse::Changes;
 use Oddmuse::Password;
+use URI::Encode;
 
 =begin pod
 
@@ -41,11 +42,13 @@ sub routes() is export {
         get -> 'view', $id where / $changes / {
             content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
         }
-        get -> 'view', $id, :$pw is cookie {
-            content 'text/html', view-page($id, is-admin($pw||''));
+        get -> 'view', $id, :$pw is cookie is copy {
+            $pw = uri_decode_component($pw || '');
+            content 'text/html', view-page($id, is-admin($pw));
         }
-        get -> 'view', $id, $n where /^\d+$/, :$pw is cookie {
-            content 'text/html', view-page($id, $n.Int, is-admin($pw||''));
+        get -> 'view', $id, $n where /^\d+$/, :$pw is cookie is copy {
+            $pw = uri_decode_component($pw || '');
+            content 'text/html', view-page($id, $n.Int, is-admin($pw));
         }
         get -> 'changes', :%params {
             content 'text/html', view-changes($%params);
@@ -61,14 +64,18 @@ sub routes() is export {
         get -> 'diff', $id, $n where /^\d+$/ {
             content 'text/html', view-diff($id, $n.Int);
         }
-        get -> 'edit', $id, :$author is cookie {
-            content 'text/html', edit-page($id, $author||'');
+        get -> 'edit', $id, :$author is cookie is copy {
+            $author = uri_decode_component($author || '');
+            content 'text/html', edit-page($id, $author);
         }
-        post -> 'save', :$secret is cookie, :$pw is cookie {
-            my $default = $pw || ''; # the pw in the cookie is the default
+        post -> 'save', :$secret is cookie is copy, :$pw is cookie is copy {
+            $secret = uri_decode_component($secret || '');
+            # pw in the cookie is the default; we're going to look at
+            # the pw in the request, too
+            my $default = uri_decode_component($pw || '');
             request-body -> (:$id!, :$text!,
                              :$summary = '', :$minor = False,
-                             :$author = '', :$answer = '', :$pw = '') {
+                             :$author = '', :$answer = '', :$pw = $default) {
                 save-to-cookie('author', $author);
                 # In order to avoid «Type check failed in binding to
                 # parameter '$id'; expected Str but got
@@ -79,27 +86,31 @@ sub routes() is export {
                     id => $id.Str, text => $text.Str, summary => $summary.Str,
                     author => $author.Str, answer => $answer.Str,
                     minor => $minor ?? True !! False,
-                    secret => $secret || '',
-                    pw => $pw.Str || $default,
+                    secret => $secret,
+                    :$pw,
                 );
             }
         }
-        post -> 'rollback', $id, $revision where /^\d+$/, :$author is cookie, :$secret is cookie, :$pw is cookie {
+        post -> 'rollback', $id, $revision where /^\d+$/, :$author is cookie is copy, :$secret is cookie is copy, :$pw is cookie is copy {
+            $author = uri_decode_component($pw || '');
+            $secret = uri_decode_component($secret || '');
+            $pw = uri_decode_component($pw || '');
             request-body -> (:$summary!, *%) {
                 content 'text/html', rollback-with-secret(
                     :$id, revision => $revision.Int, :$summary, :$author,
-                    secret => $secret || '',
-                    pw => $pw || '');
+                    :$secret, :$pw);
             }
         }
-        post -> 'lock', $id, :$pw is cookie {
-            my $default = $pw || ''; # the pw in the cookie is the default
+        post -> 'lock', $id, :$pw is cookie is copy {
+            $pw = uri_decode_component($pw || '');
+            my $default = $pw; # the pw in the cookie is the default
             request-body -> (:$pw) {
                 content 'text/html', lock-with-pw(:$id, pw => $pw || $default);
             }
         }
-        post -> 'unlock', $id, :$pw is cookie {
-            my $default = $pw || ''; # the pw in the cookie is the default
+        post -> 'unlock', $id, :$pw is cookie is copy {
+            $pw = uri_decode_component($pw || '');
+            my $default = $pw; # the pw in the cookie is the default
             request-body -> (:$pw) {
                 content 'text/html', unlock-with-pw(:$id, pw => $pw || $default);
             }
@@ -128,8 +139,9 @@ sub routes() is export {
                 static %?RESOURCES<images/logo.png>
             }
         }
-        get -> :$pw is cookie {
-            content 'text/html', view-page("Home", is-admin($pw||''));
+        get -> :$pw is cookie is copy {
+            $pw = uri_decode_component($pw || '');
+            content 'text/html', view-page("Home", is-admin($pw));
         }
     }
 }

@@ -58,7 +58,8 @@
     "Text::Markdown",
     "Template::Mustache",
     "Algorithm::Diff",
-    "HTML::Escape"
+    "HTML::Escape",
+    "URI::Encode"
   ],
   "build-depends": [],
   "test-depends": [

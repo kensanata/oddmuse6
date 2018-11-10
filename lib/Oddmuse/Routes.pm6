@@ -41,6 +41,9 @@ sub routes() is export {
         get -> 'view', $id where / $changes / {
             content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
         }
+        head -> 'view', $id {
+            content 'text/html', '');
+        }
         get -> 'view', $id, :$pw is cookie {
             content 'text/html', view-page($id, is-admin($pw||''));
         }

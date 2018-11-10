@@ -1,6 +1,6 @@
 {
   "name": "Oddmuse6",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A wiki for Perl 6 using cro, markdown, and templates",
   "tags": [
     "web", "wiki"

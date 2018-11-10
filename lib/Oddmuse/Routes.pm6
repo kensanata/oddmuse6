@@ -42,7 +42,7 @@ sub routes() is export {
         get -> 'view', $id where / $changes / {
             content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
         }
-        head -> 'view', $id {
+        http 'HEAD', -> 'view', $id {
             content 'text/html', '';
         }
         get -> 'view', $id, :$pw is cookie is copy {

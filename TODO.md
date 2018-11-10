@@ -1,5 +1,39 @@
 # Things to do for Oddmuse 6
 
+Issues right now:
+
+* Monit 5.20 (Debian stable) sends a HEAD request to check for web
+ services and Oddmuse doesn't handle those. Time to get HTTP caching
+ to work!
+
+* No heading when crediting a page for the first time. Add this as a
+  default to the text area.
+
+* This wiki is behind a proxy and the environment variables aren't
+  being juggled correctly so anonymous edits all end up with the same
+  "code" -- the code for localhost.
+
+* The codes should change with every request. We should salt the
+  hashing used. In the old Oddmuse, the B hashing meant that the
+  hashes would change with every process restart, which is great. We
+  could salt the hashing with a timestamp, for example.
+
+* Double HTML encoding when looking at the diff. Example: [diff between
+  revisions 9 and 10](https://next.oddmuse.org/diff/Issues?to=10&from=9).
+
+* Linking to local pages using [[double square brackets]] should work.
+  Right now, only Markdown such as [Issues]﻿(/view/Issues) works. The
+  Markdown parser used also doesn't seem to handle two sections in
+  backticks correctly. I've had to break the markup for the Markdown
+  link using a ZERO WITH NO-BREAKING SPACE for it to work. That sort
+  of implies that going back to the old Oddmuse parser might not be
+  such a bad idea.
+
+* Actually we might simply need a new, Perl 6 grammar based, Common
+  Mark implementation. We should steal the test setup from the Oddmuse
+  common-mark branch. It uses the official JSON file with all the test
+  definitions!
+
 Code Review:
 
 - use colon notation, e.g. @results.push($change) → @results.push: $change
@@ -10,10 +44,9 @@ Debt:
 - change all the calls from Storage.new to Storage.get which return a
   singleton
 
-Here's what it still needs before it can deployed on the Intranet:
+Important stuff we need:
 
 - a link to an administration page
-- a way for administrators to lock the site for non-administrators
 - a way to list all the locked pages
 - a protected page where administrators can put banned phrases.
 - an error when people try to save pages containing banned phrases

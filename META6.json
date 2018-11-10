@@ -1,6 +1,6 @@
 {
   "name": "Oddmuse6",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "A wiki for Perl 6 using cro, markdown, and templates",
   "tags": [
     "web", "wiki"
@@ -58,7 +58,8 @@
     "Text::Markdown",
     "Template::Mustache",
     "Algorithm::Diff",
-    "HTML::Escape"
+    "HTML::Escape",
+    "URI::Encode"
   ],
   "build-depends": [],
   "test-depends": [

@@ -16,6 +16,7 @@
 
 use Cro::HTTP::Router;
 use Cro::HTTP::Cookie;
+use URI::Encode;
 
 =begin pod
 
@@ -31,9 +32,10 @@ constraints on cookies.
 =end pod
 
 #| Save a value to a cookie.
-sub save-to-cookie(CookieName $key, CookieValue $value) is export {
+sub save-to-cookie(CookieName $key, Str $value --> Nil) is export {
     if $value {
+        my $encoded-value = uri_encode_component($value);
         set-cookie $key, $value,
-        expires => DateTime.now.later(years => 1);
+            expires => DateTime.now.later(years => 1);
     }
 }

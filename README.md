@@ -140,9 +140,13 @@ saved in the `wiki` directory.
 ## Bleeding Edge
 
 If you installed a regular version of the wiki and now you want to
-switch to the code in your working directory, use `zef install .` in
-your working directory. This tests and installs the current version,
-and its dependencies.
+switch to the code in your working directory, use the following in
+your working directory. It tests and installs the current version, and
+its dependencies.
+
+```
+zef install --force-install .
+```
 
 ## Bugs
 

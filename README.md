@@ -137,6 +137,12 @@ cro run
 This should start the wiki on http://localhost:20000/ and its data is
 saved in the `wiki` directory.
 
+## Bleeding Edge
+
+If you installed a regular version of the wiki and now you want to
+switch to the code in your working directory, use `zef install .` in
+your working directory. This tests and installs the current version,
+and its dependencies.
 
 ## Bugs
 

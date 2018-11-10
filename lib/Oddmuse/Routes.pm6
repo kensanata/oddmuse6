@@ -43,7 +43,7 @@ sub routes() is export {
             content 'text/html', view-changes(Oddmuse::Filter.new(n => 30));
         }
         head -> 'view', $id {
-            content 'text/html', '');
+            content 'text/html', '';
         }
         get -> 'view', $id, :$pw is cookie is copy {
             $pw = uri_decode_component($pw || '');

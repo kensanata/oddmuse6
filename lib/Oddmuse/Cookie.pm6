@@ -35,7 +35,7 @@ constraints on cookies.
 sub save-to-cookie(CookieName $key, Str $value --> Nil) is export {
     if $value {
         my $encoded-value = uri_encode_component($value);
-        set-cookie $key, $value,
+        set-cookie $key, $encoded-value,
             expires => DateTime.now.later(years => 1);
     }
 }

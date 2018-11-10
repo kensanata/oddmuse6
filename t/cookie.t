@@ -28,7 +28,7 @@ my $cookie;
 my $encoded-author = uri_encode_component($author);
 test-service routes(), {
     test post('/save',
-	          json => { :id('About'), :text('Hallo'), :summary('testing'), :author($encoded-author), }),
+	          json => { :id('About'), :text('Hallo'), :summary('testing'), :author($author), }),
         status => 200,
         content-type => 'text/html',
         body => / 'Hallo' /,

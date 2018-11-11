@@ -191,11 +191,10 @@ you'll need to clean these up:
 make clean
 ```
 
-To run just one suite of tests, name the tests without the `.t`
-extension:
+To run just one suite of tests:
 
 ```
-make t/keep
+make t/keep.t
 ```
 
 This also shows you the data directory it uses:

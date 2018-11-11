@@ -34,6 +34,6 @@ upload:
 without-cro:
 	ODDMUSE_HOST=localhost ODDMUSE_PORT=20000 ODDMUSE_PASSWORD=mu perl6 -Ilib service.p6
 
-# use make t/view without the .t suffix
-t/%:
-	perl6 -Ilib $@.t
+.PHONY: unit-test
+t/%.t: unit-test
+	perl6 -Ilib $@

@@ -14,7 +14,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use Text::Markdown;
 use Oddmuse::Storage;
 use Oddmuse::Layout;
 
@@ -23,8 +22,8 @@ use Oddmuse::Layout;
 =head1 Oddmuse::View
 
 These functions display pages to the user. If the page exists, its
-content is rendered from Markdown to HTML and the C<view> template is
-used to display it. The context keys of interest are the following:
+content is rendered to HTML and the C<view> template is used to
+display it. The context keys of interest are the following:
 
 =item C<id> is the page name
 
@@ -41,7 +40,26 @@ and templates are retrieved via L<Oddmuse::Storage>.
 If the page does not exist, the special C<empty> template is used. In
 this case, only the C<id> key of the context is used.
 
+The class used to render the wiki text to HTML is configurable using
+the environment variable C<ODDMUSE_MARKUP>. By default, it's
+C<Text::Markdown>. But you could also use C<Text::Markdown::Discount>.
+The important part is the API C<$class.new($text).render>.
+
+To test whether your class works, try this:
+
+    export ODDMUSE_MARKUP=Text::Markdown::Discount
+    make t/view.t
+
+Make sure you change the C<resources/wiki/page/Home.md> file if your
+class doesn't render Markdown. 🙂
+
 =end pod
+
+my $parser = BEGIN {
+    my $class = %*ENV<ODDMUSE_MARKUP> || 'Text::Markdown';
+    require ::($class);
+    ::($class);
+}
 
 #| Show a page.
 multi view-page(Str $id, Bool $is-admin) is export {
@@ -66,7 +84,7 @@ multi view-page(Str $id, Int $n, Bool $is-admin) is export {
     my $template;
     if $page.exists {
         $template = $storage.get-template('view');
-        %context<html> = parse-markdown($page.text).to-html;
+        %context<html> = $parser.new($page.text).render;
         %context<revision> = $page.revision;
         %context<locked> = $page.locked;
         %context<diff> = $n > 1;

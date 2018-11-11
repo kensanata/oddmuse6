@@ -7,6 +7,9 @@ These are the features it supports:
 
 - pages are stored as plain text files
 - when viewing pages, the text is rendered as Markdown
+- by default, `Text::Markdown` is used to render pages but you can
+  provide a different class to do it; certainly
+  `Text::Markdown::Discount` also works
 - old revisions are also stored as plain text files
 - the change log is also a text file
 - every page can be edited; click the *Edit* link at the bottom

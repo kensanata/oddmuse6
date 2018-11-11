@@ -21,7 +21,7 @@ use Oddmuse::Storage::Delegate;
 =head1 Oddmuse::Storage
 
 This module delegates most storage issues to a role as specified by
-the environment variable C<storage>. By default, that would be
+the environment variable C<ODDMUSE_STORAGE>. By default, that would be
 C<Oddmuse::Storage::File>.
 
 The role must implement the following methods:

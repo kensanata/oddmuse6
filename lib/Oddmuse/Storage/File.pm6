@@ -17,6 +17,7 @@
 use Oddmuse::Page;
 use Oddmuse::Change;
 use Oddmuse::Filter;
+use Oddmuse::Storage::Delegate;
 use Oddmuse::Storage::File::Lock;
 
 =begin pod
@@ -43,7 +44,7 @@ C<Oddmuse::Storage::File::Lock>.
 =end pod
 
 #| Implement storage layer using files.
-class Oddmuse::Storage::File {
+class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
 
     my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 

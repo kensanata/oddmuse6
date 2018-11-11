@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use Oddmuse::Storage::Delegate;
+
 =begin pod
 
 =head1 Oddmuse::Storage
@@ -70,7 +72,7 @@ C<templates> subdirectory with the <sp6> extension.
 class Oddmuse::Storage {
     my $class = %*ENV<ODDMUSE_STORAGE> || 'Oddmuse::Storage::File';
     require ::($class);
-    has $!delegate handles <
+    has Oddmuse::Storage::Delegate $!delegate handles <
         get-page put-page get-keep-page put-keep-page
         put-change get-changes get-current-revision
         lock-page unlock-page is-locked

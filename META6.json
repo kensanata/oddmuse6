@@ -47,6 +47,7 @@
     "Oddmuse::Save":                "lib/Oddmuse/Save.pm6",
     "Oddmuse::Secret":              "lib/Oddmuse/Secret.pm6",
     "Oddmuse::Storage":             "lib/Oddmuse/Storage.pm6",
+    "Oddmuse::Storage::Delegate":   "lib/Oddmuse/Storage/Delegate.pm6",
     "Oddmuse::Storage::File":       "lib/Oddmuse/Storage/File.pm6",
     "Oddmuse::Storage::File::Lock": "lib/Oddmuse/Storage/File/Lock.pm6",
     "Oddmuse::View":                "lib/Oddmuse/View.pm6"

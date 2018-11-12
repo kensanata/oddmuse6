@@ -29,7 +29,7 @@ test-service routes(), {
   test get('/edit/About'),
       status => 200,
       content-type => 'text/html',
-      body => / 'Edit About' .* 'form method="post"' /;
+      body => / '<h1>Edit About</h1>' .* 'form method="post"' .* '# About' /;
 
   test post('/save',
 	    json => { :id('About'), :text('# Hallo'), :summary('testing'), :author(''), }),

@@ -29,7 +29,6 @@ Instances of this class are processed by L<Oddmuse::Save>.
 class Oddmuse::Page {
     has Str $.id;
     has Str $.text;
-    has Bool $.exists;
     has Bool $.locked;
     has Int $.revision;
 }

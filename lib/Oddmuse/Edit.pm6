@@ -37,6 +37,6 @@ sub edit-page(Str:D $id!, Str:D $author --> Str) is export {
     my $storage = Oddmuse::Storage.new;
     my $template = $storage.get-template('edit');
     my $page = $storage.get-page($id, False); # we assume no admin required
-    %context<text> = $page.text if $page.exists;
+    %context<text> = $page.text if $page;
     return render($template, %context);
 }

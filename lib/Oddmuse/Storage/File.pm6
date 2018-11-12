@@ -52,9 +52,8 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) is export {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.md";
-        return Oddmuse::Page.new() unless $path.IO.e;
+        return Oddmuse::Page unless $path.IO.e;
         return Oddmuse::Page.new(
-            exists => True,
             text => $path.IO.slurp,
             locked => !$is-admin && self.is-locked($id),
         );
@@ -80,7 +79,6 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
         my $path = "$dir/$id.md.~$n~";
         return $.get-page($id) unless $path.IO.e;
         return Oddmuse::Page.new(
-            exists   => True,
             revision => $n,
             text     => $path.IO.slurp);
     }

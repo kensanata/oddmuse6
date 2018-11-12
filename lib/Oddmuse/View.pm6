@@ -82,7 +82,7 @@ multi view-page(Str $id, Int $n, Bool $is-admin) is export {
 
     # Get template and render page data.
     my $template;
-    if $page.exists {
+    if $page {
         $template = $storage.get-template('view');
         %context<html> = $parser.new($page.text).render;
         %context<revision> = $page.revision;

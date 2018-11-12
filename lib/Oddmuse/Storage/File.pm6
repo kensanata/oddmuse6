@@ -49,7 +49,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     my $SEP = "\x1e"; # ASCII UNIT SEPARATOR
 
     #| Return a new Page.
-    multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) is export {
+    multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.md";
         return Oddmuse::Page unless $path.IO.e;
@@ -65,7 +65,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Save a Page.
-    method put-page(Oddmuse::Page $page!) is export {
+    method put-page(Oddmuse::Page $page!) {
         my $dir = make-directory 'page';
         my $path = "$dir/{$page.id}.md";
         with-locked-file $path, 2, {
@@ -74,7 +74,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Get an old revision, or the current page if it doesn't exist.
-    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export {
+    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) {
         my $dir = make-directory 'keep';
         my $path = "$dir/$id.md.~$n~";
         return $.get-page($id) unless $path.IO.e;
@@ -84,7 +84,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Save new revision of a page and return the revision number.
-    method put-keep-page(Str $id!) is export {
+    method put-keep-page(Str $id!) {
         my $from-dir = make-directory 'page';
         my $to-dir = make-directory 'keep';
 
@@ -107,7 +107,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Add a Change to the log.
-    method put-change(Oddmuse::Change $change!) is export {
+    method put-change(Oddmuse::Change $change!) {
         my $dir = make-directory '';
         my $path = "$dir/rc.log";
         with-locked-file $path, 2, {
@@ -119,7 +119,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Get the changes matching a filter from the log file.
-    method get-changes(Oddmuse::Filter $filter!) is export {
+    method get-changes(Oddmuse::Filter $filter!) {
         my $dir = make-directory '';
         my $path = "$dir/rc.log";
         return () unless $path.IO.e;
@@ -192,7 +192,7 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Get the current revision for a page.
-    method get-current-revision(Str $id! --> Int) is export {
+    method get-current-revision(Str $id! --> Int) {
         my $dir = make-directory '';
         my $path = "$dir/rc.log";
         return 0 unless $path.IO.e;
@@ -205,21 +205,21 @@ class Oddmuse::Storage::File does Oddmuse::Storage::Delegate {
     }
 
     #| Lock a page.
-    method lock-page(Str $id!) is export {
+    method lock-page(Str $id!) {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.locked";
         $path.IO.mkdir;
     }
 
     #| Unlock a page.
-    method unlock-page(Str $id!) is export {
+    method unlock-page(Str $id!) {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.locked";
         $path.IO.rmdir;
     }
 
     #| Is this page locked?
-    method is-locked(Str $id!) is export {
+    method is-locked(Str $id!) {
         my $dir = make-directory 'page';
         my $path = "$dir/$id.locked";
         return $path.IO.e;

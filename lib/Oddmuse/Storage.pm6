@@ -79,7 +79,7 @@ class Oddmuse::Storage {
         > = ::($class).new;
 
     #| Get a the text for a template.
-    method get-template(Str $id!) is export {
+    method get-template(Str $id!) {
         my $dir =  %*ENV<ODDMUSE_TEMPLATES> || 'templates';
         my $path = "$dir/$id.sp6";
         $path = %?RESOURCES{"templates/$id.sp6"} unless $path.IO.e;

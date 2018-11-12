@@ -31,35 +31,35 @@ role.
 role Oddmuse::Storage::Delegate {
 
     #| Return a new Page.
-    multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) is export { ... }
+    multi method get-page(Str $id!, Bool $is-admin --> Oddmuse::Page) { ... }
 
     #| Return a new Page, assume no admin permissions
     multi method get-page(Str $id! --> Oddmuse::Page) { ... }
 
     #| Save a Page.
-    method put-page(Oddmuse::Page $page! --> Nil) is export { ... }
+    method put-page(Oddmuse::Page $page! --> Nil) { ... }
 
     #| Get an old revision, or the current page if it doesn't exist.
-    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) is export { ... }
+    method get-keep-page(Str $id!, Int $n! --> Oddmuse::Page) { ... }
 
     #| Save new revision of a page and return the revision number.
-    method put-keep-page(Str $id! --> Int) is export { ... }
+    method put-keep-page(Str $id! --> Int) { ... }
 
     #| Add a Change to the log.
-    method put-change(Oddmuse::Change $change! --> Nil) is export { ... }
+    method put-change(Oddmuse::Change $change! --> Nil) { ... }
 
     #| Get the changes matching a filter from the log file.
-    method get-changes(Oddmuse::Filter $filter! --> List) is export { ... }
+    method get-changes(Oddmuse::Filter $filter! --> List) { ... }
 
     #| Get the current revision for a page.
-    method get-current-revision(Str $id! --> Int) is export { ... }
+    method get-current-revision(Str $id! --> Int) { ... }
 
     #| Lock a page.
-    method lock-page(Str $id! --> Nil) is export { ... }
+    method lock-page(Str $id! --> Nil) { ... }
 
     #| Unlock a page.
-    method unlock-page(Str $id! --> Nil) is export { ... }
+    method unlock-page(Str $id! --> Nil) { ... }
 
     #| Is this page locked?
-    method is-locked(Str $id! --> Bool) is export { ... }
+    method is-locked(Str $id! --> Bool) { ... }
 }

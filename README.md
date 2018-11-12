@@ -168,9 +168,12 @@ this a lot until
 [issue #2294](https://github.com/rakudo/rakudo/issues/2294) gets fixed.
 
 🔥 When I ran into the error `Type check failed in binding $high;
-expected Any but got Mu` when computing a `diff` I found
-[issue #12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
-`Algorithm::Diff`. It's supposed to be fixed, now.
+expected Any but got Mu` when computing a `diff` I found [issue
+#12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
+`Algorithm::Diff`. It's supposed to be fixed, now. One way to work
+around it is to check out
+[my fork](https://github.com/kensanata/Algorithm--Diff) and run
+`zef install .` from the working directory.
 
 
 ## Test

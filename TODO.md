@@ -6,9 +6,6 @@ Issues right now:
  services and Oddmuse doesn't handle those. Time to get HTTP caching
  to work!
 
-* No heading when crediting a page for the first time. Add this as a
-  default to the text area.
-
 * This wiki is behind a proxy and the environment variables aren't
   being juggled correctly so anonymous edits all end up with the same
   "code" -- the code for localhost.

@@ -10,9 +10,9 @@ wanted to start a rewrite in order to get rid of the CGI module, and
 then I asked myself: why not go all the way‽ I might as well give Perl
 6 a try.
 
-If you're a developer, see the [to do list](TODO.md).
+If you're a developer, see the [to do list](docs/TODO.md).
 
-If you're curious, see the [feature list](FEATURES.md).
+If you're curious, see the [feature list](docs/FEATURES.md).
 
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**

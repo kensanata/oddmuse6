@@ -2,13 +2,13 @@
 
 This file is for the people wanting to download and install Oddmuse 6.
 
-This is Oddmuse based on [Perl 6](https://perl6.org/) and
+This is Oddmuse based on [Raku](https://raku.org/) and
 [Cro](https://cro.services/). The current stable version of
 [Oddmuse](https://oddmuse.org/) is based on Perl 5 and `CGI.pm`,
 optionally using `Mojolicious` and `Mojolicious::Plugin::CGI`. I
 wanted to start a rewrite in order to get rid of the CGI module, and
-then I asked myself: why not go all the way‽ I might as well give Perl
-6 a try.
+then I asked myself: why not go all the way‽ I might as well give Raku
+a try.
 
 If you're a developer, see the [to do list](docs/TODO.md).
 
@@ -273,7 +273,7 @@ For images, css files and templates, this is how lookup works:
 
 2. If no environment variable exists, the current working dir is
    checked for directories with the right names. If they exist, they
-   are used. This is important when you run `perl6 -I lib service.pm6`
+   are used. This is important when you run `raku -I lib service.pm6`
    directly, since that ignores the `.cro.yml` file.
 
 3. If none of the above, the copies in the `resources` folder of the
@@ -325,7 +325,7 @@ body {
   color: green;
 }
 EOF
-ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 perl6 -I lib service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=8000 raku -I lib service.p6
 ```
 
 This works because now we're not using `cro` to launch the process and
@@ -380,13 +380,13 @@ mkdir wiki1 wiki2
 Start the first wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 perl6 -Ilib service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9000 ODDMUSE_WIKI=wiki1 raku -Ilib service.p6
 ```
 
 Start the second wiki:
 
 ```
-ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 perl6 -Ilib service.p6
+ODDMUSE_HOST=localhost ODDMUSE_PORT=9001 ODDMUSE_WIKI=wiki2 raku -Ilib service.p6
 ```
 
 Now you can visit both `http://localhost:9000/` and

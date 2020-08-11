@@ -1,6 +1,7 @@
 use v6.c;
 
 use Test;
+use lib 'lib';
 use Test::META;
 use JSON::Fast;
 
@@ -39,7 +40,7 @@ while @todo {
     for @todo.pop.dir -> $path {
         if $path.d and $path.Str[0] ne "." {
             @todo.push: $path;
-        } elsif $path ~~ / '.pm6' $/ {
+        } elsif $path ~~ / '.rakumod' $/ {
             my @uses = $path.IO.lines.grep: /^ 'use' \s+ 'Oddmuse::' /;
             for @uses -> $use {
                 %libs{$0} = True if $use ~~ /:i ( 'Oddmuse::' <[ a .. z : ]> + ) /;

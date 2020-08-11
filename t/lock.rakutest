@@ -17,6 +17,7 @@
 use Oddmuse::Storage::File::Lock;
 use File::Temp;
 use Test;
+use lib 'lib';
 
 my ($path, $fh) = tempfile;
 
@@ -41,6 +42,6 @@ is($path.IO.slurp, "Done\n", "overwrite locked file");
 
 my $duration = DateTime.now.Instant - $ts;
 
-is($duration.round(0.2), 3, "duration is correct");
+is($duration.round(), 3, "duration is correct");
 
 done-testing;

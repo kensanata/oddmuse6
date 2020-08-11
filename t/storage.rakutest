@@ -16,6 +16,7 @@
 
 use Oddmuse::Storage;
 use Test;
+use lib 'lib';
 
 # testing the default Home page
 %*ENV<ODDMUSE_WIKI> = 'resources/wiki';

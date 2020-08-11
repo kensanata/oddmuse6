@@ -14,34 +14,35 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use lib 'lib';
 use Oddmuse::Storage::File::Test;
 use Oddmuse::Routes;
 use Cro::HTTP::Test;
-use URI::Encode;
-use Test;
 
-my $root = get-random-wiki-directory;
+# Testing, whether the default Home page gets copied to the new test directory
+# and whether the menu gets shown by the template.
+%*ENV<ODDMUSE_MENU> = 'Home, About';
+get-random-wiki-directory;
 
-my $author = 'Alex Schröder';
-my $cookie;
-
-my $encoded-author = uri_encode_component($author);
 test-service routes(), {
-    test post('/save',
-	          json => { :id('About'), :text('Hallo'), :summary('testing'), :author($author), }),
+    test get('/'),
         status => 200,
         content-type => 'text/html',
-        body => / 'Hallo' /,
-        headers => {
-            # Make a copy of the cookie.
-            Set-Cookie => { $cookie = $_; $_ ~~ / $encoded-author / },
-        };
+        body => / '<a href="/view/Home">Home</a>'
+            .* '<a href="/view/About">About</a>'
+	    .* '<h1>Home</h1>'
+	    .* 'Welcome!' /;
 
-    test get('/edit/About', cookies => { author => $encoded-author }),
+    test get('/view/Home'),
         status => 200,
         content-type => 'text/html',
-        body => / $author /;
+        body => / '<h1>Home</h1>'
+            .* 'Welcome!' /;
 
+    test get('/view/About'),
+        status => 200,
+        content-type => 'text/html',
+        body => / 'This page is empty' /;
 }
 
 done-testing;

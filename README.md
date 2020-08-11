@@ -3,12 +3,7 @@
 This file is for the people wanting to download and install Oddmuse 6.
 
 This is Oddmuse based on [Raku](https://raku.org/) and
-[Cro](https://cro.services/). The current stable version of
-[Oddmuse](https://oddmuse.org/) is based on Perl 5 and `CGI.pm`,
-optionally using `Mojolicious` and `Mojolicious::Plugin::CGI`. I
-wanted to start a rewrite in order to get rid of the CGI module, and
-then I asked myself: why not go all the way‽ I might as well give Raku
-a try.
+[Cro](https://cro.services/).
 
 If you're a developer, see the [to do list](docs/TODO.md).
 
@@ -36,18 +31,20 @@ If you're curious, see the [feature list](docs/FEATURES.md).
 
 ## Quickstart
 
-Install [cro](https://cro.services/) and Oddmuse 6:
+Install Cro:
 
 ```
 zef install --/test cro
+```
+
+Install Oddmuse 6:
+
+```
 zef install Oddmuse6
 ```
 
-Create a new application. Remember that installing `cro` printed a
-message telling you where the binary got installed. I'm assuming you
-added `$HOME/rakudo/share/perl6/site/bin` to your `PATH`.
-
-Start with a stub and accept all the defaults:
+Create a new application by start with a stub and accepting all the
+defaults:
 
 ```
 cro stub http test test
@@ -65,7 +62,7 @@ for you.
 
 Your default wiki directory is `test/wiki`, so we need to tell `cro`
 to ignore it. If you don't, you'll confuse `cro` to no end as soon as
-you start editing files! Add the following section section to your in
+you start editing files! Add the following section to your in
 `test/.cro.yml` file:
 
 ```
@@ -171,9 +168,13 @@ this a lot until
 expected Any but got Mu` when computing a `diff` I found [issue
 #12](https://github.com/Takadonet/Algorithm--Diff/issues/12) for
 `Algorithm::Diff`. It's supposed to be fixed, now. One way to work
-around it is to check out
-[my fork](https://github.com/kensanata/Algorithm--Diff) and run
-`zef install .` from the working directory.
+around it is to check it out and install it from source:
+
+```
+git clone https://github.com/Takadonet/Algorithm--Diff
+cd Algorithm--Diff
+zef install --force-install .
+```
 
 
 ## Test

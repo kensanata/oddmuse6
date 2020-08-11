@@ -20,7 +20,7 @@ VERSION=$(shell perl6 -M JSON::Fast -e 'from-json("META6.json".IO.slurp)<version
 jobs ?= 4
 
 test: clean
-	prove6 -l -j=$(jobs) t
+	prove6 -l -j $(jobs) t
 
 clean:
 	rm -rf test-* lib/.precomp
@@ -36,4 +36,4 @@ without-cro:
 
 .PHONY: unit-test
 t/%.t: unit-test
-	perl6 -Ilib $@
+	raku -Ilib $@

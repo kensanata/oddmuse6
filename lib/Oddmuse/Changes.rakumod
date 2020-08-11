@@ -129,11 +129,11 @@ multi view-changes(Oddmuse::Filter $filter!) is export {
 
     # The same is true for the filter description...
     my %filter =
-        n        => $filter.n,
-        id        => $filter.id,
-        author    => $filter.author,
-        minor    => $filter.minor,
-        all        => $filter.all;
+        n        => $filter.n||'',
+        id        => $filter.id||'',
+        author    => $filter.author||'',
+        minor    => $filter.minor||False,
+        all        => $filter.all||False;
 
     %context<filter> = %filter;
 

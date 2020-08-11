@@ -1,7 +1,7 @@
 use v6.c;
 
+use lib $*PROGRAM.parent.add("lib");
 use Test;
-use lib 'lib';
 use Test::META;
 use JSON::Fast;
 

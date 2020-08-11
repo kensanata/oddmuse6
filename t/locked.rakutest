@@ -14,7 +14,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
-use lib 'lib';
+use lib $*PROGRAM.parent.add("lib");
 use Oddmuse::Storage::File::Test;
 use Oddmuse::Storage;
 use Oddmuse::Routes;

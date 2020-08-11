@@ -14,9 +14,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program. If not, see <https://www.gnu.org/licenses/>.
 
+use lib $*PROGRAM.parent.add("lib");
 use Oddmuse::Storage;
 use Test;
-use lib 'lib';
 
 # testing the default Home page
 %*ENV<ODDMUSE_WIKI> = 'resources/wiki';
